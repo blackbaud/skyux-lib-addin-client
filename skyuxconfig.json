@@ -1,0 +1,10 @@
+{
+  "name": "SKY UX Add-in Client Library",
+  "mode": "easy",
+  "compileMode": "aot",
+  "appSettings": {
+    "myLibrary": {
+      "name": "SKY UX Add-in Client Library"
+    }
+  }
+}
