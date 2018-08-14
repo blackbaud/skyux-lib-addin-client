@@ -20,7 +20,7 @@
     "@blackbaud/skyux": "^2.18.0"
   },
   "dependencies": {
-    "@blackbaud/sky-addin-client": "1.0.1",
+    "@blackbaud/sky-addin-client": "1.0.2",
     "@blackbaud/skyux-builder-plugin-addin-client": "1.0.2"
   },
   "devDependencies": {
