@@ -10,7 +10,7 @@ import {
   AddinClientShowModalResult,
   AddinClientNavigateArgs,
   AddinClientOpenHelpArgs
-} from '@blackbaud/sky-addin-client/src/addin/client-interfaces';
+} from '@blackbaud/sky-addin-client';
 
 @Injectable()
 export class AddinClientService {
