@@ -112,7 +112,7 @@ this.addinClientService.showModal({
 });
 ```
 
-To use the optional plugin, you must add it to the `plugins` array in your `skyuxconfig.json` file. The plugin is included as a dependency of the library, so no need to install.
+The optional plugin can be installed by running `npm install @blackbaud/skyux-builder-plugin-addin-client`, and then adding it to the `plugins` array in your `skyuxconfig.json` file:
 
 ```js
 {
