@@ -1,6 +1,6 @@
 {
   "name": "@blackbaud/skyux-lib-addin-client",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "skyux-lib-addin-client",
   "main": "bundles/bundle.umd.js",
   "module": "index.ts",
@@ -17,16 +17,14 @@
   "author": "Blackbaud",
   "license": "ISC",
   "peerDependencies": {
-    "@blackbaud/skyux": "^2.18.0"
-  },
-  "dependencies": {
-    "@blackbaud/sky-addin-client": "1.0.2",
-    "@blackbaud/skyux-builder-plugin-addin-client": "1.0.2"
+    "@blackbaud/skyux": "^2.18.0",
+    "@blackbaud/sky-addin-client": "^1.0.2"
   },
   "devDependencies": {
+    "@blackbaud/skyux": "2.18.0",
+    "@blackbaud/sky-addin-client": "1.0.2",
     "@blackbaud/skyux-builder": "1.19.2",
-    "@blackbaud/skyux-lib-testing": "1.0.0",
-    "@blackbaud/skyux": "2.18.0"
+    "@blackbaud/skyux-lib-testing": "1.0.0"
   },
   "repository": {
     "type": "git",
