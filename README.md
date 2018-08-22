@@ -7,10 +7,11 @@ The SKY UX Add-in Client Library wraps the lower-level [SKY Add-in Client Librar
 
 ## Installation
 
-Install the library as a dependency of your project using npm:
+Install both libraries as dependencies of your project using npm:
 
 ```
 npm install --save @blackbaud/skyux-lib-addin-client
+npm install --save @blackbaud/sky-addin-client
 ```
 
 ## Use
