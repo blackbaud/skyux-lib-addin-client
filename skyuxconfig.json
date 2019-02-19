@@ -1,4 +1,5 @@
 {
+  "$schema": "./node_modules/@skyux/config/skyuxconfig-schema.json",
   "name": "SKY UX Add-in Client Library",
   "mode": "easy",
   "compileMode": "aot",
