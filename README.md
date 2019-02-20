@@ -66,18 +66,36 @@ export class MyTileComponent implements OnInit {
 
       args.ready({
         showUI: true,
-        title: 'My tile'
+        title: 'My tile',
+        tileConfig: {
+          summaryStyle: AddinTileSummaryStyle.Text,
+          summaryText: 'Summary text',
+          showHelp: true,
+          showSettings: true
+        }
       });
+    });
+
+    // Handle tile help icon click
+    this.addinClientService.helpClick.subscribe(() => {
+      // showHelp method not shown here
+      this.showHelp();
+    });
+
+    // Handle tile settings icon click
+    this.addinClientService.settingsClick.subscribe(() => {
+      // showSettingsModal method not shown here
+      this.showSettingsModal();
     });
   }
 
 }
 ```
 
-The `AddinClientService` provides wrapper methods over the lower-level implementation.  So you can obtain a user identity token using the `getAuthToken()` function:
+The `AddinClientService` provides wrapper methods over the lower-level implementation.  So you can obtain a user identity token using the `getUserIdentityToken()` function (previously named `getAuthToken()`):
 
 ```js
-this.addinClientService.getAuthToken().subscribe((token: string) => {
+this.addinClientService.getUserIdentityToken().subscribe((token: string) => {
   this.userIdentityToken = token;
 });
   ```

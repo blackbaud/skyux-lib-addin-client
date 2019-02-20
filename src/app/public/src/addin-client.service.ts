@@ -1,5 +1,5 @@
 import { AddinClient } from '@blackbaud/sky-addin-client';
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { AsyncSubject } from 'rxjs/AsyncSubject';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromPromise';
@@ -10,13 +10,20 @@ import {
   AddinClientShowModalResult,
   AddinClientNavigateArgs,
   AddinClientOpenHelpArgs
-} from '@blackbaud/sky-addin-client';
+} from '@blackbaud/sky-addin-client/src/addin/client-interfaces';
 
 @Injectable()
 export class AddinClientService {
   public readonly addinClient: AddinClient;
+
+  // Init args
   private _args: AsyncSubject<AddinClientInitArgs> = new AsyncSubject<AddinClientInitArgs>();
   public args: Observable<AddinClientInitArgs> = this._args.asObservable();
+
+  // Addin Client Events
+  public buttonClick: EventEmitter<any> = new EventEmitter(true);
+  public helpClick: EventEmitter<any> = new EventEmitter(true);
+  public settingsClick: EventEmitter<any> = new EventEmitter(true);
 
   constructor() {
     this.addinClient = new AddinClient({
@@ -24,6 +31,15 @@ export class AddinClientService {
         init: (args: AddinClientInitArgs) => {
           this._args.next(args);
           this._args.complete();
+        },
+        buttonClick: () => {
+          this.buttonClick.emit();
+        },
+        helpClick: () => {
+          this.helpClick.emit();
+        },
+        settingsClick: () => {
+          this.settingsClick.emit();
         }
       }
     });
@@ -50,7 +66,14 @@ export class AddinClientService {
     this.addinClient.openHelp(args);
   }
 
+  public getUserIdentityToken(): Observable<string> {
+    return Observable.fromPromise(this.addinClient.getUserIdentityToken());
+  }
+
+  /**
+   * @deprecated Use getUserIdentityToken
+   */
   public getAuthToken(): Observable<string> {
-    return Observable.fromPromise(this.addinClient.getAuthToken());
+    return Observable.fromPromise(this.addinClient.getUserIdentityToken());
   }
 }
