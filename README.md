@@ -78,15 +78,21 @@ export class MyTileComponent implements OnInit {
 
     // Handle tile help icon click
     this.addinClientService.helpClick.subscribe(() => {
-      // showHelp method not shown here
       this.showHelp();
     });
 
     // Handle tile settings icon click
     this.addinClientService.settingsClick.subscribe(() => {
-      // showSettingsModal method not shown here
       this.showSettingsModal();
     });
+  }
+
+  private showHelp() {
+    // Define what happens when the help icon is clicked
+  }
+
+  private showSettingsModal() {
+    // Define what happens when the settings icon is clicked
   }
 
 }
