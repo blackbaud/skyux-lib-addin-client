@@ -18,11 +18,11 @@
   "license": "ISC",
   "peerDependencies": {
     "@blackbaud/skyux": "^2.18.0",
-    "@blackbaud/sky-addin-client": "^1.0.2"
+    "@blackbaud/sky-addin-client": "1.0.8"
   },
   "devDependencies": {
     "@blackbaud/skyux": "2.18.0",
-    "@blackbaud/sky-addin-client": "1.0.2",
+    "@blackbaud/sky-addin-client": "1.0.8",
     "@blackbaud/skyux-builder": "1.19.2",
     "@blackbaud/skyux-lib-testing": "1.0.0"
   },
