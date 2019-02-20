@@ -83,7 +83,7 @@ export class MyTileComponent implements OnInit {
 
     // Handle tile settings icon click
     this.addinClientService.settingsClick.subscribe(() => {
-      this.showSettingsModal();
+      this.showSettings();
     });
   }
 
@@ -91,7 +91,7 @@ export class MyTileComponent implements OnInit {
     // Define what happens when the help icon is clicked
   }
 
-  private showSettingsModal() {
+  private showSettings() {
     // Define what happens when the settings icon is clicked
   }
 
@@ -133,7 +133,7 @@ this.addinClientService.showModal({
   url: someUrl,
   context: someContextObject
 }).subscribe((modalResponse: any) => {
-
+  // Define response from closing a modal
 });
 ```
 
