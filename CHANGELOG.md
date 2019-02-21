@@ -1,4 +1,4 @@
-# 1.1.3 (2019-02-20)
+# 1.1.3 (2019-02-21)
 
 - Adding support for tile and button config arguments as part of initializing an addin.
 - Adding support for handling tile help and settings clicks and button clicks.
