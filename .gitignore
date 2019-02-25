@@ -62,6 +62,3 @@ typings/
 
 # SKY UX output
 dist/
-
-# NPM package lock file
-package-lock.json
