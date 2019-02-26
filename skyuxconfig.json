@@ -7,5 +7,10 @@
     "myLibrary": {
       "name": "SKY UX Add-in Client Library"
     }
+  },
+  "testSettings": {
+    "unit": {
+      "browserSet": "paranoid"
+    }
   }
 }
