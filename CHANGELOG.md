@@ -1,3 +1,7 @@
+# 2.0.3 (2019-03-01)
+
+- Added a `showToast` method to allow developers to show a toast with a provided message and toast style.
+
 # 1.1.3 (2019-02-21)
 
 - Adding support for tile and button config arguments as part of initializing an addin.

@@ -9,8 +9,9 @@ import {
   AddinClientShowModalArgs,
   AddinClientShowModalResult,
   AddinClientNavigateArgs,
-  AddinClientOpenHelpArgs
-} from '@blackbaud/sky-addin-client/src/addin/client-interfaces';
+  AddinClientOpenHelpArgs,
+  AddinClientShowToastArgs
+} from '@blackbaud/sky-addin-client';
 
 @Injectable()
 export class AddinClientService {
@@ -75,5 +76,9 @@ export class AddinClientService {
    */
   public getAuthToken(): Observable<string> {
     return Observable.fromPromise(this.addinClient.getUserIdentityToken());
+  }
+
+  public showToast(args: AddinClientShowToastArgs): void {
+    this.addinClient.showToast(args);
   }
 }
