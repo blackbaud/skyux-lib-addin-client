@@ -14,7 +14,7 @@
   "author": "Blackbaud",
   "license": "ISC",
   "peerDependencies": {
-    "@blackbaud/sky-addin-client": "^2.0.0",
+    "@blackbaud/sky-addin-client": "^1.0.8",
     "@skyux-sdk/builder": "^3.2.2"
   },
   "dependencies": {},
