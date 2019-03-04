@@ -4,12 +4,9 @@
   "description": "skyux-lib-addin-client",
   "main": "bundles/bundle.umd.js",
   "module": "index.ts",
-  "engines": {
-    "node": ">=6.11.1"
-  },
   "scripts": {
     "skyux": "skyux",
-    "test": "skyux test && skyux e2e && skyux build && npm run build",
+    "test": "skyux test --coverage library && skyux build && npm run build",
     "build": "skyux build-public-library",
     "start": "skyux serve"
   },
@@ -17,14 +14,43 @@
   "author": "Blackbaud",
   "license": "ISC",
   "peerDependencies": {
-    "@blackbaud/skyux": "2.18.0",
     "@blackbaud/sky-addin-client": "1.0.9"
   },
+  "dependencies": {},
   "devDependencies": {
-    "@blackbaud/skyux": "2.18.0",
+    "@angular/animations": "7.2.6",
+    "@angular/common": "7.2.6",
+    "@angular/compiler": "7.2.6",
+    "@angular/compiler-cli": "7.2.6",
+    "@angular/core": "7.2.6",
+    "@angular/forms": "7.2.6",
+    "@angular/http": "7.2.6",
+    "@angular/platform-browser": "7.2.6",
+    "@angular/platform-browser-dynamic": "7.2.6",
+    "@angular/router": "7.2.6",
+    "@blackbaud/auth-client": "2.13.0",
     "@blackbaud/sky-addin-client": "1.0.9",
-    "@blackbaud/skyux-builder": "1.19.2",
-    "@blackbaud/skyux-lib-testing": "1.0.0"
+    "@blackbaud/skyux-lib-testing": "1.1.0",
+    "@pact-foundation/pact-web": "7.4.0",
+    "@skyux-sdk/builder": "3.4.0",
+    "@skyux-sdk/pact": "3.2.0",
+    "@skyux-sdk/testing": "3.1.0",
+    "@skyux/assets": "3.0.0",
+    "@skyux/config": "3.4.0",
+    "@skyux/core": "3.5.1",
+    "@skyux/http": "3.2.0",
+    "@skyux/i18n": "3.5.0",
+    "@skyux/omnibar-interop": "3.1.0",
+    "@skyux/router": "3.1.0",
+    "@skyux/theme": "3.4.1",
+    "@types/core-js": "2.5.0",
+    "codelyzer": "4.5.0",
+    "rxjs": "6.4.0",
+    "rxjs-compat": "6.4.0",
+    "ts-node": "8.0.2",
+    "tslint": "5.13.0",
+    "typescript": "3.2.4",
+    "zone.js": "0.8.29"
   },
   "repository": {
     "type": "git",
