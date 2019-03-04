@@ -1,6 +1,6 @@
 {
   "name": "@blackbaud/skyux-lib-addin-client",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "skyux-lib-addin-client",
   "main": "bundles/bundle.umd.js",
   "module": "index.ts",
@@ -14,7 +14,7 @@
   "author": "Blackbaud",
   "license": "ISC",
   "peerDependencies": {
-    "@blackbaud/sky-addin-client": "^1.0.8"
+    "@blackbaud/sky-addin-client": "1.0.9"
   },
   "dependencies": {},
   "devDependencies": {
@@ -29,7 +29,7 @@
     "@angular/platform-browser-dynamic": "7.2.6",
     "@angular/router": "7.2.6",
     "@blackbaud/auth-client": "2.13.0",
-    "@blackbaud/sky-addin-client": "1.0.8",
+    "@blackbaud/sky-addin-client": "1.0.9",
     "@blackbaud/skyux-lib-testing": "1.1.0",
     "@pact-foundation/pact-web": "7.4.0",
     "@skyux-sdk/builder": "3.4.0",

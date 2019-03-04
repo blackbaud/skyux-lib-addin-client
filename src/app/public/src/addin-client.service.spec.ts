@@ -7,7 +7,9 @@ import { AddinClientShowModalArgs,
   AddinClientShowModalResult,
   AddinClientCloseModalArgs,
   AddinClientNavigateArgs,
-  AddinClientOpenHelpArgs } from '@blackbaud/sky-addin-client';
+  AddinClientOpenHelpArgs,
+  AddinClientShowToastArgs,
+  AddinToastStyle } from '@blackbaud/sky-addin-client';
 
 describe('Addin Client Service', () => {
   let addinClientService: AddinClientService;
@@ -175,5 +177,22 @@ describe('Addin Client Service', () => {
 
       done();
     });
+  });
+
+  it('consumers can show a toast through AddinClient', (done) => {
+    addinClientService = new AddinClientService();
+
+    let showToastArgs: AddinClientShowToastArgs = {
+      message: 'a toast message',
+      style: AddinToastStyle.Success
+    };
+
+    spyOn(addinClientService.addinClient, 'showToast');
+
+    addinClientService.showToast(showToastArgs);
+
+    expect(addinClientService.addinClient.showToast).toHaveBeenCalledWith(showToastArgs);
+
+    done();
   });
 });

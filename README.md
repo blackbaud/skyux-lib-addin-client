@@ -126,7 +126,7 @@ public openHelp() {
 }
 ```
 
-Finally, you can show a modal using the `showModal` method:
+You can show a modal using the `showModal` method:
 
 ```js
 this.addinClientService.showModal({
@@ -135,6 +135,17 @@ this.addinClientService.showModal({
 }).subscribe((modalResponse: any) => {
   // Define response from closing a modal
 });
+```
+
+Finally, you can show a toast using the `showToast` method:
+
+```js
+public showToast() {
+  this.addinClientService.showToast({
+    message: someMessage,
+    style: AddinToastStyle.Info
+  });
+}
 ```
 
 The optional plugin can be installed by running `npm install @blackbaud/skyux-builder-plugin-addin-client`, and then adding it to the `plugins` array in your `skyuxconfig.json` file:

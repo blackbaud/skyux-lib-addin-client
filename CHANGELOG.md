@@ -1,3 +1,7 @@
+# 2.0.3 (2019-03-01)
+
+- Added a `showToast` method to allow developers to show a toast with a provided message and toast style.
+
 # 2.0.2 (2019-03-01)
 
 - Fixed peer dependencies to not reference invalid version of `@blackbaud/sky-addin-client`.
