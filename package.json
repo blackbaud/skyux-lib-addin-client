@@ -14,7 +14,8 @@
   "author": "Blackbaud",
   "license": "ISC",
   "peerDependencies": {
-    "@blackbaud/sky-addin-client": "1.0.9"
+    "@blackbaud/sky-addin-client": "1.0.9",
+    "rxjs": "^6.4.0"
   },
   "dependencies": {},
   "devDependencies": {
