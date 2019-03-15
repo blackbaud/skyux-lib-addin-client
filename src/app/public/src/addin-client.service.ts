@@ -1,8 +1,5 @@
 import { AddinClient } from '@blackbaud/sky-addin-client';
 import { Injectable, EventEmitter } from '@angular/core';
-import { AsyncSubject } from 'rxjs/AsyncSubject';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/fromPromise';
 import {
   AddinClientInitArgs,
   AddinClientCloseModalArgs,
@@ -12,6 +9,7 @@ import {
   AddinClientOpenHelpArgs,
   AddinClientShowToastArgs
 } from '@blackbaud/sky-addin-client';
+import { AsyncSubject, Observable, from as fromPromise } from 'rxjs';
 
 @Injectable()
 export class AddinClientService {
@@ -52,7 +50,7 @@ export class AddinClientService {
 
   public showModal(args: AddinClientShowModalArgs): Observable<any> {
     let modalReturn: AddinClientShowModalResult = this.addinClient.showModal(args);
-    return Observable.fromPromise(modalReturn.modalClosed);
+    return fromPromise(modalReturn.modalClosed);
   }
 
   public destroy(): void {
@@ -68,14 +66,14 @@ export class AddinClientService {
   }
 
   public getUserIdentityToken(): Observable<string> {
-    return Observable.fromPromise(this.addinClient.getUserIdentityToken());
+    return fromPromise(this.addinClient.getUserIdentityToken());
   }
 
   /**
    * @deprecated Use getUserIdentityToken
    */
   public getAuthToken(): Observable<string> {
-    return Observable.fromPromise(this.addinClient.getUserIdentityToken());
+    return fromPromise(this.addinClient.getUserIdentityToken());
   }
 
   public showToast(args: AddinClientShowToastArgs): void {
