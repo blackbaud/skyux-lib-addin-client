@@ -1,16 +1,18 @@
-import { AddinClient } from '@blackbaud/sky-addin-client';
 import { Injectable, EventEmitter } from '@angular/core';
 import { AsyncSubject } from 'rxjs/AsyncSubject';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromPromise';
 import {
+  AddinClient,
   AddinClientInitArgs,
   AddinClientCloseModalArgs,
   AddinClientShowModalArgs,
   AddinClientShowModalResult,
   AddinClientNavigateArgs,
   AddinClientOpenHelpArgs,
-  AddinClientShowToastArgs
+  AddinClientShowToastArgs,
+  AddinClientShowFlyoutArgs,
+  AddinClientUpdateFlyoutArgs
 } from '@blackbaud/sky-addin-client';
 
 @Injectable()
@@ -23,6 +25,9 @@ export class AddinClientService {
 
   // Addin Client Events
   public buttonClick: EventEmitter<any> = new EventEmitter(true);
+  public flyoutCloseClick: EventEmitter<any> = new EventEmitter(true);
+  public flyoutNextClick: EventEmitter<any> = new EventEmitter(true);
+  public flyoutPreviousClick: EventEmitter<any> = new EventEmitter(true);
   public helpClick: EventEmitter<any> = new EventEmitter(true);
   public settingsClick: EventEmitter<any> = new EventEmitter(true);
 
@@ -35,6 +40,15 @@ export class AddinClientService {
         },
         buttonClick: () => {
           this.buttonClick.emit();
+        },
+        flyoutCloseClick: () => {
+          this.flyoutCloseClick.emit();
+        },
+        flyoutNextClick: () => {
+          this.flyoutNextClick.emit();
+        },
+        flyoutPreviousClick: () => {
+          this.flyoutPreviousClick.emit();
         },
         helpClick: () => {
           this.helpClick.emit();
@@ -80,5 +94,13 @@ export class AddinClientService {
 
   public showToast(args: AddinClientShowToastArgs): void {
     this.addinClient.showToast(args);
+  }
+
+  public showFlyout(args: AddinClientShowFlyoutArgs): void {
+    this.addinClient.showFlyout(args);
+  }
+
+  public updateFlyout(args: AddinClientUpdateFlyoutArgs): void {
+    this.addinClient.updateFlyout(args);
   }
 }
