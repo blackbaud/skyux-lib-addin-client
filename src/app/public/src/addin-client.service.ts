@@ -11,9 +11,7 @@ import {
   AddinClientNavigateArgs,
   AddinClientOpenHelpArgs,
   AddinClientShowToastArgs,
-  AddinClientShowFlyoutArgs,
-  AddinClientUpdateFlyoutArgs,
-  AddinClientShowFlyoutResult
+  AddinClientShowFlyoutArgs
 } from '@blackbaud/sky-addin-client';
 
 @Injectable()
@@ -94,12 +92,7 @@ export class AddinClientService {
     this.addinClient.showToast(args);
   }
 
-  public showFlyout(args: AddinClientShowFlyoutArgs): Observable<any> {
-    let flyoutReturn: AddinClientShowFlyoutResult = this.addinClient.showFlyout(args);
-    return Observable.fromPromise(flyoutReturn.flyoutClosed);
-  }
-
-  public updateFlyout(args: AddinClientUpdateFlyoutArgs): void {
-    this.addinClient.updateFlyout(args);
+  public showFlyout(args: AddinClientShowFlyoutArgs): void {
+    this.addinClient.showFlyout(args);
   }
 }
