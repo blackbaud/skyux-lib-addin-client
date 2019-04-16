@@ -24,7 +24,6 @@ export class AddinClientService {
 
   // Addin Client Events
   public buttonClick: EventEmitter<any> = new EventEmitter(true);
-  public flyoutCloseClick: EventEmitter<any> = new EventEmitter(true);
   public flyoutNextClick: EventEmitter<any> = new EventEmitter(true);
   public flyoutPreviousClick: EventEmitter<any> = new EventEmitter(true);
   public helpClick: EventEmitter<any> = new EventEmitter(true);
