@@ -9,7 +9,8 @@ import { AddinClientShowModalArgs,
   AddinClientNavigateArgs,
   AddinClientOpenHelpArgs,
   AddinClientShowToastArgs,
-  AddinToastStyle } from '@blackbaud/sky-addin-client';
+  AddinToastStyle,
+  AddinClientShowFlyoutArgs} from '@blackbaud/sky-addin-client';
 
 describe('Addin Client Service', () => {
   let addinClientService: AddinClientService;
@@ -58,6 +59,34 @@ describe('Addin Client Service', () => {
     addinClientArgs.callbacks.settingsClick();
 
     expect(addinClientService.settingsClick.emit).toHaveBeenCalled();
+
+    done();
+  });
+
+  it('service consumer can subscribe to flyoutNextClick', (done) => {
+    addinClientService = new AddinClientService();
+
+    let addinClientArgs = (addinClientService.addinClient as any).args;
+
+    spyOn(addinClientService.flyoutNextClick, 'emit').and.callThrough();
+
+    addinClientArgs.callbacks.flyoutNextClick();
+
+    expect(addinClientService.flyoutNextClick.emit).toHaveBeenCalled();
+
+    done();
+  });
+
+  it('service consumer can subscribe to flyoutPreviousClick', (done) => {
+    addinClientService = new AddinClientService();
+
+    let addinClientArgs = (addinClientService.addinClient as any).args;
+
+    spyOn(addinClientService.flyoutPreviousClick, 'emit').and.callThrough();
+
+    addinClientArgs.callbacks.flyoutPreviousClick();
+
+    expect(addinClientService.flyoutPreviousClick.emit).toHaveBeenCalled();
 
     done();
   });
@@ -192,6 +221,35 @@ describe('Addin Client Service', () => {
     addinClientService.showToast(showToastArgs);
 
     expect(addinClientService.addinClient.showToast).toHaveBeenCalledWith(showToastArgs);
+
+    done();
+  });
+
+  it('consumers can show a flyout through AddinClient', (done) => {
+    addinClientService = new AddinClientService();
+
+    let showFlyoutArgs: AddinClientShowFlyoutArgs = {
+      context: {
+        userData: 'some data'
+      },
+      defaultWidth: 600,
+      iteratorNextDisabled: false,
+      iteratorPreviousDisabled: true,
+      maxWidth: 1000,
+      minWidth: 200,
+      permalink: {
+        label: 'some label',
+        url: 'some url'
+      },
+      showIterator: true,
+      url: 'some url'
+    };
+
+    spyOn(addinClientService.addinClient, 'showFlyout');
+
+    addinClientService.showFlyout(showFlyoutArgs);
+
+    expect(addinClientService.addinClient.showFlyout).toHaveBeenCalledWith(showFlyoutArgs);
 
     done();
   });
