@@ -1,6 +1,6 @@
 # 2.0.4 (2019-04-16)
 
-- Added a `showFlyout` callback to allow developers to display supplementary information in a flyout panel.
+- Added a `showFlyout` method to allow developers to display supplementary information in a flyout panel.
 
 # 2.0.3 (2019-03-01)
 
