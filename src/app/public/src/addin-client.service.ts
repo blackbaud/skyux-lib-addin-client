@@ -86,7 +86,7 @@ export class AddinClientService {
   /**
    * Requests the host page to launch a modal add-in.
    * @param args Arguments for launching the modal.
-   * @returns {Observable<any>} Returns an observable that will publish a value when the modal add-in is closed.
+   * @returns Returns an observable that will publish a value when the modal add-in is closed.
    * Observables will publish values with context data passed from the modal add-in's closeModal call.
    */
   public showModal(args: AddinClientShowModalArgs): Observable<any> {
@@ -119,7 +119,7 @@ export class AddinClientService {
 
   /**
    * Requests a user identity token for the current user.
-   * @returns {Observable<string>} Returns an observable which will publish the token value.
+   * @returns Returns an observable which will publish the token value.
    */
   public getUserIdentityToken(): Observable<string> {
     return Observable.fromPromise(this.addinClient.getUserIdentityToken());
