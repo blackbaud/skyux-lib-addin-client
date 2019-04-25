@@ -28,6 +28,7 @@
     "@angular/platform-browser": "7.2.6",
     "@angular/platform-browser-dynamic": "7.2.6",
     "@angular/router": "7.2.6",
+    "@blackbaud/auth-client": "2.13.0",
     "@blackbaud/sky-addin-client": "1.0.10",
     "@blackbaud/skyux-lib-testing": "1.1.0",
     "@pact-foundation/pact-web": "7.4.0",
