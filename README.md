@@ -137,7 +137,7 @@ this.addinClientService.showModal({
 });
 ```
 
-Finally, you can show a toast using the `showToast` method:
+You can show a toast using the `showToast` method:
 
 ```js
 public showToast() {
@@ -146,6 +146,15 @@ public showToast() {
     style: AddinToastStyle.Info
   });
 }
+```
+
+Finally, you can show a flyout using the `showFlyout` method:
+
+```js
+this.addinClientService.showFlyout({
+  url: someUrl,
+  context: someContextObject
+});
 ```
 
 The optional plugin can be installed by running `npm install @blackbaud/skyux-builder-plugin-addin-client`, and then adding it to the `plugins` array in your `skyuxconfig.json` file:
