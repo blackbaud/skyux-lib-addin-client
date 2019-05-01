@@ -29,6 +29,11 @@ export class AddinClientService {
   public buttonClick: EventEmitter<any> = new EventEmitter(true);
 
   /**
+   * Event emitted for flyout parent add-ins indicating that the flyout was closed.
+   */
+  public flyoutClosed: EventEmitter<any> = new EventEmitter(true);
+
+  /**
    * Event emitted for flyout add-ins indicating that the next button was clicked.
    */
   public flyoutNextClick: EventEmitter<any> = new EventEmitter(true);
@@ -57,6 +62,9 @@ export class AddinClientService {
         },
         buttonClick: () => {
           this.buttonClick.emit();
+        },
+        flyoutClosed: () => {
+          this.flyoutClosed.emit();
         },
         flyoutNextClick: () => {
           this.flyoutNextClick.emit();
@@ -146,5 +154,12 @@ export class AddinClientService {
    */
   public showFlyout(args: AddinClientShowFlyoutArgs): void {
     this.addinClient.showFlyout(args);
+  }
+
+  /**
+   * Requests the host page to close the flyout add-in.
+   */
+  public closeFlyout(): void {
+    this.addinClient.closeFlyout();
   }
 }
