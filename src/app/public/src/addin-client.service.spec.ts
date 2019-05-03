@@ -10,7 +10,8 @@ import { AddinClientShowModalArgs,
   AddinClientOpenHelpArgs,
   AddinClientShowToastArgs,
   AddinToastStyle,
-  AddinClientShowFlyoutArgs} from '@blackbaud/sky-addin-client';
+  AddinClientShowFlyoutArgs,
+  AddinClientShowFlyoutResult} from '@blackbaud/sky-addin-client';
 
 describe('Addin Client Service', () => {
   let addinClientService: AddinClientService;
@@ -245,11 +246,31 @@ describe('Addin Client Service', () => {
       url: 'some url'
     };
 
-    spyOn(addinClientService.addinClient, 'showFlyout');
+    let flyoutResponse: AddinClientShowFlyoutResult = {
+      flyoutClosed: new Promise<any>((resolve) => {
+        resolve();
+      })
+    };
 
-    addinClientService.showFlyout(showFlyoutArgs);
+    spyOn(addinClientService.addinClient, 'showFlyout').and.returnValue(flyoutResponse);
 
-    expect(addinClientService.addinClient.showFlyout).toHaveBeenCalledWith(showFlyoutArgs);
+    addinClientService.showFlyout(showFlyoutArgs).subscribe((result) => {
+      expect(addinClientService.addinClient.showFlyout).toHaveBeenCalledWith(showFlyoutArgs);
+
+      expect(result).toBe(undefined);
+
+      done();
+    });
+  });
+
+  it('consumers can close flyouts through AddinClient', (done) => {
+    addinClientService = new AddinClientService();
+
+    spyOn(addinClientService.addinClient, 'closeFlyout');
+
+    addinClientService.closeFlyout();
+
+    expect(addinClientService.addinClient.closeFlyout).toHaveBeenCalledWith();
 
     done();
   });
