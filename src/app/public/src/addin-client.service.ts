@@ -144,6 +144,7 @@ export class AddinClientService {
   /**
    * Requests the host page to launch a flyout add-in.
    * @param args Arguments for launching the flyout.
+   * @returns Returns an observable that will notify when the flyout add-in is closed.
    */
   public showFlyout(args: AddinClientShowFlyoutArgs): Observable<void> {
     const flyoutReturn: AddinClientShowFlyoutResult = this.addinClient.showFlyout(args);
