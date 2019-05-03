@@ -148,13 +148,18 @@ public showToast() {
 }
 ```
 
-Finally, you can show a flyout using the `showFlyout` method:
+Finally, you can show a flyout using the `showFlyout` method and close a flyout using the `closeFlyout` method:
 
 ```js
 this.addinClientService.showFlyout({
   url: someUrl,
   context: someContextObject
-});
+}).flyoutClosed.subscribe(() => {
+  // Define what happens when a flyout has closed
+});;
+
+// close the flyout
+this.addinClientService.closeFlyout();
 ```
 
 The optional plugin can be installed by running `npm install @blackbaud/skyux-builder-plugin-addin-client`, and then adding it to the `plugins` array in your `skyuxconfig.json` file:
