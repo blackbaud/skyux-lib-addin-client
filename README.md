@@ -154,6 +154,8 @@ Finally, you can show a flyout using the `showFlyout` method:
 this.addinClientService.showFlyout({
   url: someUrl,
   context: someContextObject
+}).subscribe(() => {
+  // Define what happens when a flyout has closed
 });
 ```
 

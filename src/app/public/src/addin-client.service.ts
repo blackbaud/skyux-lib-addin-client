@@ -11,7 +11,8 @@ import {
   AddinClientNavigateArgs,
   AddinClientOpenHelpArgs,
   AddinClientShowToastArgs,
-  AddinClientShowFlyoutArgs
+  AddinClientShowFlyoutArgs,
+  AddinClientShowFlyoutResult
 } from '@blackbaud/sky-addin-client';
 
 @Injectable()
@@ -143,8 +144,17 @@ export class AddinClientService {
   /**
    * Requests the host page to launch a flyout add-in.
    * @param args Arguments for launching the flyout.
+   * @returns Returns an observable that will notify when the flyout add-in is closed.
    */
-  public showFlyout(args: AddinClientShowFlyoutArgs): void {
-    this.addinClient.showFlyout(args);
+  public showFlyout(args: AddinClientShowFlyoutArgs): Observable<void> {
+    const flyoutReturn: AddinClientShowFlyoutResult = this.addinClient.showFlyout(args);
+    return Observable.fromPromise(flyoutReturn.flyoutClosed);
+  }
+
+  /**
+   * Requests the host page to close the flyout add-in.
+   */
+  public closeFlyout(): void {
+    this.addinClient.closeFlyout();
   }
 }

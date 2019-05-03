@@ -1,3 +1,8 @@
+# 2.0.5 (2019-05-03)
+
+- Added a `closeFlyout` method to allow developers to close a flyout panel.
+- Return an Observable from the `showFlyout` method which will notify when the flyout has closed.
+
 # 2.0.4 (2019-04-16)
 
 - Added a `showFlyout` method to allow developers to display supplementary information in a flyout panel.
