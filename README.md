@@ -156,10 +156,7 @@ this.addinClientService.showFlyout({
   context: someContextObject
 }).subscribe(() => {
   // Define what happens when a flyout has closed
-});;
-
-// close the flyout
-this.addinClientService.closeFlyout();
+});
 ```
 
 The optional plugin can be installed by running `npm install @blackbaud/skyux-builder-plugin-addin-client`, and then adding it to the `plugins` array in your `skyuxconfig.json` file:
