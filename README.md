@@ -148,7 +148,7 @@ public showToast() {
 }
 ```
 
-Finally, you can show a flyout using the `showFlyout` method and close a flyout using the `closeFlyout` method:
+Finally, you can show a flyout using the `showFlyout` method:
 
 ```js
 this.addinClientService.showFlyout({
