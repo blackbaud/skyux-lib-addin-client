@@ -148,7 +148,7 @@ public showToast() {
 }
 ```
 
-Finally, you can show a flyout using the `showFlyout` method:
+You can show a flyout using the `showFlyout` method:
 
 ```js
 this.addinClientService.showFlyout({
@@ -157,6 +157,42 @@ this.addinClientService.showFlyout({
 }).subscribe(() => {
   // Define what happens when a flyout has closed
 });
+```
+
+You can show a confirm dialog using the `showConfirm` method:
+
+```js
+this.addinClientService.showConfirm({
+  message: 'confirm title',
+  body: 'confirm message body',
+  buttons: [
+    {
+      action: 'ok',
+      text: 'OK',
+      autofocus: true,
+      style: AddinConfirmButtonStyle.Primary
+    },
+    {
+      action: 'cancel',
+      text: 'Cancel',
+      style: AddinConfirmButtonStyle.Link
+    }
+  ]
+}).subscribe((action) => {
+  // Handle the action returned when the dialog closes
+});
+```
+
+Finally, you can show an error dialog using the `showError` method:
+
+```js
+public showError() {
+  this.addinClientService.showError({
+    closeText: 'OK',
+    description: 'An unexpected error occurred',
+    title: 'Error'
+  });
+}
 ```
 
 The optional plugin can be installed by running `npm install @blackbaud/skyux-builder-plugin-addin-client`, and then adding it to the `plugins` array in your `skyuxconfig.json` file:

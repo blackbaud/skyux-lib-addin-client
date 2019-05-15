@@ -12,7 +12,9 @@ import {
   AddinClientOpenHelpArgs,
   AddinClientShowToastArgs,
   AddinClientShowFlyoutArgs,
-  AddinClientShowFlyoutResult
+  AddinClientShowFlyoutResult,
+  AddinClientShowConfirmArgs,
+  AddinClientShowErrorArgs
 } from '@blackbaud/sky-addin-client';
 
 @Injectable()
@@ -156,5 +158,22 @@ export class AddinClientService {
    */
   public closeFlyout(): void {
     this.addinClient.closeFlyout();
+  }
+
+  /**
+   * Requests the host page to show a confirm dialog.
+   * @param args Arguments for showing a confirm dialog.
+   * @returns Returns an observable which will publish the confirm action value.
+   */
+  public showConfirm(args: AddinClientShowConfirmArgs): Observable<string> {
+    return Observable.fromPromise(this.addinClient.showConfirm(args));
+  }
+
+  /**
+   * Informs the host to show an error dialog.
+   * @param args Arguments for showing an error dialog.
+   */
+  public showError(args: AddinClientShowErrorArgs): void {
+    this.addinClient.showError(args);
   }
 }
