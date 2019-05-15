@@ -11,7 +11,10 @@ import { AddinClientShowModalArgs,
   AddinClientShowToastArgs,
   AddinToastStyle,
   AddinClientShowFlyoutArgs,
-  AddinClientShowFlyoutResult} from '@blackbaud/sky-addin-client';
+  AddinClientShowFlyoutResult,
+  AddinClientShowConfirmArgs,
+  AddinConfirmButtonStyle,
+  AddinClientShowErrorArgs} from '@blackbaud/sky-addin-client';
 
 describe('Addin Client Service', () => {
   let addinClientService: AddinClientService;
@@ -271,6 +274,59 @@ describe('Addin Client Service', () => {
     addinClientService.closeFlyout();
 
     expect(addinClientService.addinClient.closeFlyout).toHaveBeenCalledWith();
+
+    done();
+  });
+
+  it('consumers can show a confirm dialog through AddinClient', (done) => {
+    addinClientService = new AddinClientService();
+
+    let showConfirmArgs: AddinClientShowConfirmArgs = {
+      body: 'Confirm dialog body text',
+        buttons: [
+          {
+            action: 'action 1',
+            text: 'Action 1'
+          },
+          {
+            action: 'action 2',
+            autofocus: true,
+            style: AddinConfirmButtonStyle.Primary,
+            text: 'Action 2'
+          }
+        ],
+        message: 'This is a confirm'
+    };
+
+    let confirmResponse: Promise<string> = new Promise<string>((resolve) => {
+      resolve('some action');
+    });
+
+    spyOn(addinClientService.addinClient, 'showConfirm').and.returnValue(confirmResponse);
+
+    addinClientService.showConfirm(showConfirmArgs).subscribe((result) => {
+      expect(addinClientService.addinClient.showConfirm).toHaveBeenCalledWith(showConfirmArgs);
+
+      expect(result).toBe('some action');
+
+      done();
+    });
+  });
+
+  it('consumers can show an error dialog through AddinClient', (done) => {
+    addinClientService = new AddinClientService();
+
+    let showErrorArgs: AddinClientShowErrorArgs = {
+      closeText: 'Close',
+      description: 'Error desc',
+      title: 'Error title'
+    };
+
+    spyOn(addinClientService.addinClient, 'showError');
+
+    addinClientService.showError(showErrorArgs);
+
+    expect(addinClientService.addinClient.showError).toHaveBeenCalledWith(showErrorArgs);
 
     done();
   });
