@@ -32,7 +32,7 @@
     "@blackbaud/sky-addin-client": "1.0.12",
     "@blackbaud/skyux-lib-testing": "1.1.0",
     "@pact-foundation/pact-web": "7.4.0",
-    "@skyux-sdk/builder": "3.4.0",
+    "@skyux-sdk/builder": "3.6.6",
     "@skyux-sdk/pact": "3.2.0",
     "@skyux-sdk/testing": "3.1.0",
     "@skyux/assets": "3.0.0",
