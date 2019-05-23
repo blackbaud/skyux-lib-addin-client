@@ -215,4 +215,4 @@ The optional plugin can be installed by running `npm install @blackbaud/skyux-bu
 
 The plugin automatically injects the Environment ID into your component, making it available via the [SkyAppConfig](https://developer.blackbaud.com/skyux/learn/reference/configuration/apply-appsettings) service.
 
-For more information on creating SKY Add-ins, view the documentation on the [SKY API Developer Portal](https://developer.blackbaud.com/skyapi/docs/addins)
+For more information on creating SKY Add-ins, view the documentation on the [SKY Developer Portal](https://developer.blackbaud.com/skyapi/docs/addins)
