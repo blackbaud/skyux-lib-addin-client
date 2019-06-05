@@ -109,21 +109,17 @@ this.addinClientService.getUserIdentityToken().subscribe((token: string) => {
 You can navigate the host page using the `navigate` method:
 
 ```js
-public invokeNavigation() {
-  this.addinClientService.navigate({
-    url: someUrl
-  });
-}
+this.addinClientService.navigate({
+  url: someUrl
+});
 ```
 
 The help window can be popped using the `openHelp` method:
 
 ```js
-public openHelp() {
-  this.addinClientService.openHelp({
-    helpKey: someHelpKey
-  });
-}
+this.addinClientService.openHelp({
+  helpKey: someHelpKey
+});
 ```
 
 You can show a modal using the `showModal` method:
@@ -140,12 +136,10 @@ this.addinClientService.showModal({
 You can show a toast using the `showToast` method:
 
 ```js
-public showToast() {
-  this.addinClientService.showToast({
-    message: someMessage,
-    style: AddinToastStyle.Info
-  });
-}
+this.addinClientService.showToast({
+  message: someMessage,
+  style: AddinToastStyle.Info
+});
 ```
 
 You can show a flyout using the `showFlyout` method:
@@ -186,13 +180,11 @@ this.addinClientService.showConfirm({
 Finally, you can show an error dialog using the `showError` method:
 
 ```js
-public showError() {
-  this.addinClientService.showError({
-    closeText: 'OK',
-    description: 'An unexpected error occurred',
-    title: 'Error'
-  });
-}
+this.addinClientService.showError({
+  closeText: 'OK',
+  description: 'An unexpected error occurred',
+  title: 'Error'
+});
 ```
 
 The optional plugin can be installed by running `npm install @blackbaud/skyux-builder-plugin-addin-client`, and then adding it to the `plugins` array in your `skyuxconfig.json` file:
