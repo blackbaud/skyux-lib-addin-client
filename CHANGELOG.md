@@ -1,3 +1,7 @@
+# 2.0.8 (2020-3-5)
+
+- Added AddinModalConfig with optional fullPage property (Default: false) to indicate if a modal add-in will be displayed full page.
+
 # 2.0.7 (2019-10-04)
 
 - Added `removeInset` property to `AddinTileConfig` to specify whether the tile content inset should be removed
