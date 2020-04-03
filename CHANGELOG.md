@@ -1,3 +1,7 @@
+# 2.0.9 (2020-4-3)
+
+- Updated `sky-addin-client` package dependency version.
+
 # 2.0.8 (2020-3-5)
 
 - Added AddinModalConfig with optional fullPage property (Default: false) to indicate if a modal add-in will be displayed full page.
