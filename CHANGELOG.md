@@ -1,4 +1,8 @@
-# 2.0.8 (2020-3-5)
+# 2.0.9 (2020-04-03)
+
+- Upgraded packages.
+
+# 2.0.8 (2020-03-05)
 
 - Added AddinModalConfig with optional fullPage property (Default: false) to indicate if a modal add-in will be displayed full page.
 
