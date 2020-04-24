@@ -1,4 +1,7 @@
 import {
+  TestBed
+} from '@angular/core/testing';
+import {
   expect
 } from '@skyux-sdk/testing';
 
@@ -18,6 +21,18 @@ import { AddinClientShowModalArgs,
 
 describe('Addin Client Service', () => {
   let addinClientService: AddinClientService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule(
+      {
+        providers: [
+          AddinClientService
+        ]
+      }
+    );
+
+    addinClientService = TestBed.get(AddinClientService);
+  });
 
   it('should instantiate an AddinClient', (done) => {
     addinClientService = new AddinClientService();
@@ -329,5 +344,21 @@ describe('Addin Client Service', () => {
     expect(addinClientService.addinClient.showError).toHaveBeenCalledWith(showErrorArgs);
 
     done();
+  });
+
+  it('consumers can begin page blocking wait indicators through AddinClient', () => {
+    spyOn(addinClientService.addinClient, 'showWait').and.stub();
+
+    addinClientService.showWait();
+
+    expect(addinClientService.addinClient.showWait).toHaveBeenCalledWith();
+  });
+
+  it('consumers can end page blocking wait indicators through AddinClient', () => {
+    spyOn(addinClientService.addinClient, 'hideWait').and.stub();
+
+    addinClientService.hideWait();
+
+    expect(addinClientService.addinClient.hideWait).toHaveBeenCalledWith();
   });
 });
