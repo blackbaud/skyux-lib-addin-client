@@ -177,7 +177,7 @@ this.addinClientService.showConfirm({
 });
 ```
 
-Finally, you can show an error dialog using the `showError` method:
+You can show an error dialog using the `showError` method:
 
 ```js
 this.addinClientService.showError({
@@ -185,6 +185,14 @@ this.addinClientService.showError({
   description: 'An unexpected error occurred',
   title: 'Error'
 });
+```
+
+Finally, you can show/hide a page-blocking wait using the `showWait` and `hideWait` methods:
+
+```js
+this.addinClientService.showWait();
+// Execute code
+this.addinClientService.hideWait();
 ```
 
 The optional plugin can be installed by running `npm install @blackbaud/skyux-builder-plugin-addin-client`, and then adding it to the `plugins` array in your `skyuxconfig.json` file:

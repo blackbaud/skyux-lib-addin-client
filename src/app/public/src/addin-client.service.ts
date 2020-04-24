@@ -176,4 +176,18 @@ export class AddinClientService {
   public showError(args: AddinClientShowErrorArgs): void {
     this.addinClient.showError(args);
   }
+
+  /**
+   * Requests the host page to show a page blocking wait indicator.
+   */
+  public showWait(): void {
+    this.addinClient.showWait();
+  }
+
+  /**
+   * Requests the host page to hide a page blocking wait indicator.
+   */
+  public hideWait(): void {
+    this.addinClient.hideWait();
+  }
 }

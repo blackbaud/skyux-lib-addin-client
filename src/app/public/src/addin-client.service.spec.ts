@@ -1,9 +1,13 @@
 import {
+  TestBed
+} from '@angular/core/testing';
+import {
   expect
 } from '@skyux-sdk/testing';
 
 import { AddinClientService } from './addin-client.service';
-import { AddinClientShowModalArgs,
+import {
+  AddinClientShowModalArgs,
   AddinClientShowModalResult,
   AddinClientCloseModalArgs,
   AddinClientNavigateArgs,
@@ -14,10 +18,23 @@ import { AddinClientShowModalArgs,
   AddinClientShowFlyoutResult,
   AddinClientShowConfirmArgs,
   AddinConfirmButtonStyle,
-  AddinClientShowErrorArgs} from '@blackbaud/sky-addin-client';
+  AddinClientShowErrorArgs
+} from '@blackbaud/sky-addin-client';
 
 describe('Addin Client Service', () => {
   let addinClientService: AddinClientService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule(
+      {
+        providers: [
+          AddinClientService
+        ]
+      }
+    );
+
+    addinClientService = TestBed.get(AddinClientService);
+  });
 
   it('should instantiate an AddinClient', (done) => {
     addinClientService = new AddinClientService();
@@ -283,19 +300,19 @@ describe('Addin Client Service', () => {
 
     let showConfirmArgs: AddinClientShowConfirmArgs = {
       body: 'Confirm dialog body text',
-        buttons: [
-          {
-            action: 'action 1',
-            text: 'Action 1'
-          },
-          {
-            action: 'action 2',
-            autofocus: true,
-            style: AddinConfirmButtonStyle.Primary,
-            text: 'Action 2'
-          }
-        ],
-        message: 'This is a confirm'
+      buttons: [
+        {
+          action: 'action 1',
+          text: 'Action 1'
+        },
+        {
+          action: 'action 2',
+          autofocus: true,
+          style: AddinConfirmButtonStyle.Primary,
+          text: 'Action 2'
+        }
+      ],
+      message: 'This is a confirm'
     };
 
     let confirmResponse: Promise<string> = new Promise<string>((resolve) => {
@@ -329,5 +346,21 @@ describe('Addin Client Service', () => {
     expect(addinClientService.addinClient.showError).toHaveBeenCalledWith(showErrorArgs);
 
     done();
+  });
+
+  it('consumers can begin page blocking wait indicators through AddinClient', () => {
+    spyOn(addinClientService.addinClient, 'showWait').and.stub();
+
+    addinClientService.showWait();
+
+    expect(addinClientService.addinClient.showWait).toHaveBeenCalledWith();
+  });
+
+  it('consumers can end page blocking wait indicators through AddinClient', () => {
+    spyOn(addinClientService.addinClient, 'hideWait').and.stub();
+
+    addinClientService.hideWait();
+
+    expect(addinClientService.addinClient.hideWait).toHaveBeenCalledWith();
   });
 });

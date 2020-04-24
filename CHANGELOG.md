@@ -1,3 +1,7 @@
+# 2.0.10 (2020-04-24)
+- Upgraded sky-addin-client
+- Added `showWait` and `hideWait` to allow developers to show/hide a full page wait indicator.
+
 # 2.0.9 (2020-04-03)
 
 - Upgraded packages.
