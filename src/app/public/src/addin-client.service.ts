@@ -32,7 +32,7 @@ export class AddinClientService {
   public buttonClick: EventEmitter<any> = new EventEmitter(true);
 
   /**
-   * Event emitted for button add-ins indicating that the button was clicked.
+   * Event emitted for add-ins when context information has been updated
    */
   public updateContext: EventEmitter<any> = new EventEmitter();
 
