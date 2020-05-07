@@ -1,3 +1,7 @@
+# 2.0.11 (2020-05-07)
+- Upgraded sky-addin-client
+- Added `updateContext` callback to notify add-in when context information has been updated.
+
 # 2.0.10 (2020-04-24)
 - Upgraded sky-addin-client
 - Added `showWait` and `hideWait` to allow developers to show/hide a full page wait indicator.
