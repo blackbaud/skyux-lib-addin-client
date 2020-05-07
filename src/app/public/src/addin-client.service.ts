@@ -32,6 +32,11 @@ export class AddinClientService {
   public buttonClick: EventEmitter<any> = new EventEmitter(true);
 
   /**
+   * Event emitted for button add-ins indicating that the button was clicked.
+   */
+  public updateContext: EventEmitter<any> = new EventEmitter();
+
+  /**
    * Event emitted for flyout add-ins indicating that the next button was clicked.
    */
   public flyoutNextClick: EventEmitter<any> = new EventEmitter(true);
@@ -72,6 +77,9 @@ export class AddinClientService {
         },
         settingsClick: () => {
           this.settingsClick.emit();
+        },
+        updateContext: (context: any) => {
+          this.updateContext.emit(context);
         }
       }
     });

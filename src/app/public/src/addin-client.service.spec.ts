@@ -56,6 +56,25 @@ describe('Addin Client Service', () => {
     done();
   });
 
+  it('service consumer can subscribe to updateContext', (done) => {
+    addinClientService = new AddinClientService();
+
+    let addinClientArgs = (addinClientService.addinClient as any).args;
+
+    spyOn(addinClientService.updateContext, 'emit').and.callThrough();
+
+    let newContext: {
+      id: '123'
+    };
+
+    addinClientArgs.callbacks.updateContext(newContext);
+
+    expect(addinClientService.updateContext.emit).toHaveBeenCalled();
+    expect(addinClientService.updateContext.emit).toHaveBeenCalledWith(newContext);
+
+    done();
+  });
+
   it('service consumer can subscribe to helpClick', (done) => {
     addinClientService = new AddinClientService();
 
