@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/@skyux/config/skyuxconfig-schema.json",
-  "name": "SKY UX Add-in Client Library",
+  "name": "addin-client",
   "mode": "easy",
   "compileMode": "aot",
   "appSettings": {
@@ -11,6 +11,11 @@
   "testSettings": {
     "unit": {
       "browserSet": "paranoid"
+    }
+  },
+  "host": {
+    "frameOptions": {
+      "none": true
     }
   }
 }

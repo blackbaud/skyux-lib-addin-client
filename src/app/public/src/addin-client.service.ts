@@ -1,7 +1,14 @@
-import { Injectable, EventEmitter } from '@angular/core';
-import { AsyncSubject } from 'rxjs/AsyncSubject';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/fromPromise';
+import {
+  AsyncSubject,
+  Observable,
+  from
+} from 'rxjs';
+
+import {
+  Injectable,
+  EventEmitter
+} from '@angular/core';
+
 import {
   AddinClient,
   AddinClientInitArgs,
@@ -102,7 +109,7 @@ export class AddinClientService {
    */
   public showModal(args: AddinClientShowModalArgs): Observable<any> {
     let modalReturn: AddinClientShowModalResult = this.addinClient.showModal(args);
-    return Observable.fromPromise(modalReturn.modalClosed);
+    return from(modalReturn.modalClosed);
   }
 
   /**
@@ -133,14 +140,14 @@ export class AddinClientService {
    * @returns Returns an observable which will publish the token value.
    */
   public getUserIdentityToken(): Observable<string> {
-    return Observable.fromPromise(this.addinClient.getUserIdentityToken());
+    return from(this.addinClient.getUserIdentityToken());
   }
 
   /**
    * @deprecated Use getUserIdentityToken
    */
   public getAuthToken(): Observable<string> {
-    return Observable.fromPromise(this.addinClient.getUserIdentityToken());
+    return from(this.addinClient.getUserIdentityToken());
   }
 
   /**
@@ -158,7 +165,7 @@ export class AddinClientService {
    */
   public showFlyout(args: AddinClientShowFlyoutArgs): Observable<void> {
     const flyoutReturn: AddinClientShowFlyoutResult = this.addinClient.showFlyout(args);
-    return Observable.fromPromise(flyoutReturn.flyoutClosed);
+    return from(flyoutReturn.flyoutClosed);
   }
 
   /**
@@ -174,7 +181,7 @@ export class AddinClientService {
    * @returns Returns an observable which will publish the confirm action value.
    */
   public showConfirm(args: AddinClientShowConfirmArgs): Observable<string> {
-    return Observable.fromPromise(this.addinClient.showConfirm(args));
+    return from(this.addinClient.showConfirm(args));
   }
 
   /**

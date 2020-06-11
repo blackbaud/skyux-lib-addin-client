@@ -1,11 +1,15 @@
 import {
   TestBed
 } from '@angular/core/testing';
+
 import {
   expect
 } from '@skyux-sdk/testing';
 
-import { AddinClientService } from './addin-client.service';
+import {
+  AddinClientService
+} from './addin-client.service';
+
 import {
   AddinClientShowModalArgs,
   AddinClientShowModalResult,

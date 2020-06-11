@@ -1,3 +1,7 @@
+# 3.0.0 (2020-06-10)
+- Added support for SKY UX 4 and Angular 9.
+- Updated library to use RxJS 6 syntax.
+
 # 2.0.11 (2020-05-07)
 - Upgraded sky-addin-client
 - Added `updateContext` callback to notify add-in when context information has been updated.
