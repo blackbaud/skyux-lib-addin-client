@@ -15,7 +15,6 @@ import {
   AddinClientShowModalResult,
   AddinClientCloseModalArgs,
   AddinClientNavigateArgs,
-  AddinClientOpenHelpArgs,
   AddinClientShowToastArgs,
   AddinToastStyle,
   AddinClientShowFlyoutArgs,
@@ -75,20 +74,6 @@ describe('Addin Client Service', () => {
 
     expect(addinClientService.updateContext.emit).toHaveBeenCalled();
     expect(addinClientService.updateContext.emit).toHaveBeenCalledWith(newContext);
-
-    done();
-  });
-
-  it('service consumer can subscribe to helpClick', (done) => {
-    addinClientService = new AddinClientService();
-
-    let addinClientArgs = (addinClientService.addinClient as any).args;
-
-    spyOn(addinClientService.helpClick, 'emit').and.callThrough();
-
-    addinClientArgs.callbacks.helpClick();
-
-    expect(addinClientService.helpClick.emit).toHaveBeenCalled();
 
     done();
   });
@@ -196,22 +181,6 @@ describe('Addin Client Service', () => {
     addinClientService.navigate(navigateArgs);
 
     expect(addinClientService.addinClient.navigate).toHaveBeenCalledWith(navigateArgs);
-
-    done();
-  });
-
-  it('consumers can open help through AddinClient', (done) => {
-    addinClientService = new AddinClientService();
-
-    let openHelpArgs: AddinClientOpenHelpArgs = {
-      helpKey: 'Applications.html'
-    };
-
-    spyOn(addinClientService.addinClient, 'openHelp');
-
-    addinClientService.openHelp(openHelpArgs);
-
-    expect(addinClientService.addinClient.openHelp).toHaveBeenCalledWith(openHelpArgs);
 
     done();
   });

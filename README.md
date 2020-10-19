@@ -70,25 +70,15 @@ export class MyTileComponent implements OnInit {
         tileConfig: {
           summaryStyle: AddinTileSummaryStyle.Text,
           summaryText: 'Summary text',
-          showHelp: true,
           showSettings: true
         }
       });
-    });
-
-    // Handle tile help icon click
-    this.addinClientService.helpClick.subscribe(() => {
-      this.showHelp();
     });
 
     // Handle tile settings icon click
     this.addinClientService.settingsClick.subscribe(() => {
       this.showSettings();
     });
-  }
-
-  private showHelp() {
-    // Define what happens when the help icon is clicked
   }
 
   private showSettings() {
@@ -111,14 +101,6 @@ You can navigate the host page using the `navigate` method:
 ```js
 this.addinClientService.navigate({
   url: someUrl
-});
-```
-
-The help window can be popped using the `openHelp` method:
-
-```js
-this.addinClientService.openHelp({
-  helpKey: someHelpKey
 });
 ```
 

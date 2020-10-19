@@ -1,3 +1,6 @@
+# 4.0.0 (2020-10-30)
+- Removed help support.
+
 # 3.0.0 (2020-06-10)
 - Added support for SKY UX 4 and Angular 9.
 - Updated library to use RxJS 6 syntax.
