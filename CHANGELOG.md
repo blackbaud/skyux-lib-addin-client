@@ -1,3 +1,6 @@
+# 3.2.0 (2020-11-30)
+- Deprecate help widget related functionality.
+
 # 3.1.0 (2020-11-05)
 - Add event handler for processing events sent from the add-in host.
 

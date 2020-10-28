@@ -61,6 +61,7 @@ export class AddinClientService {
 
   /**
    * Event emitted for tile add-ins indicating that the help button was clicked.
+   * @deprecated See _Deprecated help support_ in README
    */
   public helpClick: EventEmitter<any> = new EventEmitter(true);
 
@@ -136,6 +137,7 @@ export class AddinClientService {
   /**
    * Informs the host to open the help tab with the specified help key.
    * @param args Arguments for launching the help tab.
+   * @deprecated See _Deprecated help support_ in README
    */
   public openHelp(args: AddinClientOpenHelpArgs): void {
     this.addinClient.openHelp(args);

@@ -70,25 +70,15 @@ export class MyTileComponent implements OnInit {
         tileConfig: {
           summaryStyle: AddinTileSummaryStyle.Text,
           summaryText: 'Summary text',
-          showHelp: true,
           showSettings: true
         }
       });
-    });
-
-    // Handle tile help icon click
-    this.addinClientService.helpClick.subscribe(() => {
-      this.showHelp();
     });
 
     // Handle tile settings icon click
     this.addinClientService.settingsClick.subscribe(() => {
       this.showSettings();
     });
-  }
-
-  private showHelp() {
-    // Define what happens when the help icon is clicked
   }
 
   private showSettings() {
@@ -111,14 +101,6 @@ You can navigate the host page using the `navigate` method:
 ```js
 this.addinClientService.navigate({
   url: someUrl
-});
-```
-
-The help window can be popped using the `openHelp` method:
-
-```js
-this.addinClientService.openHelp({
-  helpKey: someHelpKey
 });
 ```
 
@@ -216,3 +198,10 @@ The optional plugin can be installed by running `npm install @blackbaud/skyux-bu
 The plugin automatically injects the Environment ID into your component, making it available via the [SkyAppConfig](https://developer.blackbaud.com/skyux/learn/reference/configuration/apply-appsettings) service.
 
 For more information on creating SKY Add-ins, view the documentation on the [SKY Developer Portal](https://developer.blackbaud.com/skyapi/docs/addins)
+
+## Deprecated help support
+
+Using the help widget experience in the context of an addin is generally not needed and contradicts BB's UX patterns.
+As a result, the widget support has been deprecated and will be remove in the next major release.
+If you feel the need to use a full widget experience reconsider your design with UX and SCD.
+Either simplifying the SPA being embedded or using popovers for help content will likely be a better solution.
