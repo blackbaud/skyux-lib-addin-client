@@ -12,7 +12,7 @@
   "author": "Blackbaud",
   "license": "ISC",
   "peerDependencies": {
-    "@blackbaud/sky-addin-client": "^1.0.17"
+    "@blackbaud/sky-addin-client": "^1.0.21"
   },
   "devDependencies": {
     "@angular/animations": "9.1.12",
@@ -25,7 +25,7 @@
     "@angular/platform-browser-dynamic": "9.1.12",
     "@angular/router": "9.1.12",
     "@blackbaud/auth-client": "2.35.0",
-    "@blackbaud/sky-addin-client": "1.0.20",
+    "@blackbaud/sky-addin-client": "1.0.21",
     "@skyux-sdk/builder": "4.5.1",
     "@skyux-sdk/testing": "4.2.2",
     "@skyux/assets": "4.0.1",
