@@ -11,6 +11,10 @@ import {
 } from './addin-client.service';
 
 import {
+  AddinEventHandlerInstance
+} from './events';
+
+import {
   AddinClientShowModalArgs,
   AddinClientShowModalResult,
   AddinClientCloseModalArgs,
@@ -22,7 +26,8 @@ import {
   AddinClientShowFlyoutResult,
   AddinClientShowConfirmArgs,
   AddinConfirmButtonStyle,
-  AddinClientShowErrorArgs
+  AddinClientShowErrorArgs,
+  AddinEventCallback
 } from '@blackbaud/sky-addin-client';
 
 describe('Addin Client Service', () => {
@@ -37,7 +42,7 @@ describe('Addin Client Service', () => {
       }
     );
 
-    addinClientService = TestBed.get(AddinClientService);
+    addinClientService = TestBed.inject(AddinClientService);
   });
 
   it('should instantiate an AddinClient', (done) => {
@@ -386,4 +391,35 @@ describe('Addin Client Service', () => {
 
     expect(addinClientService.addinClient.hideWait).toHaveBeenCalledWith();
   });
+
+  it('consumers can register an add-in event', (done) => {
+    addinClientService = new AddinClientService();
+
+    const addEventHandlerSpy = spyOn(addinClientService.addinClient, 'addEventHandler');
+
+    const eventHandlerInstance: AddinEventHandlerInstance = addinClientService.addEventHandler('form-data-update');
+    spyOn(eventHandlerInstance.addinEvent, 'emit');
+
+    expect(addinClientService.addinClient.addEventHandler).toHaveBeenCalled();
+
+    const mostRecentCall = addEventHandlerSpy.calls.mostRecent();
+    const eventTypeArg = mostRecentCall.args[0];
+    expect(eventTypeArg).toBe('form-data-update');
+
+    const addinEventCallback: AddinEventCallback = mostRecentCall.args[1];
+    const context: any = {
+      constituent_id: '280',
+      gift_type: 'donation'
+    };
+    let doneCallback: () => void;
+    addinEventCallback(context, doneCallback);
+
+    expect(eventHandlerInstance.addinEvent.emit).toHaveBeenCalledWith({
+      context,
+      done: doneCallback
+    });
+
+    done();
+  });
+
 });

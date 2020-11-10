@@ -21,8 +21,14 @@ import {
   AddinClientShowFlyoutArgs,
   AddinClientShowFlyoutResult,
   AddinClientShowConfirmArgs,
-  AddinClientShowErrorArgs
+  AddinClientShowErrorArgs,
+  AddinEventCallback
 } from '@blackbaud/sky-addin-client';
+
+import {
+  AddinEvent,
+  AddinEventHandlerInstance
+} from './events';
 
 @Injectable()
 export class AddinClientService {
@@ -204,5 +210,25 @@ export class AddinClientService {
    */
   public hideWait(): void {
     this.addinClient.hideWait();
+  }
+
+  /**
+   * Registers an event handler for the provided event type.
+   * @param eventType The event type to register.
+   * @returns AddinEventHandlerInstance
+   */
+  public addEventHandler(eventType: string): AddinEventHandlerInstance {
+    let eventHandlerInstance = new AddinEventHandlerInstance();
+    eventHandlerInstance.addinEvent = new EventEmitter<AddinEvent>();
+
+    const eventCallback: AddinEventCallback = (context, done) => {
+      eventHandlerInstance.addinEvent.emit({
+        context,
+        done
+      });
+    };
+    this.addinClient.addEventHandler(eventType, eventCallback);
+
+    return eventHandlerInstance;
   }
 }

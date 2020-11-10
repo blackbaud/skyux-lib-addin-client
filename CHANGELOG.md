@@ -1,3 +1,6 @@
+# 3.1.0 (2020-11-05)
+- Add event handler for processing events sent from the add-in host.
+
 # 3.0.0 (2020-06-10)
 - Added support for SKY UX 4 and Angular 9.
 - Updated library to use RxJS 6 syntax.
