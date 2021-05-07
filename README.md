@@ -187,6 +187,32 @@ this.addinClientService.showError({
 });
 ```
 
+You can handle entry form add-in events using the `addEventHandler` method:
+
+```js
+this.addinClientService.addEventHandler({
+  eventType: 'form-data-update'
+}).addinEvent.subscribe((addinEvent: AddinEvent) => {
+  // get updated data from addinEvent.context object
+});
+
+this.addinClientService.addEventHandler({
+  eventType: 'form-save'
+}).addinEvent.subscribe((addinEvent: AddinEvent) => {
+  // handle the save event, asynchronously
+
+  addinEvent.done(); // When done, call the done function (tells the entry form it's OK to close)
+});
+
+this.addinClientService.addEventHandler({
+  eventType: 'form-cancel'
+}).addinEvent.subscribe((addinEvent: AddinEvent) => {
+  // handle the cancel event, asynchronously
+
+  addinEvent.done(); // When done, call the done function (tells the entry form it's OK to close)
+});
+```
+
 Finally, you can show/hide a page-blocking wait using the `showWait` and `hideWait` methods:
 
 ```js
