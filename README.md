@@ -213,6 +213,37 @@ this.addinClientService.addEventHandler({
 });
 ```
 
+You can send a custom event to the host page, as long as the host supports the event type.
+Before sending an event to the host page, you must subscribe to the AddinClientService's init `args`
+event and check the `supportedEventTypes` property to determine what event types the host page
+will handle.
+
+```js
+this.addinClientService.args.subscribe((args: AddinClientInitArgs) => {
+  this.supportedEventTypes = args.supportedEventTypes;
+
+  args.ready({
+    showUI: true
+  });
+});
+
+// Before sending event, check to make sure the event is supported by the host page
+if (this.supportedEventTypes.includes('my-event-type')) {
+  // To send add-in events to the host, call the sendEvent method
+  this.addinClientService.sendEvent({
+    type: 'my-event-type',
+    context: { /* arbitrary context object to pass to host page */ }
+  }).subscribe(() => {
+    // host page received the event
+  }, (err) => {
+    // an error occurred while attempting to send the event
+  });
+}
+```
+
+To determine the add-in extension points that support custom events,
+please see https://developer.blackbaud.com/skyapi/docs/addins/concepts/extension-points.
+
 Finally, you can show/hide a page-blocking wait using the `showWait` and `hideWait` methods:
 
 ```js

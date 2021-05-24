@@ -22,7 +22,8 @@ import {
   AddinClientShowFlyoutResult,
   AddinClientShowConfirmArgs,
   AddinClientShowErrorArgs,
-  AddinEventCallback
+  AddinEventCallback,
+  AddinClientEventArgs
 } from '@blackbaud/sky-addin-client';
 
 import {
@@ -230,5 +231,18 @@ export class AddinClientService {
     this.addinClient.addEventHandler(eventType, eventCallback);
 
     return eventHandlerInstance;
+  }
+
+  /**
+   * Sends an event to be handled by the host page.
+   * @param args The event arguments to be sent to the host page.
+   * @returns Returns an observable which will complete when the add-in host page receives the
+   * message. The request will fail if a subsequent event occurs, for the same event type, within
+   * 200 milliseconds. A failure can also occur if an event type is not one of the supported types
+   * from the host page.
+   * @see AddinClientInitArgs#supportedEventTypes
+   */
+  public sendEvent(args: AddinClientEventArgs): Observable<void> {
+    return from(this.addinClient.sendEvent(args));
   }
 }
