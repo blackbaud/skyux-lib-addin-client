@@ -235,6 +235,7 @@ export class AddinClientService {
 
   /**
    * Sends an event to be handled by the host page.
+   * Supported for Blackbaud internal only
    * @param args The event arguments to be sent to the host page.
    * @returns Returns an observable which will complete when the add-in host page receives the
    * message. The request will fail if a subsequent event occurs, for the same event type, within
