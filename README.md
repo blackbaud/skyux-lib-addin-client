@@ -233,7 +233,7 @@ if (this.supportedEventTypes.includes('my-event-type')) {
   // To send add-in events to the host, call the sendEvent method
   this.addinClientService.sendEvent({
     type: 'my-event-type',
-    context: { /* arbitrary context object to pass to host page */ }
+    context: { /* context object to pass to host page */ }
   }).subscribe(() => {
     // host page received the event
   }, (err) => {
