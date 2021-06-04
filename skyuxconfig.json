@@ -8,6 +8,11 @@
       "name": "SKY UX Add-in Client Library"
     }
   },
+  "librarySettings": {
+    "whitelistedNonPeerDependencies": [
+      "@blackbaud/sky-addin-client"
+    ]
+  },
   "testSettings": {
     "unit": {
       "browserSet": "paranoid"

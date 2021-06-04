@@ -295,7 +295,7 @@ describe('Addin Client Service', () => {
     };
 
     let flyoutResponse: AddinClientShowFlyoutResult = {
-      flyoutClosed: new Promise<any>((resolve) => {
+      flyoutClosed: new Promise<void>((resolve) => {
         resolve();
       })
     };
@@ -420,6 +420,27 @@ describe('Addin Client Service', () => {
     });
 
     done();
+  });
+
+  it('consumers can send an add-in event', (done) => {
+    addinClientService = new AddinClientService();
+
+    const sendEventSpy = spyOn(addinClientService.addinClient, 'sendEvent')
+      .and.returnValue(Promise.resolve());
+
+    addinClientService.sendEvent({
+      context: 'some-context',
+      type: 'update-settings'
+    }).subscribe(() => {
+      expect(addinClientService.addinClient.sendEvent).toHaveBeenCalled();
+
+      const mostRecentCall = sendEventSpy.calls.mostRecent();
+      const eventArgs = mostRecentCall.args[0];
+      expect(eventArgs.context).toBe('some-context');
+      expect(eventArgs.type).toBe('update-settings');
+
+      done();
+    });
   });
 
 });

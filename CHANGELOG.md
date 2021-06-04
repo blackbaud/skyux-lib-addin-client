@@ -1,3 +1,6 @@
+# 3.1.1 (2021-06-01)
+- Add support for sending custom events to the add-in host page.
+
 # 3.1.0 (2020-11-05)
 - Add event handler for processing events sent from the add-in host.
 
