@@ -27,7 +27,8 @@ import {
   AddinClientShowConfirmArgs,
   AddinConfirmButtonStyle,
   AddinClientShowErrorArgs,
-  AddinEventCallback
+  AddinEventCallback,
+  AddinClientInitArgs
 } from '@blackbaud/sky-addin-client';
 
 describe('Addin Client Service', () => {
@@ -49,6 +50,25 @@ describe('Addin Client Service', () => {
     addinClientService = new AddinClientService();
     expect(addinClientService.addinClient).toExist();
     done();
+  });
+
+  it('service consumer can subscribe to init args', (done) => {
+    addinClientService = new AddinClientService();
+
+    const initArgs: AddinClientInitArgs = {
+      envId: 'envid',
+      ready: () => {}
+    };
+
+    let addinClientArgs = (addinClientService.addinClient as any).args;
+
+    addinClientService.args.subscribe((args) => {
+      expect(args).toEqual(initArgs);
+
+      done();
+    });
+
+    addinClientArgs.callbacks.init(initArgs);
   });
 
   it('service consumer can subscribe to buttonClick', (done) => {
@@ -441,6 +461,16 @@ describe('Addin Client Service', () => {
 
       done();
     });
+  });
+
+  it('destroys the addin client', (done) => {
+    spyOn(addinClientService.addinClient, 'destroy').and.stub();
+
+    addinClientService.destroy();
+
+    expect(addinClientService.addinClient.destroy).toHaveBeenCalled();
+
+    done();
   });
 
 });
