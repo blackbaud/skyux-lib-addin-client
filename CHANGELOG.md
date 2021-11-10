@@ -1,3 +1,6 @@
+# 4.0.0 (2021-10-28)
+- Added support for SKY UX 5 and Angular 12.
+
 # 3.1.1 (2021-06-01)
 - Add support for sending custom events to the add-in host page.
 
