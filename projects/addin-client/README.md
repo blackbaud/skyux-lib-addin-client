@@ -1,5 +1,6 @@
 [![npm](https://img.shields.io/npm/v/@blackbaud/skyux-lib-addin-client.svg)](https://www.npmjs.com/package/@blackbaud/skyux-lib-addin-client)
-[![status](https://travis-ci.org/blackbaud/skyux-lib-addin-client.svg?branch=master)](https://travis-ci.org/blackbaud/skyux-lib-addin-client)
+![SKY UX CI](https://github.com/blackbaud/skyux-lib-addin-client/workflows/SKY%20UX%20CI/badge.svg)
+[![coverage](https://codecov.io/gh/blackbaud/skyux-lib-addin-client/branch/master/graphs/badge.svg?branch=master)](https://codecov.io/gh/blackbaud/skyux-lib-addin-client/branch/master)
 
 # SKY UX Add-in Client Library
 
