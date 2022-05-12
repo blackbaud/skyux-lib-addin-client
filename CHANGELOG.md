@@ -1,3 +1,6 @@
+# 4.0.2 (2022-05-12)
+- Updated `allowedOrigins` to support Education Management.
+
 # 4.0.1 (2022-02-01)
 - Updated `allowedOrigins` to support congregant portal.
 
