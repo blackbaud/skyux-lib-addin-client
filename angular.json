@@ -35,8 +35,8 @@
               "**/fixtures/**"
             ],
             "styles": [
-              "@skyux/theme/css/sky.css",
-              "@skyux/theme/css/themes/modern/styles.css"
+              "node_modules/@skyux/theme/css/sky.css",
+              "node_modules/@skyux/theme/css/themes/modern/styles.css"
             ]
           }
         },
@@ -168,6 +168,8 @@
               "projects/addin-client-showcase/src/assets"
             ],
             "styles": [
+              "node_modules/@skyux/theme/css/sky.css",
+              "node_modules/@skyux/theme/css/themes/modern/styles.css",
               "projects/addin-client-showcase/src/styles.scss"
             ],
             "scripts": []
