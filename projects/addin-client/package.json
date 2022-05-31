@@ -1,6 +1,6 @@
 {
   "name": "@blackbaud/skyux-lib-addin-client",
-  "version": "4.0.2",
+  "version": "5.0.0",
   "peerDependencies": {
     "@angular/common": "^13.3.10",
     "@angular/core": "^13.3.10"
