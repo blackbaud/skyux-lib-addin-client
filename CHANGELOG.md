@@ -1,3 +1,6 @@
+# 5.0.0 (2022-06-01)
+- Added support for SKY UX 6 and Angular 13.
+
 # 4.0.2 (2022-05-12)
 - Updated `allowedOrigins` to support Education Management.
 
