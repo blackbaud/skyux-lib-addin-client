@@ -1,6 +1,10 @@
 {
   "name": "@blackbaud/skyux-lib-addin-client",
   "version": "5.0.0",
+  "schematics": "./schematics/collection.json",
+  "ng-add": {
+    "save": "dependencies"
+  },
   "peerDependencies": {
     "@angular/common": "^13.3.10",
     "@angular/core": "^13.3.10"

@@ -1,0 +1,10 @@
+{
+    "$schema": "../../../node_modules/@angular-devkit/schematics/collection-schema.json",
+    "schematics": {
+      "lib-resources-module": {
+        "description": "Add packages",
+        "factory": "./ng-generate/lib-resources-module/lib-resources-module.schematic",
+        "schema": "./ng-generate/lib-resources-module/schema.json"
+      }
+    }
+  }
