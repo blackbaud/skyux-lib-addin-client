@@ -1,3 +1,6 @@
+# 6.0.0 (2022-12-15)
+- Added support for SKY UX 7 and Angular 14.
+
 # 5.0.0 (2022-06-01)
 - Added support for SKY UX 6 and Angular 13.
 
