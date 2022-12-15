@@ -17,12 +17,12 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 2
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
-          node-version: '14.x'
+          node-version: '16.18.x'
       - uses: blackbaud/skyux-sdk-actions@ng-14
         with:
           browser-stack-access-key: ${{ secrets.BROWSER_STACK_ACCESS_KEY }}
