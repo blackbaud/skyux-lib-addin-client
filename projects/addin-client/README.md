@@ -218,7 +218,6 @@ You can send a custom event to the host page, as long as the host supports the e
 Before sending an event to the host page, you must subscribe to the AddinClientService's init `args`
 event and check the `supportedEventTypes` property to determine what event types the host page
 will handle.
-Sending custom events to the host page is currently only supported for Blackbaud internal use.
 
 ```js
 this.addinClientService.args.subscribe((args: AddinClientInitArgs) => {
