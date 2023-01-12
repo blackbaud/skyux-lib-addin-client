@@ -1,3 +1,6 @@
+# 6.0.1 (2023-01-11)
+- Add `actionButtonConfig` and `tabConfig` to AddinClientReadyArgs.
+
 # 6.0.0 (2022-12-15)
 - Added support for SKY UX 7 and Angular 14.
 
