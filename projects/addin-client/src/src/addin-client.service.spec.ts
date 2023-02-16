@@ -3,18 +3,6 @@ import {
 } from '@angular/core/testing';
 
 import {
-  expect
-} from '@skyux-sdk/testing';
-
-import {
-  AddinClientService
-} from './addin-client.service';
-
-import {
-  AddinEventHandlerInstance
-} from './events';
-
-import {
   AddinClientShowModalArgs,
   AddinClientShowModalResult,
   AddinClientCloseModalArgs,
@@ -28,8 +16,23 @@ import {
   AddinConfirmButtonStyle,
   AddinClientShowErrorArgs,
   AddinEventCallback,
-  AddinClientInitArgs
+  AddinClientInitArgs,
+  AddinClientThemeSettings
 } from '@blackbaud/sky-addin-client';
+
+import {
+  expect
+} from '@skyux-sdk/testing';
+
+import { SkyTheme, SkyThemeMode, SkyThemeService, SkyThemeSettings } from '@skyux/theme';
+
+import {
+  AddinClientService
+} from './addin-client.service';
+
+import {
+  AddinEventHandlerInstance
+} from './events';
 
 describe('Addin Client Service', () => {
   let addinClientService: AddinClientService;
@@ -38,7 +41,8 @@ describe('Addin Client Service', () => {
     TestBed.configureTestingModule(
       {
         providers: [
-          AddinClientService
+          AddinClientService,
+          SkyThemeService
         ]
       }
     );
@@ -47,14 +51,11 @@ describe('Addin Client Service', () => {
   });
 
   it('should instantiate an AddinClient', (done) => {
-    addinClientService = new AddinClientService();
     expect(addinClientService.addinClient).toExist();
     done();
   });
 
   it('service consumer can subscribe to init args', (done) => {
-    addinClientService = new AddinClientService();
-
     const initArgs: AddinClientInitArgs = {
       envId: 'envid',
       ready: () => {}
@@ -71,9 +72,38 @@ describe('Addin Client Service', () => {
     addinClientArgs.callbacks.init(initArgs);
   });
 
-  it('service consumer can subscribe to buttonClick', (done) => {
-    addinClientService = new AddinClientService();
+  it('service consumer can subscribe to init args with additional properties', (done) => {
+    const themeService = TestBed.inject(SkyThemeService);
+    const themeServiceInitSpy = spyOn(themeService, 'init').and.callThrough();
 
+    const initArgs: AddinClientInitArgs = {
+      envId: 'envid',
+      context: {
+        test: '123'
+      },
+      supportedEventTypes: ['form-change'],
+      themeSettings: {
+        mode: 'light',
+        theme: 'default'
+      },
+      ready: () => {}
+    };
+
+    let addinClientArgs = (addinClientService.addinClient as any).args;
+
+    addinClientService.args.subscribe((args) => {
+      expect(args).toEqual(initArgs);
+
+      expect(themeServiceInitSpy.calls.mostRecent().args[2])
+        .toEqual(new SkyThemeSettings(SkyTheme.presets.default, SkyThemeMode.presets.light))
+
+      done();
+    });
+
+    addinClientArgs.callbacks.init(initArgs);
+  });
+
+  it('service consumer can subscribe to buttonClick', (done) => {
     let addinClientArgs = (addinClientService.addinClient as any).args;
 
     spyOn(addinClientService.buttonClick, 'emit').and.callThrough();
@@ -86,8 +116,6 @@ describe('Addin Client Service', () => {
   });
 
   it('service consumer can subscribe to updateContext', (done) => {
-    addinClientService = new AddinClientService();
-
     let addinClientArgs = (addinClientService.addinClient as any).args;
 
     spyOn(addinClientService.updateContext, 'emit').and.callThrough();
@@ -105,8 +133,6 @@ describe('Addin Client Service', () => {
   });
 
   it('service consumer can subscribe to helpClick', (done) => {
-    addinClientService = new AddinClientService();
-
     let addinClientArgs = (addinClientService.addinClient as any).args;
 
     spyOn(addinClientService.helpClick, 'emit').and.callThrough();
@@ -119,8 +145,6 @@ describe('Addin Client Service', () => {
   });
 
   it('service consumer can subscribe to settingsClick', (done) => {
-    addinClientService = new AddinClientService();
-
     let addinClientArgs = (addinClientService.addinClient as any).args;
 
     spyOn(addinClientService.settingsClick, 'emit').and.callThrough();
@@ -133,8 +157,6 @@ describe('Addin Client Service', () => {
   });
 
   it('service consumer can subscribe to flyoutNextClick', (done) => {
-    addinClientService = new AddinClientService();
-
     let addinClientArgs = (addinClientService.addinClient as any).args;
 
     spyOn(addinClientService.flyoutNextClick, 'emit').and.callThrough();
@@ -147,8 +169,6 @@ describe('Addin Client Service', () => {
   });
 
   it('service consumer can subscribe to flyoutPreviousClick', (done) => {
-    addinClientService = new AddinClientService();
-
     let addinClientArgs = (addinClientService.addinClient as any).args;
 
     spyOn(addinClientService.flyoutPreviousClick, 'emit').and.callThrough();
@@ -160,9 +180,81 @@ describe('Addin Client Service', () => {
     done();
   });
 
-  it('consumers can close modals through AddinClient', (done) => {
-    addinClientService = new AddinClientService();
+  it('client handles UX theme change - default', (done) => {
+    const themeService = TestBed.inject(SkyThemeService);
+    const setThemeSpy = spyOn(themeService, 'setTheme').and.callThrough();
 
+    let addinClientArgs = (addinClientService.addinClient as any).args;
+
+    const initArgs: AddinClientInitArgs = {
+      envId: 'envid',
+      context: {
+        test: '123'
+      },
+      supportedEventTypes: ['form-change'],
+      themeSettings: {
+        mode: 'dark',
+        theme: 'modern'
+      },
+      ready: () => {}
+    };
+
+    // init client
+    addinClientArgs.callbacks.init(initArgs);
+
+    let settings: AddinClientThemeSettings = {
+      mode: 'light',
+      theme: 'default'
+    };
+
+    addinClientArgs.callbacks.themeChange(settings);
+
+    expect(setThemeSpy.calls.mostRecent().args[0]).toEqual(new SkyThemeSettings(
+      SkyTheme.presets.default,
+      SkyThemeMode.presets.light
+    ));
+
+    done();
+  });
+
+  it('client handles UX theme change - modern', (done) => {
+    const themeService = TestBed.inject(SkyThemeService);
+    const setThemeSpy = spyOn(themeService, 'setTheme').and.callThrough();
+
+    let addinClientArgs = (addinClientService.addinClient as any).args;
+
+    const initArgs: AddinClientInitArgs = {
+      envId: 'envid',
+      context: {
+        test: '123'
+      },
+      supportedEventTypes: ['form-change'],
+      themeSettings: {
+        mode: 'light',
+        theme: 'default'
+      },
+      ready: () => {}
+    };
+
+    // init client
+    addinClientArgs.callbacks.init(initArgs);
+
+    let settings: AddinClientThemeSettings = {
+      mode: 'dark',
+      theme: 'modern'
+    };
+
+    addinClientArgs.callbacks.themeChange(settings);
+
+    expect(setThemeSpy.calls.mostRecent().args[0]).toEqual(new SkyThemeSettings(
+      SkyTheme.presets.modern,
+      SkyThemeMode.presets.dark
+    ));
+
+    done();
+  });
+
+  it('consumers can close modals through AddinClient', (done) => {
     let closeModalArgs: AddinClientCloseModalArgs = {
       context: {
         closed: true
@@ -179,8 +271,6 @@ describe('Addin Client Service', () => {
   });
 
   it('consumers can show modals through AddinClient', (done) => {
-    addinClientService = new AddinClientService();
-
     let modalResponse: AddinClientShowModalResult = {
       modalClosed: new Promise<any>((resolve) => {
         resolve({
@@ -210,8 +300,6 @@ describe('Addin Client Service', () => {
   });
 
   it('consumers can navigate through AddinClient', (done) => {
-    addinClientService = new AddinClientService();
-
     let navigateArgs: AddinClientNavigateArgs = {
       url: 'https://www.example.com'
     };
@@ -226,8 +314,6 @@ describe('Addin Client Service', () => {
   });
 
   it('consumers can open help through AddinClient', (done) => {
-    addinClientService = new AddinClientService();
-
     let openHelpArgs: AddinClientOpenHelpArgs = {
       helpKey: 'Applications.html'
     };
@@ -242,8 +328,6 @@ describe('Addin Client Service', () => {
   });
 
   it('consumers can get a user identity token through AddinClient', (done) => {
-    addinClientService = new AddinClientService();
-
     let uitPromise = new Promise<any>((resolve) => {
       resolve('token');
     });
@@ -260,8 +344,6 @@ describe('Addin Client Service', () => {
   });
 
   it('consumers can get (deprecated) auth token through AddinClient', (done) => {
-    addinClientService = new AddinClientService();
-
     let uitPromise = new Promise<any>((resolve) => {
       resolve('token');
     });
@@ -278,8 +360,6 @@ describe('Addin Client Service', () => {
   });
 
   it('consumers can show a toast through AddinClient', (done) => {
-    addinClientService = new AddinClientService();
-
     let showToastArgs: AddinClientShowToastArgs = {
       message: 'a toast message',
       style: AddinToastStyle.Success
@@ -295,8 +375,6 @@ describe('Addin Client Service', () => {
   });
 
   it('consumers can show a flyout through AddinClient', (done) => {
-    addinClientService = new AddinClientService();
-
     let showFlyoutArgs: AddinClientShowFlyoutArgs = {
       context: {
         userData: 'some data'
@@ -332,8 +410,6 @@ describe('Addin Client Service', () => {
   });
 
   it('consumers can close flyouts through AddinClient', (done) => {
-    addinClientService = new AddinClientService();
-
     spyOn(addinClientService.addinClient, 'closeFlyout');
 
     addinClientService.closeFlyout();
@@ -344,8 +420,6 @@ describe('Addin Client Service', () => {
   });
 
   it('consumers can show a confirm dialog through AddinClient', (done) => {
-    addinClientService = new AddinClientService();
-
     let showConfirmArgs: AddinClientShowConfirmArgs = {
       body: 'Confirm dialog body text',
       buttons: [
@@ -379,8 +453,6 @@ describe('Addin Client Service', () => {
   });
 
   it('consumers can show an error dialog through AddinClient', (done) => {
-    addinClientService = new AddinClientService();
-
     let showErrorArgs: AddinClientShowErrorArgs = {
       closeText: 'Close',
       description: 'Error desc',
@@ -413,8 +485,6 @@ describe('Addin Client Service', () => {
   });
 
   it('consumers can register an add-in event', (done) => {
-    addinClientService = new AddinClientService();
-
     const addEventHandlerSpy = spyOn(addinClientService.addinClient, 'addEventHandler');
 
     const eventHandlerInstance: AddinEventHandlerInstance = addinClientService.addEventHandler('form-data-update');
@@ -443,8 +513,6 @@ describe('Addin Client Service', () => {
   });
 
   it('consumers can send an add-in event', (done) => {
-    addinClientService = new AddinClientService();
-
     const sendEventSpy = spyOn(addinClientService.addinClient, 'sendEvent')
       .and.returnValue(Promise.resolve());
 

@@ -1,3 +1,6 @@
+# 6.1.0 (2023-02-16)
+- Add support to respect and match the SKY UX theme of the add-in host page.
+
 # 6.0.1 (2023-01-11)
 - Add `actionButtonConfig` and `tabConfig` to AddinClientReadyArgs.
 
