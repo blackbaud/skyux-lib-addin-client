@@ -119,10 +119,12 @@ export class AddinClientService {
           this.updateContext.emit(context);
         },
         themeChange: (settings: AddinClientThemeSettings) => {
-          themeService.setTheme(new SkyThemeSettings(
-            AddinClientService.toSkyTheme(settings.theme),
-            AddinClientService.toSkyThemeMode(settings.mode)
-          ));
+          if (settings) {
+            themeService.setTheme(new SkyThemeSettings(
+              AddinClientService.toSkyTheme(settings.theme),
+              AddinClientService.toSkyThemeMode(settings.mode)
+            ));
+          }
         }
       }
     });
