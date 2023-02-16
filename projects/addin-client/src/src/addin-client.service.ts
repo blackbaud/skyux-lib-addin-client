@@ -6,8 +6,16 @@ import {
 
 import {
   Injectable,
-  EventEmitter
+  EventEmitter,
+  RendererFactory2
 } from '@angular/core';
+
+import {
+  SkyTheme,
+  SkyThemeMode,
+  SkyThemeService,
+  SkyThemeSettings
+} from '@skyux/theme';
 
 import {
   AddinClient,
@@ -23,7 +31,8 @@ import {
   AddinClientShowConfirmArgs,
   AddinClientShowErrorArgs,
   AddinEventCallback,
-  AddinClientEventArgs
+  AddinClientEventArgs,
+  AddinClientThemeSettings
 } from '@blackbaud/sky-addin-client';
 
 import {
@@ -70,10 +79,24 @@ export class AddinClientService {
    */
   public settingsClick: EventEmitter<any> = new EventEmitter(true);
 
-  constructor() {
+  constructor(
+    rendererFactory: RendererFactory2,
+    themeService: SkyThemeService
+  ) {
     this.addinClient = new AddinClient({
       callbacks: {
         init: (args: AddinClientInitArgs) => {
+          if (args.themeSettings) {
+            themeService.init(
+              document.body,
+              rendererFactory.createRenderer(undefined, undefined),
+              new SkyThemeSettings(
+                AddinClientService.toSkyTheme(args.themeSettings.theme),
+                AddinClientService.toSkyThemeMode(args.themeSettings.mode)
+              )
+            );
+          }
+
           this._args.next(args);
           this._args.complete();
         },
@@ -94,6 +117,14 @@ export class AddinClientService {
         },
         updateContext: (context: any) => {
           this.updateContext.emit(context);
+        },
+        themeChange: (settings: AddinClientThemeSettings) => {
+          if (settings) {
+            themeService.setTheme(new SkyThemeSettings(
+              AddinClientService.toSkyTheme(settings.theme),
+              AddinClientService.toSkyThemeMode(settings.mode)
+            ));
+          }
         }
       }
     });
@@ -244,5 +275,23 @@ export class AddinClientService {
    */
   public sendEvent(args: AddinClientEventArgs): Observable<void> {
     return from(this.addinClient.sendEvent(args));
+  }
+
+  private static toSkyTheme(theme: string): SkyTheme {
+    switch (theme) {
+      case 'modern':
+        return SkyTheme.presets.modern;
+      default:
+        return SkyTheme.presets.default;
+    }
+  }
+
+  private static toSkyThemeMode(mode: string): SkyThemeMode {
+    switch (mode) {
+      case 'dark':
+        return SkyThemeMode.presets.dark;
+      default:
+        return SkyThemeMode.presets.light;
+    }
   }
 }
