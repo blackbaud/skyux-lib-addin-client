@@ -1,3 +1,6 @@
+# 7.0.0 (2023-05-19)
+- Added support for SKY UX 8 and Angular 15.
+
 # 6.1.0 (2023-02-16)
 - Add support to respect and match the SKY UX theme of the add-in host page.
 

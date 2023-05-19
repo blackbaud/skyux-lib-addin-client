@@ -37,6 +37,9 @@
             "styles": [
               "node_modules/@skyux/theme/css/sky.css",
               "node_modules/@skyux/theme/css/themes/modern/styles.css"
+            ],
+            "polyfills": [
+              "@skyux/packages/polyfills"
             ]
           }
         },
@@ -90,7 +93,10 @@
             "outputPath": "dist/addin-client-showcase",
             "index": "projects/addin-client-showcase/src/index.html",
             "main": "projects/addin-client-showcase/src/main.ts",
-            "polyfills": "projects/addin-client-showcase/src/polyfills.ts",
+            "polyfills": [
+              "projects/addin-client-showcase/src/polyfills.ts",
+              "@skyux/packages/polyfills"
+            ],
             "tsConfig": "projects/addin-client-showcase/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -101,7 +107,8 @@
               "node_modules/@skyux/theme/css/sky.css",
               "node_modules/@skyux/theme/css/themes/modern/styles.css",
               "projects/addin-client-showcase/src/styles.scss",
-              "projects/addin-client-showcase/src/app/skyux7-compat.css"
+              "projects/addin-client-showcase/src/app/skyux7-compat.css",
+              "projects/addin-client-showcase/src/app/skyux8-compat.css"
             ],
             "scripts": []
           },
@@ -160,7 +167,10 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "projects/addin-client-showcase/src/test.ts",
-            "polyfills": "projects/addin-client-showcase/src/polyfills.ts",
+            "polyfills": [
+              "projects/addin-client-showcase/src/polyfills.ts",
+              "@skyux/packages/polyfills"
+            ],
             "tsConfig": "projects/addin-client-showcase/tsconfig.spec.json",
             "karmaConfig": "projects/addin-client-showcase/karma.conf.js",
             "inlineStyleLanguage": "scss",
@@ -172,7 +182,8 @@
               "node_modules/@skyux/theme/css/sky.css",
               "node_modules/@skyux/theme/css/themes/modern/styles.css",
               "projects/addin-client-showcase/src/styles.scss",
-              "projects/addin-client-showcase/src/app/skyux7-compat.css"
+              "projects/addin-client-showcase/src/app/skyux7-compat.css",
+              "projects/addin-client-showcase/src/app/skyux8-compat.css"
             ],
             "scripts": []
           }
@@ -193,5 +204,13 @@
     "schematicCollections": [
       "@angular-eslint/schematics"
     ]
+  },
+  "schematics": {
+    "@angular-eslint/schematics:application": {
+      "setParserOptionsProject": true
+    },
+    "@angular-eslint/schematics:library": {
+      "setParserOptionsProject": true
+    }
   }
 }
