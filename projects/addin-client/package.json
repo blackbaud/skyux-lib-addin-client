@@ -1,12 +1,12 @@
 {
   "name": "@blackbaud/skyux-lib-addin-client",
-  "version": "6.1.0",
+  "version": "7.0.0",
   "peerDependencies": {
-    "@angular/common": "^14.2.12",
-    "@angular/core": "^14.2.12"
+    "@angular/common": "^15.2.9",
+    "@angular/core": "^15.2.9"
   },
   "dependencies": {
     "@blackbaud/sky-addin-client": "1.1.5",
-    "tslib": "^2.4.1"
+    "tslib": "^2.5.2"
   }
 }

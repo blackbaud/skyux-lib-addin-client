@@ -1,0 +1,26 @@
+/*******************************************************************************
+ * TODO: The following component libraries introduced visual breaking changes
+ * in SKY UX 8. Each block of CSS reintroduces the styles that were changed or
+ * removed for backwards compatibility. You will need to do the following
+ * before migrating to the next major version of SKY UX:
+ * - Address each of the changes by following the instructions
+ *   in each block of CSS, then remove the block.
+ * - Delete this file after all blocks have been addressed.
+ * - Remove each occurrence of this file in your project's
+ *   angular.json file.
+ *******************************************************************************/
+
+/*******************************************************************************
+ * COMPONENT: MODAL
+ *******************************************************************************/
+
+/*******************************************************************************
+ * Modals have been updated to automatically apply the correct spacing to link
+ * buttons in modal footers in modern theme. To address this, remove this
+ * block of CSS and address any conflicting classes or styles that were
+ * previously fixing the incorrect spacing of the link buttons.
+ *******************************************************************************/
+
+:root {
+  --sky-compat-modal-footer-adjacent-btn-btn-link-margin: -2px;
+}
