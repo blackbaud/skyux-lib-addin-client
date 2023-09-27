@@ -108,7 +108,8 @@
               "node_modules/@skyux/theme/css/themes/modern/styles.css",
               "projects/addin-client-showcase/src/styles.scss",
               "projects/addin-client-showcase/src/app/skyux7-compat.css",
-              "projects/addin-client-showcase/src/app/skyux8-compat.css"
+              "projects/addin-client-showcase/src/app/skyux8-compat.css",
+              "projects/addin-client-showcase/src/app/skyux9-compat.css"
             ],
             "scripts": []
           },
@@ -183,7 +184,8 @@
               "node_modules/@skyux/theme/css/themes/modern/styles.css",
               "projects/addin-client-showcase/src/styles.scss",
               "projects/addin-client-showcase/src/app/skyux7-compat.css",
-              "projects/addin-client-showcase/src/app/skyux8-compat.css"
+              "projects/addin-client-showcase/src/app/skyux8-compat.css",
+              "projects/addin-client-showcase/src/app/skyux9-compat.css"
             ],
             "scripts": []
           }
