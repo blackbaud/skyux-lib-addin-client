@@ -1,3 +1,9 @@
+# 8.0.0 (2023-05-19)
+- Added support for SKY UX 9 and Angular 16.
+
+### Behavior change
+- Allow host page to determine default values for flyout widths when not provided.
+
 # 7.0.0 (2023-05-19)
 - Added support for SKY UX 8 and Angular 15.
 
