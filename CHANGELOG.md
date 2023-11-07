@@ -1,3 +1,6 @@
+# 8.1.0 (2023-11-07)
+- `AddinClientService` is now `providedIn: 'root'`
+
 # 8.0.0 (2023-05-19)
 - Added support for SKY UX 9 and Angular 16.
 
