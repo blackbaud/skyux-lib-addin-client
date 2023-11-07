@@ -40,7 +40,9 @@ import {
   AddinEventHandlerInstance
 } from './events';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class AddinClientService {
   public readonly addinClient: AddinClient;
 
