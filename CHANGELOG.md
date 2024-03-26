@@ -1,3 +1,6 @@
+# 8.2.0 (2024-03-25)
+- Remove unused `@skyux/http` and `@blackbaud/auth-client` packages.
+
 # 8.1.0 (2023-11-07)
 - `AddinClientService` is now `providedIn: 'root'`
 
