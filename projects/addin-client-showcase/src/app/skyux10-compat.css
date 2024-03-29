@@ -1,7 +1,7 @@
 /*******************************************************************************
  * TODO: The following component libraries introduced visual breaking changes
- * in SKY UX 8. Each block of CSS reintroduces the styles that were changed or
- * removed for backwards compatibility. You will need to do the following
+ * in SKY UX 10. Each block of CSS reintroduces the styles that were changed
+ * or removed for backward compatibility. You will need to do the following
  * before migrating to the next major version of SKY UX:
  * - Address each of the changes by following the instructions
  *   in each block of CSS, then remove the block.
@@ -11,16 +11,21 @@
  *******************************************************************************/
 
 /*******************************************************************************
- * COMPONENT: MODAL
+ * COMPONENT: STYLES
  *******************************************************************************/
 
 /*******************************************************************************
- * Modals have been updated to automatically apply the correct spacing to link
- * buttons in modal footers in modern theme. To address this, remove this
- * block of CSS and address any conflicting classes or styles that were
- * previously fixing the incorrect spacing of the link buttons.
+ * H4 and H5 elements should be sentence case in modern theme. To address this
+ * change, remove this block of code and ensure your headers are not written
+ * with all caps.
  *******************************************************************************/
 
 :root {
-  --sky-compat-modal-footer-adjacent-btn-btn-link-margin: -2px;
+  --sky-compat-theme-modern-heading-4-text-transform: uppercase;
+  --sky-compat-theme-modern-heading-5-text-transform: uppercase;
+  --sky-compat-theme-modern-heading-4-font-weight: 400;
+  --sky-compat-theme-modern-heading-5-font-weight: 400;
+  --sky-compat-theme-modern-heading-4-font-color: #686c73;
+  --sky-compat-theme-modern-heading-5-font-color: #686c73;
+
 }
