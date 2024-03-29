@@ -22,7 +22,7 @@ jobs:
           fetch-depth: 2
       - uses: actions/setup-node@v3
         with:
-          node-version: '18.15.x'
+          node-version-file: '.nvmrc'
       - uses: blackbaud/skyux-sdk-actions@ng-14
         with:
           github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
