@@ -1,3 +1,6 @@
+# 9.0.0
+- Added support for SKY UX 10 and Angular 17.
+
 # 8.2.0 (2024-03-25)
 - Remove unused `@skyux/http` and `@blackbaud/auth-client` packages.
 

@@ -107,9 +107,7 @@
               "node_modules/@skyux/theme/css/sky.css",
               "node_modules/@skyux/theme/css/themes/modern/styles.css",
               "projects/addin-client-showcase/src/styles.scss",
-              "projects/addin-client-showcase/src/app/skyux7-compat.css",
-              "projects/addin-client-showcase/src/app/skyux8-compat.css",
-              "projects/addin-client-showcase/src/app/skyux9-compat.css"
+              "projects/addin-client-showcase/src/app/skyux10-compat.css"
             ],
             "scripts": []
           },
@@ -150,10 +148,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "addin-client-showcase:build:production"
+              "buildTarget": "addin-client-showcase:build:production"
             },
             "development": {
-              "browserTarget": "addin-client-showcase:build:development"
+              "buildTarget": "addin-client-showcase:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -161,7 +159,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "addin-client-showcase:build"
+            "buildTarget": "addin-client-showcase:build"
           }
         },
         "test": {
@@ -183,9 +181,7 @@
               "node_modules/@skyux/theme/css/sky.css",
               "node_modules/@skyux/theme/css/themes/modern/styles.css",
               "projects/addin-client-showcase/src/styles.scss",
-              "projects/addin-client-showcase/src/app/skyux7-compat.css",
-              "projects/addin-client-showcase/src/app/skyux8-compat.css",
-              "projects/addin-client-showcase/src/app/skyux9-compat.css"
+              "projects/addin-client-showcase/src/app/skyux10-compat.css"
             ],
             "scripts": []
           }
