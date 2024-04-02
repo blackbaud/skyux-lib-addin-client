@@ -1,3 +1,6 @@
+# 9.1.0 (2024-04-02)
+- Check an app's supported SKY UX themes before initializing the host's theme.
+
 # 9.0.0
 - Added support for SKY UX 10 and Angular 17.
 

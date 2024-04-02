@@ -1,40 +1,40 @@
 import {
-  AsyncSubject,
-  Observable,
-  from
-} from 'rxjs';
-
-import {
-  Injectable,
   EventEmitter,
-  RendererFactory2
+  Injectable,
+  RendererFactory2,
+  inject
 } from '@angular/core';
-
+import {
+  AddinClient,
+  AddinClientCloseModalArgs,
+  AddinClientEventArgs,
+  AddinClientInitArgs,
+  AddinClientNavigateArgs,
+  AddinClientOpenHelpArgs,
+  AddinClientShowConfirmArgs,
+  AddinClientShowErrorArgs,
+  AddinClientShowFlyoutArgs,
+  AddinClientShowFlyoutResult,
+  AddinClientShowModalArgs,
+  AddinClientShowModalResult,
+  AddinClientShowToastArgs,
+  AddinClientThemeSettings,
+  AddinEventCallback
+} from '@blackbaud/sky-addin-client';
+import {
+  SkyAppConfig, SkyuxConfigAppSupportedTheme
+} from '@skyux/config';
 import {
   SkyTheme,
   SkyThemeMode,
   SkyThemeService,
   SkyThemeSettings
 } from '@skyux/theme';
-
 import {
-  AddinClient,
-  AddinClientInitArgs,
-  AddinClientCloseModalArgs,
-  AddinClientShowModalArgs,
-  AddinClientShowModalResult,
-  AddinClientNavigateArgs,
-  AddinClientOpenHelpArgs,
-  AddinClientShowToastArgs,
-  AddinClientShowFlyoutArgs,
-  AddinClientShowFlyoutResult,
-  AddinClientShowConfirmArgs,
-  AddinClientShowErrorArgs,
-  AddinEventCallback,
-  AddinClientEventArgs,
-  AddinClientThemeSettings
-} from '@blackbaud/sky-addin-client';
-
+  AsyncSubject,
+  Observable,
+  from
+} from 'rxjs';
 import {
   AddinEvent,
   AddinEventHandlerInstance
@@ -81,23 +81,15 @@ export class AddinClientService {
    */
   public settingsClick: EventEmitter<any> = new EventEmitter(true);
 
-  constructor(
-    rendererFactory: RendererFactory2,
-    themeService: SkyThemeService
-  ) {
+  #config = inject(SkyAppConfig, { optional: true });
+  #rendererFactory = inject(RendererFactory2);
+  #themeService = inject(SkyThemeService);
+
+  constructor() {
     this.addinClient = new AddinClient({
       callbacks: {
         init: (args: AddinClientInitArgs) => {
-          if (args.themeSettings) {
-            themeService.init(
-              document.body,
-              rendererFactory.createRenderer(undefined, undefined),
-              new SkyThemeSettings(
-                AddinClientService.toSkyTheme(args.themeSettings.theme),
-                AddinClientService.toSkyThemeMode(args.themeSettings.mode)
-              )
-            );
-          }
+          this.initializeTheme(args?.themeSettings);
 
           this._args.next(args);
           this._args.complete();
@@ -121,12 +113,7 @@ export class AddinClientService {
           this.updateContext.emit(context);
         },
         themeChange: (settings: AddinClientThemeSettings) => {
-          if (settings) {
-            themeService.setTheme(new SkyThemeSettings(
-              AddinClientService.toSkyTheme(settings.theme),
-              AddinClientService.toSkyThemeMode(settings.mode)
-            ));
-          }
+          this.setTheme(settings);
         }
       }
     });
@@ -277,6 +264,53 @@ export class AddinClientService {
    */
   public sendEvent(args: AddinClientEventArgs): Observable<void> {
     return from(this.addinClient.sendEvent(args));
+  }
+
+  private initializeTheme(themeSettings: AddinClientThemeSettings): void {
+    if (!themeSettings) {
+      return;
+    }
+
+    const hostTheme = AddinClientService.toSkyTheme(themeSettings.theme);
+    const hostThemeMode = AddinClientService.toSkyThemeMode(themeSettings.mode);
+
+    if (!this.#config) {
+      // no app config, initialize host theme
+      this.initializeTheme_(hostTheme, hostThemeMode);
+      return;
+    }
+
+    const themingConfig = this.#config.skyux.app?.theming;
+
+    if (
+      themingConfig?.supportedThemes &&
+      themingConfig.supportedThemes.indexOf(themeSettings.theme as SkyuxConfigAppSupportedTheme) !== -1
+    ) {
+      // app supports host theme, initialize host theme
+      this.initializeTheme_(hostTheme, hostThemeMode);
+      return;
+    }
+
+    // app does not support host theme, do nothing to initialize the app's default theme
+  }
+
+  private initializeTheme_(theme: SkyTheme, themeMode: SkyThemeMode): void {
+    this.#themeService.init(
+      document.body,
+      this.#rendererFactory.createRenderer(undefined, undefined),
+      new SkyThemeSettings(theme, themeMode)
+    );
+  }
+
+  private setTheme(settings: AddinClientThemeSettings): void {
+    if (!settings) {
+      return;
+    }
+
+    this.#themeService.setTheme(new SkyThemeSettings(
+      AddinClientService.toSkyTheme(settings.theme),
+      AddinClientService.toSkyThemeMode(settings.mode)
+    ));
   }
 
   private static toSkyTheme(theme: string): SkyTheme {
