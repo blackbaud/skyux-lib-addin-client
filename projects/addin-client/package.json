@@ -3,7 +3,9 @@
   "version": "9.0.0",
   "peerDependencies": {
     "@angular/common": "^17.3.2",
-    "@angular/core": "^17.3.2"
+    "@angular/core": "^17.3.2",
+    "@skyux/config": "^10.0.0",
+    "@skyux/theme": "^10.0.0"
   },
   "dependencies": {
     "@blackbaud/sky-addin-client": "1.2.0",
