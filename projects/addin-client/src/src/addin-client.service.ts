@@ -283,7 +283,7 @@ export class AddinClientService {
     const themingConfig = this.#config.skyux.app?.theming;
 
     if (
-      themingConfig &&
+      themingConfig?.supportedThemes &&
       themingConfig.supportedThemes.indexOf(themeSettings.theme as SkyuxConfigAppSupportedTheme) !== -1
     ) {
       // app supports host theme, initialize host theme

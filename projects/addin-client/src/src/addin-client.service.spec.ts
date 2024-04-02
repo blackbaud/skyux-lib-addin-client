@@ -632,6 +632,42 @@ describe('Addin Client Service', () => {
       addinClientArgs.callbacks.init(initArgs);
     });
 
+    it('no supported themes config', (done) => {
+      const appConfig = TestBed.inject(SkyAppConfig);
+      const themeService = TestBed.inject(SkyThemeService);
+      const themeServiceInitSpy = spyOn(themeService, 'init');
+      spyOnProperty(appConfig, 'skyux').and.returnValue({
+        app: {
+          theming: {
+          }
+        }
+      } as any);
+
+      const initArgs: AddinClientInitArgs = {
+        envId: 'envid',
+        context: {
+          test: '123'
+        },
+        themeSettings: {
+          mode: 'light',
+          theme: 'default'
+        },
+        ready: () => {}
+      };
+
+      let addinClientArgs = (addinClientService.addinClient as any).args;
+
+      addinClientService.args.subscribe((args) => {
+        expect(args).toEqual(initArgs);
+
+        expect(themeServiceInitSpy).not.toHaveBeenCalled();
+
+        done();
+      });
+
+      addinClientArgs.callbacks.init(initArgs);
+    });
+
     it('app does not support host theme', (done) => {
       const appConfig = TestBed.inject(SkyAppConfig);
       const themeService = TestBed.inject(SkyThemeService);
