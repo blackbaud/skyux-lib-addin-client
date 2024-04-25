@@ -252,24 +252,4 @@ this.addinClientService.showWait();
 this.addinClientService.hideWait();
 ```
 
-The optional plugin can be installed by running `npm install @blackbaud/skyux-builder-plugin-addin-client`, and then adding it to the `plugins` array in your `skyuxconfig.json` file:
-
-```js
-{
-  "mode": "easy",
-  "compileMode": "aot",
-  "a11y": true,
-  "plugins": [
-    '@blackbaud/skyux-builder-plugin-addin-client'
-  ],
-  "params": {
-    "envid": {
-      "required": true
-    }
-  }
-}
-```
-
-The plugin automatically injects the Environment ID into your component, making it available via the [SkyAppConfig](https://developer.blackbaud.com/skyux/learn/reference/configuration/apply-appsettings) service.
-
 For more information on creating SKY Add-ins, view the documentation on the [SKY Developer Portal](https://developer.blackbaud.com/skyapi/docs/addins)
