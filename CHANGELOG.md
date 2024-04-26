@@ -1,3 +1,6 @@
+# 9.1.1 (2024-04-26)
+- Pulling in SKY UX and sky-addin-client package updates.
+
 # 9.1.0 (2024-04-02)
 - Check an app's supported SKY UX themes before initializing the host's theme.
 
