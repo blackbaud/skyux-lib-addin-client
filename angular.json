@@ -32,7 +32,8 @@
             "karmaConfig": "projects/addin-client/karma.conf.js",
             "codeCoverage": true,
             "codeCoverageExclude": [
-              "**/fixtures/**"
+              "**/fixtures/**",
+              "**/addin-client-config.service.ts"
             ],
             "styles": [
               "node_modules/@skyux/theme/css/sky.css",

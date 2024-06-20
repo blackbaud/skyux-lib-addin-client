@@ -3,6 +3,7 @@ import {
 } from '@angular/core/testing';
 import {
   AddinClientCloseModalArgs,
+  AddinClientConfig,
   AddinClientInitArgs,
   AddinClientNavigateArgs,
   AddinClientOpenHelpArgs,
@@ -23,6 +24,7 @@ import {
 } from '@skyux-sdk/testing';
 import { SkyAppConfig } from '@skyux/config';
 import { SkyTheme, SkyThemeMode, SkyThemeService, SkyThemeSettings } from '@skyux/theme';
+import { AddinClientConfigService } from './addin-client-config.service';
 import {
   AddinClientService
 } from './addin-client.service';
@@ -743,6 +745,65 @@ describe('Addin Client Service', () => {
       });
 
       addinClientArgs.callbacks.init(initArgs);
+    });
+
+    it('destroys the addin client', (done) => {
+      spyOn(addinClientService.addinClient, 'destroy').and.stub();
+
+      addinClientService.destroy();
+
+      expect(addinClientService.addinClient.destroy).toHaveBeenCalled();
+
+      done();
+    });
+  });
+
+  describe('With Addin Client Config Service', () => {
+    class AddinConfigService extends AddinClientConfigService {
+      public override getAddinClientConfig(): AddinClientConfig {
+        return {
+          allowedOrigins: [
+            /^https\:\/\/[\w\-\.]+\.additionaldomain1\.com$/,
+            /^https\:\/\/[\w\-\.]+\.additionaldomain2\.com$/,
+            /^https\:\/\/[\w\-\.]+\.additionaldomain3\.com$/
+          ]
+        };
+      }
+    }
+    
+    let addinClientService: AddinClientService;
+    let addinConfigService: AddinClientConfigService;
+
+    class MockSkyAppConfig {
+      public get skyux(): any {
+        return {};
+      }
+    };
+
+    beforeEach(() => {
+      TestBed.configureTestingModule(
+        {
+          providers: [
+            AddinClientService,
+            SkyThemeService,
+            {
+              provide: SkyAppConfig, useClass: MockSkyAppConfig
+            },
+            {
+              provide: AddinClientConfigService, useClass: AddinConfigService
+            }
+          ]
+        }
+      );
+
+      addinConfigService = TestBed.inject(AddinClientConfigService);
+      spyOn(addinConfigService, 'getAddinClientConfig').and.callThrough();
+
+      addinClientService = TestBed.inject(AddinClientService);
+    });
+
+    it('should override getAddinClientConfig function', () => {
+      expect(addinConfigService.getAddinClientConfig).toHaveBeenCalledTimes(1);
     });
 
     it('destroys the addin client', (done) => {
