@@ -1,3 +1,6 @@
+# 9.2.0 (2024-06-20)
+- Added `AddinClientConfigService` abstract service to allow additional host origins to be supplied for the `AddinClientService`.
+
 # 9.1.1 (2024-04-26)
 - Pulling in SKY UX and sky-addin-client package updates.
 

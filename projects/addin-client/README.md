@@ -252,4 +252,34 @@ this.addinClientService.showWait();
 this.addinClientService.hideWait();
 ```
 
+## Additional configuration
+
+The SKY UX Add-in Client allows for additional configuration to be specified by extending `AddinClientConfigService`.
+
+You can allow additional origins where your add-in client may run within a Blackbaud host page. Additional origins are supplied as regular expression patterns. The `AddinClientService` already allows several Blackbaud host origins by default. If you find a need to extend the defaults, you may do so by overriding the `AddinClientConfigService`'s `getAddinClientConfig()` method.
+
+```js
+class AddinConfigService extends AddinClientConfigService {
+  public override getAddinClientConfig(): AddinClientConfig {
+    return {
+      allowedOrigins: [
+        /^https\:\/\/[\w\-\.]+\.additionalblackbauddomain\.com$/
+      ]
+    };
+  }
+}
+
+@NgModule({
+  // specify providers
+  providers: [
+    AddinClientService,
+    {
+      provide: AddinClientConfigService,
+      useClass: AddinConfigService
+    }
+  ]
+})
+export class MyModule { }
+```
+
 For more information on creating SKY Add-ins, view the documentation on the [SKY Developer Portal](https://developer.blackbaud.com/skyapi/docs/addins)

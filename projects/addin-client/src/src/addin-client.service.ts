@@ -35,6 +35,7 @@ import {
   Observable,
   from
 } from 'rxjs';
+import { AddinClientConfigService } from './addin-client-config.service';
 import {
   AddinEvent,
   AddinEventHandlerInstance
@@ -84,6 +85,7 @@ export class AddinClientService {
   #config = inject(SkyAppConfig, { optional: true });
   #rendererFactory = inject(RendererFactory2);
   #themeService = inject(SkyThemeService);
+  #addinClientConfigService = inject(AddinClientConfigService, { optional: true });
 
   constructor() {
     this.addinClient = new AddinClient({
@@ -115,7 +117,8 @@ export class AddinClientService {
         themeChange: (settings: AddinClientThemeSettings) => {
           this.setTheme(settings);
         }
-      }
+      },
+      config: this.#addinClientConfigService?.getAddinClientConfig()
     });
   }
 
