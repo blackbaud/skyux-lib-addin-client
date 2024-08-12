@@ -82,6 +82,11 @@ export class AddinClientService {
    */
   public settingsClick: EventEmitter<any> = new EventEmitter(true);
 
+  /**
+   * Event emitted for box add-ins indicating that a control action button was clicked.
+   */
+  public actionClick: EventEmitter<string> = new EventEmitter(true);
+
   #config = inject(SkyAppConfig, { optional: true });
   #rendererFactory = inject(RendererFactory2);
   #themeService = inject(SkyThemeService);
@@ -110,6 +115,9 @@ export class AddinClientService {
         },
         settingsClick: () => {
           this.settingsClick.emit();
+        },
+        actionClick: (action: string) => {
+          this.actionClick.emit(action);
         },
         updateContext: (context: any) => {
           this.updateContext.emit(context);
