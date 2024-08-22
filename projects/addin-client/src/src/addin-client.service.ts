@@ -53,6 +53,11 @@ export class AddinClientService {
 
   // Addin Client Events
   /**
+   * Event emitted for box add-ins indicating that a control action button was clicked.
+   */
+  public actionClick: EventEmitter<string> = new EventEmitter(true);
+
+  /**
    * Event emitted for button add-ins indicating that the button was clicked.
    */
   public buttonClick: EventEmitter<any> = new EventEmitter(true);
@@ -95,6 +100,9 @@ export class AddinClientService {
 
           this._args.next(args);
           this._args.complete();
+        },
+        actionClick: (action: string) => {
+          this.actionClick.emit(action);
         },
         buttonClick: () => {
           this.buttonClick.emit();

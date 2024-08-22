@@ -1,3 +1,6 @@
+# 9.2.1 (2024-08-22)
+- Added `actionClick` callback to notify box add-in when action has been clicked.
+
 # 9.2.0 (2024-06-20)
 - Added `AddinClientConfigService` abstract service to allow additional host origins to be supplied for the `AddinClientService`.
 
