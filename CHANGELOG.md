@@ -1,4 +1,4 @@
-# 9.2.1 (2024-08-22)
+# 9.3.0 (2024-08-22)
 - Added `actionClick` callback to notify box add-in when action has been clicked.
 
 # 9.2.0 (2024-06-20)
