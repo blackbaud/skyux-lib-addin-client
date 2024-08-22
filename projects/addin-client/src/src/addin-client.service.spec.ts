@@ -102,6 +102,18 @@ describe('Addin Client Service', () => {
       addinClientArgs.callbacks.init(initArgs);
     });
 
+    it('service consumer can subscribe to actionClick', (done) => {
+      let addinClientArgs = (addinClientService.addinClient as any).args;
+
+      spyOn(addinClientService.actionClick, 'emit').and.callThrough();
+
+      addinClientArgs.callbacks.actionClick();
+
+      expect(addinClientService.actionClick.emit).toHaveBeenCalled();
+
+      done();
+    });
+
     it('service consumer can subscribe to buttonClick', (done) => {
       let addinClientArgs = (addinClientService.addinClient as any).args;
 
@@ -770,7 +782,7 @@ describe('Addin Client Service', () => {
         };
       }
     }
-    
+
     let addinClientService: AddinClientService;
     let addinConfigService: AddinClientConfigService;
 
