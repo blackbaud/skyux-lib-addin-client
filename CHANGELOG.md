@@ -1,3 +1,6 @@
+# 9.3.1 (2024-09-10)
+- Updated `@blackbaud/sky-addin-client` to address bug related to undefined `supportedEventTypes`.
+
 # 9.3.0 (2024-08-22)
 - Added `actionClick` callback to notify box add-in when action has been clicked.
 
