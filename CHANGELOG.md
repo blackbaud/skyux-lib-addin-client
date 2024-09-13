@@ -1,3 +1,6 @@
+# 11.0.0
+- Added support for SKY UX 11 and Angular 18.
+
 # 9.3.1 (2024-09-10)
 - Updated `@blackbaud/sky-addin-client` to address bug related to undefined `supportedEventTypes`.
 
