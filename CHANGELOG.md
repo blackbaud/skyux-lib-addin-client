@@ -1,3 +1,6 @@
+# 11.1.0 (2024-10-08)
+- Added `inlineHelpClick` event emitter to support handling of inline help button click. 
+
 # 11.0.0
 - Added support for SKY UX 11 and Angular 18.
 

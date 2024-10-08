@@ -155,6 +155,18 @@ describe('Addin Client Service', () => {
       done();
     });
 
+    it('service consumer can subscribe to inlineHelpClick', (done) => {
+      let addinClientArgs = (addinClientService.addinClient as any).args;
+
+      spyOn(addinClientService.inlineHelpClick, 'emit').and.callThrough();
+
+      addinClientArgs.callbacks.inlineHelpClick();
+
+      expect(addinClientService.inlineHelpClick.emit).toHaveBeenCalled();
+
+      done();
+    });
+
     it('service consumer can subscribe to settingsClick', (done) => {
       let addinClientArgs = (addinClientService.addinClient as any).args;
 
