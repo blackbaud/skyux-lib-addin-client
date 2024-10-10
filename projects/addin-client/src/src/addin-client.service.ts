@@ -79,8 +79,14 @@ export class AddinClientService {
 
   /**
    * Event emitted for tile add-ins indicating that the help button was clicked.
+   * @deprecated Use tile inline help instead and handle the {@link inlineHelpClick} emitter.
    */
   public helpClick: EventEmitter<any> = new EventEmitter(true);
+
+  /**
+   * Event emitted indicating that the inline help button was clicked.
+   */
+  public inlineHelpClick: EventEmitter<any> = new EventEmitter(true);
 
   /**
    * Event emitted for tile add-ins indicating that the settings button was clicked.
@@ -115,6 +121,9 @@ export class AddinClientService {
         },
         helpClick: () => {
           this.helpClick.emit();
+        },
+        inlineHelpClick: () => {
+          this.inlineHelpClick.emit();
         },
         settingsClick: () => {
           this.settingsClick.emit();

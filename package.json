@@ -21,7 +21,7 @@
     "@angular/platform-browser": "18.2.4",
     "@angular/platform-browser-dynamic": "18.2.4",
     "@angular/router": "18.2.4",
-    "@blackbaud/sky-addin-client": "1.4.1",
+    "@blackbaud/sky-addin-client": "1.5.0",
     "@skyux/assets": "11.0.0",
     "@skyux/config": "11.0.0",
     "@skyux/core": "11.0.0",

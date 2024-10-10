@@ -70,14 +70,14 @@ export class MyTileComponent implements OnInit {
         tileConfig: {
           summaryStyle: AddinTileSummaryStyle.Text,
           summaryText: 'Summary text',
-          showHelp: true,
+          showInlineHelp: true,
           showSettings: true
         }
       });
     });
 
-    // Handle tile help icon click
-    this.addinClientService.helpClick.subscribe(() => {
+    // Handle tile inline help icon click
+    this.addinClientService.inlineHelpClick.subscribe(() => {
       this.showHelp();
     });
 
@@ -88,7 +88,7 @@ export class MyTileComponent implements OnInit {
   }
 
   private showHelp() {
-    // Define what happens when the help icon is clicked
+    // Define what happens when the inline help icon is clicked
   }
 
   private showSettings() {
