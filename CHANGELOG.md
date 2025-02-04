@@ -1,3 +1,6 @@
+# 11.2.0 (2025-02-04)
+- Added inline help for Box addin. 
+
 # 11.1.0 (2024-10-08)
 - Added `inlineHelpClick` event emitter to support handling of inline help button click. 
 
