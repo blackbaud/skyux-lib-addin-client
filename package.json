@@ -8,7 +8,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "skyux:generate-lib-resources-module": "ng generate @skyux/i18n:lib-resources-module",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "dev": "nodemon --watch .yalc --watch projects/addin-client --ext ts,html,scss,json -x \"npm run build --project addin-client && yalc publish --push dist/addin-client\""
   },
   "private": true,
   "dependencies": {

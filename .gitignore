@@ -11,7 +11,8 @@
 /bazel-out
 
 # dependencies
-/node_modules
+/node_modules/*
+/projects/addin-client/node_modules/*
 
 # profiling files
 chrome-profiler-events*.json
@@ -43,6 +44,8 @@ npm-debug.log
 yarn-error.log
 testem.log
 /typings
+.yalc/*
+yalc.lock
 
 # System Files
 .DS_Store
