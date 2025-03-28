@@ -187,7 +187,7 @@ this.addinClientService.showError({
 });
 ```
 
-You can handle entry form add-in events using the `addEventHandler` method:
+You can handle entry form and data add-in events using the `addEventHandler` method:
 
 ```js
 this.addinClientService.addEventHandler({
@@ -210,6 +210,18 @@ this.addinClientService.addEventHandler({
   // handle the cancel event, asynchronously
 
   addinEvent.done(); // When done, call the done function (tells the entry form it's OK to close)
+});
+
+this.addinClientService.addEventHandler({
+  eventType: 'load-data'
+}).addinEvent.subscribe((addinEvent: AddinEvent) => {
+  // retrieve data based on the addinEvent.context object
+  const data = [
+    { id: 1, name: 'Item 1' },
+    { id: 2, name: 'Item 2' }
+  ];
+  
+  addinEvent.done(data);
 });
 ```
 
