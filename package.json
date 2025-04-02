@@ -8,7 +8,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "skyux:generate-lib-resources-module": "ng generate @skyux/i18n:lib-resources-module",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "dev": "nodemon --watch .yalc --watch projects/addin-client --ext ts,html,scss,json -x \"npm run build --project addin-client && yalc publish --push dist/addin-client\""
   },
   "private": true,
   "dependencies": {
@@ -21,7 +22,7 @@
     "@angular/platform-browser": "18.2.4",
     "@angular/platform-browser-dynamic": "18.2.4",
     "@angular/router": "18.2.4",
-    "@blackbaud/sky-addin-client": "1.6.1",
+    "@blackbaud/sky-addin-client": "1.7.0",
     "@skyux/assets": "11.0.0",
     "@skyux/config": "11.0.0",
     "@skyux/core": "11.0.0",

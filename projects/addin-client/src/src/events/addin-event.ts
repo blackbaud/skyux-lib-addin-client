@@ -11,6 +11,7 @@ export class AddinEvent {
 
   /**
    * A function to call indicating that the add-in event is processed.
+   * Returning any necessary data back to the host.
    */
-  public done?: () => void;
+  public done?: (data?: any) => void;
 }

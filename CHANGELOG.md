@@ -1,3 +1,6 @@
+# 11.3.0 (2025-04-02)
+- Update AddinEvent to support returning data via the `done` callback.
+
 # 11.2.0 (2025-02-04)
 - Added inline help for Box addin. 
 

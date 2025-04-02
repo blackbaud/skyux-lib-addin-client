@@ -564,6 +564,34 @@ describe('Addin Client Service', () => {
       done();
     });
 
+    it('consumers can register an add-in event that returns data', (done) => {
+      const addEventHandlerSpy = spyOn(addinClientService.addinClient, 'addEventHandler');
+
+      const eventHandlerInstance: AddinEventHandlerInstance = addinClientService.addEventHandler('load-data');
+      spyOn(eventHandlerInstance.addinEvent, 'emit');
+
+      expect(addinClientService.addinClient.addEventHandler).toHaveBeenCalled();
+
+      const mostRecentCall = addEventHandlerSpy.calls.mostRecent();
+      const eventTypeArg = mostRecentCall.args[0];
+      expect(eventTypeArg).toBe('load-data');
+
+      const addinEventCallback: AddinEventCallback = mostRecentCall.args[1];
+      const context: any = {
+        constituent_id: '280',
+        gift_type: 'donation'
+      };
+      let doneCallback: (data?: any) => void;
+      addinEventCallback(context, doneCallback);
+
+      expect(eventHandlerInstance.addinEvent.emit).toHaveBeenCalledWith({
+        context,
+        done: doneCallback
+      });
+
+      done();
+    });
+
     it('consumers can send an add-in event', (done) => {
       const sendEventSpy = spyOn(addinClientService.addinClient, 'sendEvent')
         .and.returnValue(Promise.resolve());
