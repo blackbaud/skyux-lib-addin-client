@@ -1,3 +1,6 @@
+# 12.0.0 (2025-04-14)
+- Added support for SKY UX 12 and Angular 19.
+
 # 11.3.0 (2025-04-02)
 - Update AddinEvent to support returning data via the `done` callback.
 
