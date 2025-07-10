@@ -75,6 +75,11 @@ describe('Addin Client Service', () => {
       const themeService = TestBed.inject(SkyThemeService);
       const themeServiceInitSpy = spyOn(themeService, 'init').and.callThrough();
 
+      const skyThemeSettings = new SkyThemeSettings(
+        SkyTheme.presets.default,
+        SkyThemeMode.presets.light,
+      );
+
       const initArgs: AddinClientInitArgs = {
         envId: 'envid',
         context: {
@@ -82,8 +87,9 @@ describe('Addin Client Service', () => {
         },
         supportedEventTypes: ['form-change'],
         themeSettings: {
-          mode: 'light',
-          theme: 'default'
+          mode: skyThemeSettings.mode.name,
+          theme: skyThemeSettings.theme.name,
+          skyThemeSettings: skyThemeSettings.serialize()
         },
         ready: () => {}
       };
@@ -208,6 +214,11 @@ describe('Addin Client Service', () => {
 
       let addinClientArgs = (addinClientService.addinClient as any).args;
 
+      const skyThemeSettings = new SkyThemeSettings(
+        SkyTheme.presets.modern,
+        SkyThemeMode.presets.dark,
+      );
+
       const initArgs: AddinClientInitArgs = {
         envId: 'envid',
         context: {
@@ -215,8 +226,9 @@ describe('Addin Client Service', () => {
         },
         supportedEventTypes: ['form-change'],
         themeSettings: {
-          mode: 'dark',
-          theme: 'modern'
+          mode: skyThemeSettings.mode.name,
+          theme: skyThemeSettings.theme.name,
+          skyThemeSettings: skyThemeSettings.serialize()
         },
         ready: () => {}
       };
@@ -224,15 +236,21 @@ describe('Addin Client Service', () => {
       // init client
       addinClientArgs.callbacks.init(initArgs);
 
+      const skyThemeSettings2 = new SkyThemeSettings(
+        SkyTheme.presets.default,
+        SkyThemeMode.presets.light,
+      );
+
       let settings: AddinClientThemeSettings = {
-        mode: 'light',
-        theme: 'default'
+        mode: skyThemeSettings2.mode.name,
+        theme: skyThemeSettings2.theme.name,
+        skyThemeSettings: undefined
       };
 
       const setThemeSpy = spyOn(themeService, 'setTheme').and.callThrough();
       addinClientArgs.callbacks.themeChange(settings);
 
-      expect(setThemeSpy.calls.mostRecent().args[0]).toEqual(new SkyThemeSettings(
+      expect((setThemeSpy.calls.mostRecent().args[0]) as any).toEqual(new SkyThemeSettings(
         SkyTheme.presets.default,
         SkyThemeMode.presets.light
       ));
@@ -245,6 +263,11 @@ describe('Addin Client Service', () => {
 
       let addinClientArgs = (addinClientService.addinClient as any).args;
 
+      const skyThemeSettings = new SkyThemeSettings(
+        SkyTheme.presets.default,
+        SkyThemeMode.presets.light,
+      );
+
       const initArgs: AddinClientInitArgs = {
         envId: 'envid',
         context: {
@@ -252,8 +275,9 @@ describe('Addin Client Service', () => {
         },
         supportedEventTypes: ['form-change'],
         themeSettings: {
-          mode: 'light',
-          theme: 'default'
+          mode: skyThemeSettings.mode.name,
+          theme: skyThemeSettings.theme.name,
+          skyThemeSettings: skyThemeSettings.serialize()
         },
         ready: () => {}
       };
@@ -261,15 +285,21 @@ describe('Addin Client Service', () => {
       // init client
       addinClientArgs.callbacks.init(initArgs);
 
+      const skyThemeSettings2 = new SkyThemeSettings(
+        SkyTheme.presets.modern,
+        SkyThemeMode.presets.dark,
+      );
+
       let settings: AddinClientThemeSettings = {
-        mode: 'dark',
-        theme: 'modern'
+        mode: skyThemeSettings2.mode.name,
+        theme: skyThemeSettings2.theme.name,
+        skyThemeSettings: undefined
       };
 
       const setThemeSpy = spyOn(themeService, 'setTheme').and.callThrough();
       addinClientArgs.callbacks.themeChange(settings);
 
-      expect(setThemeSpy.calls.mostRecent().args[0]).toEqual(new SkyThemeSettings(
+      expect(setThemeSpy.calls.mostRecent().args[0] as any).toEqual(new SkyThemeSettings(
         SkyTheme.presets.modern,
         SkyThemeMode.presets.dark
       ));
@@ -282,6 +312,11 @@ describe('Addin Client Service', () => {
 
       let addinClientArgs = (addinClientService.addinClient as any).args;
 
+      const skyThemeSettings = new SkyThemeSettings(
+        SkyTheme.presets.default,
+        SkyThemeMode.presets.light,
+      );
+
       const initArgs: AddinClientInitArgs = {
         envId: 'envid',
         context: {
@@ -289,8 +324,9 @@ describe('Addin Client Service', () => {
         },
         supportedEventTypes: ['form-change'],
         themeSettings: {
-          mode: 'light',
-          theme: 'default'
+          mode: skyThemeSettings.mode.name,
+          theme: skyThemeSettings.theme.name,
+          skyThemeSettings: skyThemeSettings.serialize()
         },
         ready: () => {}
       };
@@ -661,14 +697,20 @@ describe('Addin Client Service', () => {
         }
       });
 
+      const skyThemeSettings = new SkyThemeSettings(
+        SkyTheme.presets.default,
+        SkyThemeMode.presets.light,
+      );
+
       const initArgs: AddinClientInitArgs = {
         envId: 'envid',
         context: {
           test: '123'
         },
         themeSettings: {
-          mode: 'light',
-          theme: 'default'
+          mode: skyThemeSettings.mode.name,
+          theme: skyThemeSettings.theme.name,
+          skyThemeSettings: skyThemeSettings.serialize()
         },
         ready: () => {}
       };
@@ -697,14 +739,20 @@ describe('Addin Client Service', () => {
         }
       } as any);
 
+      const skyThemeSettings = new SkyThemeSettings(
+        SkyTheme.presets.default,
+        SkyThemeMode.presets.light,
+      );
+
       const initArgs: AddinClientInitArgs = {
         envId: 'envid',
         context: {
           test: '123'
         },
         themeSettings: {
-          mode: 'light',
-          theme: 'default'
+          mode: skyThemeSettings.mode.name,
+          theme: skyThemeSettings.theme.name,
+          skyThemeSettings: skyThemeSettings.serialize()
         },
         ready: () => {}
       };
@@ -735,14 +783,20 @@ describe('Addin Client Service', () => {
         }
       });
 
+      const skyThemeSettings = new SkyThemeSettings(
+        SkyTheme.presets.modern,
+        SkyThemeMode.presets.light,
+      );
+
       const initArgs: AddinClientInitArgs = {
         envId: 'envid',
         context: {
           test: '123'
         },
         themeSettings: {
-          mode: 'light',
-          theme: 'modern'
+          mode: skyThemeSettings.mode.name,
+          theme: skyThemeSettings.theme.name,
+          skyThemeSettings: skyThemeSettings.serialize()
         },
         ready: () => {}
       };
@@ -773,14 +827,20 @@ describe('Addin Client Service', () => {
         }
       });
 
+      const skyThemeSettings = new SkyThemeSettings(
+        SkyTheme.presets.modern,
+        SkyThemeMode.presets.light,
+      );
+
       const initArgs: AddinClientInitArgs = {
         envId: 'envid',
         context: {
           test: '123'
         },
         themeSettings: {
-          mode: 'light',
-          theme: 'modern'
+          mode: skyThemeSettings.mode.name,
+          theme: skyThemeSettings.theme.name,
+          skyThemeSettings: skyThemeSettings.serialize()
         },
         ready: () => {}
       };
