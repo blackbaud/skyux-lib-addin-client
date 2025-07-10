@@ -287,7 +287,6 @@ export class AddinClientService {
   }
 
   private initializeTheme(themeSettings: AddinClientThemeSettings): void {
-    console.log('initializeTheme, themeSettings: ', themeSettings);
     if (!themeSettings) {
       return;
     }
@@ -323,7 +322,6 @@ export class AddinClientService {
   }
 
   private setTheme(settings: AddinClientThemeSettings): void {
-    console.log('setTheme, settings: ', settings);
     if (!settings) {
       return;
     }
