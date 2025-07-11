@@ -1,3 +1,6 @@
+# 12.1.0 (2025-07-10)
+- Added support for serialized SKY UX theme settings.
+
 # 12.0.0 (2025-04-14)
 - Added support for SKY UX 12 and Angular 19.
 

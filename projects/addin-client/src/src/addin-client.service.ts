@@ -291,12 +291,11 @@ export class AddinClientService {
       return;
     }
 
-    const hostTheme = AddinClientService.toSkyTheme(themeSettings.theme);
-    const hostThemeMode = AddinClientService.toSkyThemeMode(themeSettings.mode);
+    const hostThemeSettings = AddinClientService.toSkyThemeSettings(themeSettings);
 
     if (!this.#config) {
       // no app config, initialize host theme
-      this.initializeTheme_(hostTheme, hostThemeMode);
+      this.initializeTheme_(hostThemeSettings);
       return;
     }
 
@@ -307,18 +306,18 @@ export class AddinClientService {
       themingConfig.supportedThemes.indexOf(themeSettings.theme as SkyuxConfigAppSupportedTheme) !== -1
     ) {
       // app supports host theme, initialize host theme
-      this.initializeTheme_(hostTheme, hostThemeMode);
+      this.initializeTheme_(hostThemeSettings);
       return;
     }
 
     // app does not support host theme, do nothing to initialize the app's default theme
   }
 
-  private initializeTheme_(theme: SkyTheme, themeMode: SkyThemeMode): void {
+  private initializeTheme_(themeSettings: SkyThemeSettings): void {
     this.#themeService.init(
       document.body,
       this.#rendererFactory.createRenderer(undefined, undefined),
-      new SkyThemeSettings(theme, themeMode)
+      themeSettings
     );
   }
 
@@ -327,10 +326,21 @@ export class AddinClientService {
       return;
     }
 
-    this.#themeService.setTheme(new SkyThemeSettings(
+    const hostThemeSettings = AddinClientService.toSkyThemeSettings(settings);
+
+    this.#themeService.setTheme(hostThemeSettings);
+  }
+
+  private static toSkyThemeSettings(settings: AddinClientThemeSettings): SkyThemeSettings {
+    if (settings.skyThemeSettings) {
+      // If the settings contain a serialized SkyThemeSettings object, deserialize it.
+      return SkyThemeSettings.deserialize(settings.skyThemeSettings);
+    }
+
+    return new SkyThemeSettings(
       AddinClientService.toSkyTheme(settings.theme),
       AddinClientService.toSkyThemeMode(settings.mode)
-    ));
+    );
   }
 
   private static toSkyTheme(theme: string): SkyTheme {
