@@ -1,3 +1,4 @@
+/* eslint-disable @angular-eslint/prefer-inject */
 import {
   Component,
   Renderer2
