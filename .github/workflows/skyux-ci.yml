@@ -13,21 +13,24 @@ on:
     tags:
       - '*.*.*'
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   ci:
     runs-on: ubuntu-latest
+    environment: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && 'npm' || '' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 2
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
-      - uses: blackbaud/skyux-sdk-actions@skip-install-deps-for-speedy-browser-set
+      - uses: blackbaud/skyux-sdk-actions@9b008f6a754faf49332de790d3e4cdc85918efdd # v1.1.1
         with:
           github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
-          npm-token: ${{ secrets.NPM_TOKEN }}
+          slack-webhook: ${{ secrets.SLACK_WEBHOOK }}
           project: 'addin-client'
           code-coverage-browser-set: speedy
-      - name: Upload coverage report
-        run: bash <(curl -s https://codecov.io/bash)
