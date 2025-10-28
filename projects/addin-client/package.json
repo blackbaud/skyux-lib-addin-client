@@ -1,9 +1,9 @@
 {
   "name": "@blackbaud/skyux-lib-addin-client",
-  "version": "13.0.1",
+  "version": "13.0.2",
   "repository": {
     "type": "git",
-    "url": "https://github.com/blackbaud/skyux-lib-addin-client.git"
+    "url": "git+https://github.com/blackbaud/skyux-lib-addin-client.git"
   },
   "peerDependencies": {
     "@angular/common": "^20.3.3",
