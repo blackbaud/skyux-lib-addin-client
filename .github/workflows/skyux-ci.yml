@@ -28,7 +28,7 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
-      - uses: blackbaud/skyux-sdk-actions@9b008f6a754faf49332de790d3e4cdc85918efdd # v1.1.1
+      - uses: blackbaud/skyux-sdk-actions@4cfa64cad7b30ebb478b6dd26e36a911f09e29fc # v1.1.2
         with:
           github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
           slack-webhook: ${{ secrets.SLACK_WEBHOOK }}
