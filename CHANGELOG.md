@@ -1,4 +1,7 @@
-# 13.0.0 (2026-10-02)
+# 13.1.0 (2026-01-05)
+- Added `AddinClientHelpService` for SKY UX components that support inline help with a `helpKey`.
+
+# 13.0.0 (2025-10-02)
 - Added support for SKY UX 13 and Angular 20.
 
 # 12.1.0 (2025-07-10)

@@ -122,6 +122,31 @@ this.addinClientService.openHelp({
 });
 ```
 
+You can open help for SKY UX components that directly support a `helpKey` by providing the `AddinClientHelpService`:
+
+```js
+import {
+  AddinClientService,
+  provideAddinClientHelp,
+} from '@blackbaud/skyux-lib-addin-client'
+
+private openModal() {
+  const options: SkyModalConfigurationInterface = {
+    providers: [
+      {
+        ...
+      }
+      provideAddinClientHelp(),
+    ],
+  };
+
+  const modalInstance = this.modalService.open(
+    MyModalComponent,
+    options,
+  );
+}
+```
+
 You can show a modal using the `showModal` method:
 
 ```js
