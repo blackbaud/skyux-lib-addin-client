@@ -1,3 +1,6 @@
+# 14.0.0 (2026-04-14)
+- Added support for SKY UX 14 and Angular 21.
+
 # 13.1.1 (2026-03-25)
 - Update packages.
 

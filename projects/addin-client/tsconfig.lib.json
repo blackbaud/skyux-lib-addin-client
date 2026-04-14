@@ -4,11 +4,7 @@
     "outDir": "../../out-tsc/lib",
     "declaration": true,
     "declarationMap": true,
-    "inlineSources": true,
-    "lib": [
-      "dom",
-      "es2018"
-    ]
+    "inlineSources": true
   },
   "exclude": [
     "src/test.ts",
