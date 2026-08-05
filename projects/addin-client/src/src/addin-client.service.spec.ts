@@ -5,6 +5,7 @@ import {
   AddinClientCloseModalArgs,
   AddinClientConfig,
   AddinClientInitArgs,
+  AddinClientReadyArgs,
   AddinClientNavigateArgs,
   AddinClientOpenHelpArgs,
   AddinClientShowConfirmArgs,
@@ -63,7 +64,10 @@ describe('Addin Client Service', () => {
       let addinClientArgs = (addinClientService.addinClient as any).args;
 
       addinClientService.args.subscribe((args) => {
-        expect(args).toEqual(initArgs);
+        expect({
+          ...args,
+          ready: initArgs.ready
+        }).toEqual(initArgs);
 
         done();
       });
@@ -97,7 +101,10 @@ describe('Addin Client Service', () => {
       let addinClientArgs = (addinClientService.addinClient as any).args;
 
       addinClientService.args.subscribe((args) => {
-        expect(args).toEqual(initArgs);
+        expect({
+          ...args,
+          ready: initArgs.ready
+        }).toEqual(initArgs);
 
         expect(themeServiceInitSpy.calls.mostRecent().args[2])
           .toEqual(new SkyThemeSettings(SkyTheme.presets.default, SkyThemeMode.presets.light))
@@ -656,6 +663,34 @@ describe('Addin Client Service', () => {
 
       done();
     });
+
+    it('publishes the original ready callback without modal style inference', (done) => {
+      const ready = jasmine.createSpy('ready');
+      const initArgs: AddinClientInitArgs = {
+        displayMode: 'modal',
+        ready,
+      };
+      const readyArgs: AddinClientReadyArgs = {
+        modalConfig: {
+          fullPage: true,
+          style: {
+            hostOverlay: false,
+            transparentBackground: true,
+          },
+        },
+        showUI: true,
+      };
+
+      addinClientService.args.subscribe((args) => {
+        expect(args.ready).toBe(ready);
+        args.ready(readyArgs);
+        expect(ready).toHaveBeenCalledOnceWith(readyArgs);
+        done();
+      });
+
+      const clientArgs = (addinClientService.addinClient as any).args;
+      clientArgs.callbacks.init(initArgs);
+    });
   });
 
   describe('With app config', () => {
@@ -718,7 +753,10 @@ describe('Addin Client Service', () => {
       let addinClientArgs = (addinClientService.addinClient as any).args;
 
       addinClientService.args.subscribe((args) => {
-        expect(args).toEqual(initArgs);
+        expect({
+          ...args,
+          ready: initArgs.ready
+        }).toEqual(initArgs);
 
         expect(themeServiceInitSpy).not.toHaveBeenCalled();
 
@@ -760,7 +798,10 @@ describe('Addin Client Service', () => {
       let addinClientArgs = (addinClientService.addinClient as any).args;
 
       addinClientService.args.subscribe((args) => {
-        expect(args).toEqual(initArgs);
+        expect({
+          ...args,
+          ready: initArgs.ready
+        }).toEqual(initArgs);
 
         expect(themeServiceInitSpy).not.toHaveBeenCalled();
 
@@ -804,7 +845,10 @@ describe('Addin Client Service', () => {
       let addinClientArgs = (addinClientService.addinClient as any).args;
 
       addinClientService.args.subscribe((args) => {
-        expect(args).toEqual(initArgs);
+        expect({
+          ...args,
+          ready: initArgs.ready
+        }).toEqual(initArgs);
 
         expect(themeServiceInitSpy).not.toHaveBeenCalled();
 
@@ -848,7 +892,10 @@ describe('Addin Client Service', () => {
       let addinClientArgs = (addinClientService.addinClient as any).args;
 
       addinClientService.args.subscribe((args) => {
-        expect(args).toEqual(initArgs);
+        expect({
+          ...args,
+          ready: initArgs.ready
+        }).toEqual(initArgs);
 
         expect(themeServiceInitSpy.calls.mostRecent().args[2])
           .toEqual(new SkyThemeSettings(SkyTheme.presets.modern, SkyThemeMode.presets.light))

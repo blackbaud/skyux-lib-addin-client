@@ -102,8 +102,7 @@ export class AddinClientService {
     this.addinClient = new AddinClient({
       callbacks: {
         init: (args: AddinClientInitArgs) => {
-          this.initializeTheme(args?.themeSettings);
-
+          this.initializeTheme(args.themeSettings);
           this._args.next(args);
           this._args.complete();
         },
