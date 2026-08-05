@@ -176,14 +176,14 @@ args.ready({
 
 When `transparentBackground` is `true`, the base add-in client makes the iframe body transparent. When `hostOverlay` is `false`, a compatible host makes its own overlay transparent. This leaves the normal SKY UX backdrop as the single visible scrim — no additional SKY UX changes are made by this wrapper.
 
-Remove any historical workaround rules from your add-in styles before using this contract; they are no longer needed and will conflict:
+When adopting this contract, remove these historical workaround rules from your add-in styles:
 
 ```scss
 ::ng-deep body { background: transparent; }
 ::ng-deep .sky-modal-host-backdrop { display: none; }
 ```
 
-This recipe requires `@blackbaud/sky-addin-client` 1.8.0 and `@blackbaud-internal/skyux-lib-addin-host` 14.2.0 or later. The V14 wrapper itself does not alter the SKY UX backdrop or synthesize style.
+This recipe requires `@blackbaud/sky-addin-client` 1.8.0 or later and `@blackbaud-internal/skyux-lib-addin-host` 14.2.0 or later. The V14 wrapper itself does not alter the SKY UX backdrop or synthesize style.
 
 You can show a toast using the `showToast` method:
 
