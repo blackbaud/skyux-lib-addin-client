@@ -5,9 +5,9 @@ import {
   AddinClientCloseModalArgs,
   AddinClientConfig,
   AddinClientInitArgs,
-  AddinClientReadyArgs,
   AddinClientNavigateArgs,
   AddinClientOpenHelpArgs,
+  AddinClientReadyArgs,
   AddinClientShowConfirmArgs,
   AddinClientShowErrorArgs,
   AddinClientShowFlyoutArgs,
@@ -64,10 +64,7 @@ describe('Addin Client Service', () => {
       let addinClientArgs = (addinClientService.addinClient as any).args;
 
       addinClientService.args.subscribe((args) => {
-        expect({
-          ...args,
-          ready: initArgs.ready
-        }).toEqual(initArgs);
+        expect(args).toEqual(initArgs);
 
         done();
       });
@@ -101,10 +98,7 @@ describe('Addin Client Service', () => {
       let addinClientArgs = (addinClientService.addinClient as any).args;
 
       addinClientService.args.subscribe((args) => {
-        expect({
-          ...args,
-          ready: initArgs.ready
-        }).toEqual(initArgs);
+        expect(args).toEqual(initArgs);
 
         expect(themeServiceInitSpy.calls.mostRecent().args[2])
           .toEqual(new SkyThemeSettings(SkyTheme.presets.default, SkyThemeMode.presets.light))
@@ -753,10 +747,7 @@ describe('Addin Client Service', () => {
       let addinClientArgs = (addinClientService.addinClient as any).args;
 
       addinClientService.args.subscribe((args) => {
-        expect({
-          ...args,
-          ready: initArgs.ready
-        }).toEqual(initArgs);
+        expect(args).toEqual(initArgs);
 
         expect(themeServiceInitSpy).not.toHaveBeenCalled();
 
@@ -798,10 +789,7 @@ describe('Addin Client Service', () => {
       let addinClientArgs = (addinClientService.addinClient as any).args;
 
       addinClientService.args.subscribe((args) => {
-        expect({
-          ...args,
-          ready: initArgs.ready
-        }).toEqual(initArgs);
+        expect(args).toEqual(initArgs);
 
         expect(themeServiceInitSpy).not.toHaveBeenCalled();
 
@@ -845,10 +833,7 @@ describe('Addin Client Service', () => {
       let addinClientArgs = (addinClientService.addinClient as any).args;
 
       addinClientService.args.subscribe((args) => {
-        expect({
-          ...args,
-          ready: initArgs.ready
-        }).toEqual(initArgs);
+        expect(args).toEqual(initArgs);
 
         expect(themeServiceInitSpy).not.toHaveBeenCalled();
 
@@ -892,10 +877,7 @@ describe('Addin Client Service', () => {
       let addinClientArgs = (addinClientService.addinClient as any).args;
 
       addinClientService.args.subscribe((args) => {
-        expect({
-          ...args,
-          ready: initArgs.ready
-        }).toEqual(initArgs);
+        expect(args).toEqual(initArgs);
 
         expect(themeServiceInitSpy.calls.mostRecent().args[2])
           .toEqual(new SkyThemeSettings(SkyTheme.presets.modern, SkyThemeMode.presets.light))
