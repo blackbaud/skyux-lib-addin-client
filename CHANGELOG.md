@@ -1,3 +1,8 @@
+# 14.1.0
+
+- Support the independent modal style contract from `@blackbaud/sky-addin-client` 1.8.0.
+- Document the explicit SKY UX 14 recipe without altering the SKY UX backdrop.
+
 # 14.0.1 (2026-08-28)
 - Update packages.
 

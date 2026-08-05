@@ -1,6 +1,6 @@
 {
   "name": "@blackbaud/skyux-lib-addin-client",
-  "version": "14.0.1",
+  "version": "14.1.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/blackbaud/skyux-lib-addin-client.git"
