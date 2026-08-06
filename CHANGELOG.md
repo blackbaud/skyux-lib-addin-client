@@ -1,6 +1,6 @@
 # 14.1.0 (2026-08-06)
 
-- Added modal style options on `modalConfig.style` to allow add-ins to remove host overlay and support standard SKY UX modal backdrop.
+- Added modal style options on `modalConfig.style` to allow add-ins to remove the host's overlay and supports usage of the standard SKY UX modal backdrop.
 
 # 14.0.1 (2026-08-28)
 - Update packages.
