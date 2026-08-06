@@ -1,7 +1,6 @@
-# 14.1.0
+# 14.1.0 (2026-08-06)
 
-- Support the independent modal style contract from `@blackbaud/sky-addin-client` 1.8.0.
-- Document the explicit SKY UX 14 recipe without altering the SKY UX backdrop.
+- Added modal style options on `modalConfig.style` to allow add-ins to remove host overlays and support standard SKY UX modal backdrop.
 
 # 14.0.1 (2026-08-28)
 - Update packages.

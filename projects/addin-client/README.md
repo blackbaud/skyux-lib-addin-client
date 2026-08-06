@@ -158,33 +158,6 @@ this.addinClientService.showModal({
 });
 ```
 
-### Modal style
-
-SKY UX 14 does not infer modal style automatically. Use the explicit `modalConfig.style` contract introduced in `@blackbaud/sky-addin-client` 1.8.0 to achieve a transparent-background modal add-in:
-
-```ts
-args.ready({
-  showUI: true,
-  modalConfig: {
-    style: {
-      transparentBackground: true,
-      hostOverlay: false
-    }
-  }
-});
-```
-
-When `transparentBackground` is `true`, the base add-in client makes the iframe body transparent. When `hostOverlay` is `false`, a compatible host makes its own overlay transparent. This leaves the normal SKY UX backdrop as the single visible scrim — no additional SKY UX changes are made by this wrapper.
-
-When adopting this contract, remove these historical workaround rules from your add-in styles:
-
-```scss
-::ng-deep body { background: transparent; }
-::ng-deep .sky-modal-host-backdrop { display: none; }
-```
-
-This recipe requires `@blackbaud/sky-addin-client` 1.8.0 or later and `@blackbaud-internal/skyux-lib-addin-host` 14.2.0 or later. The V14 wrapper itself does not alter the SKY UX backdrop or synthesize style.
-
 You can show a toast using the `showToast` method:
 
 ```js
@@ -347,3 +320,38 @@ export class MyModule { }
 ```
 
 For more information on creating SKY Add-ins, view the documentation on the [SKY Developer Portal](https://developer.blackbaud.com/skyapi/docs/addins)
+
+
+## Modal style
+
+A modal add-in can independently configure its document body and a host's overlay through `modalConfig.style`:
+
+| Option | Behavior |
+|---|---|
+| `transparentBackground: true` | Makes the add-in document body transparent. |
+| `transparentBackground: false` or omitted | Retains add-in's body styling. |
+| `hostOverlay: false` | Hides the host's modal overlay. |
+| `hostOverlay: true` or omitted | Host retains its modal visible overlay. |
+
+These options are independent and this library does not default them.
+
+```ts
+args.ready({
+  showUI: true,
+  modalConfig: {
+    style: {
+      transparentBackground: true,
+      hostOverlay: false
+    }
+  }
+});
+```
+
+The example `style` above makes the iframe body transparent and tells the host to hide its overlay. This allows normal SKY UX modal backdrop to be displayed without workarounds. 
+
+❌ When adopting this contract, remove these historical workaround rules from your add-in styles:
+
+```scss
+::ng-deep body { background: transparent; }
+::ng-deep .sky-modal-host-backdrop { display: none; }
+```
