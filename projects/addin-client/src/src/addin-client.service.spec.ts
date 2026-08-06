@@ -661,7 +661,7 @@ describe('Addin Client Service', () => {
     it('publishes the original ready callback without modal style inference', (done) => {
       const ready = jasmine.createSpy('ready');
       const initArgs: AddinClientInitArgs = {
-        displayMode: 'modal',
+        addinType: 'modal',
         ready,
       };
       const readyArgs: AddinClientReadyArgs = {
