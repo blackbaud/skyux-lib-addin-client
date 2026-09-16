@@ -172,6 +172,62 @@ describe('hosted surface resolver', () => {
     ).toBe('normal');
   });
 
+  it('grants display ownership only for automatic modal treatment', () => {
+    expect(resolve('modal').restoreBackdropDisplay).toBe(true);
+
+    const explicitOlderHostFallback: AddinClientReadyArgs = {
+      modalConfig: {
+        style: {
+          hostOverlay: false,
+          transparentBackground: true,
+        },
+      },
+    };
+    expect(resolve(undefined, explicitOlderHostFallback).restoreBackdropDisplay).toBe(
+      false,
+    );
+
+    expect(resolve('box').restoreBackdropDisplay).toBe(false);
+  });
+
+  it('keeps compatible-host modal backdrop normal at every modal depth', () => {
+    for (const modalDepth of [0, 1, 2, 5]) {
+      expect(
+        resolve(
+          'modal',
+          {},
+          {
+            fullPageModalOpen: false,
+            modalDepth,
+            modalOpen: modalDepth > 0,
+          },
+        ).backdrop,
+      ).toBe('normal');
+    }
+  });
+
+  it('keeps an explicit style treatment even when modalConfig.fullPage is true', () => {
+    const readyArgsWithoutAddinType: AddinClientReadyArgs = {
+      modalConfig: {
+        fullPage: true,
+        style: { transparentBackground: true },
+      },
+    };
+    const withoutAddinType = resolve(undefined, readyArgsWithoutAddinType);
+    expect(withoutAddinType.treatment).toBe('preserve');
+    expect(withoutAddinType.restoreBackdropDisplay).toBe(false);
+
+    const readyArgsWithModalAddinType: AddinClientReadyArgs = {
+      modalConfig: {
+        fullPage: true,
+        style: { transparentBackground: true },
+      },
+    };
+    const withModalAddinType = resolve('modal', readyArgsWithModalAddinType);
+    expect(withModalAddinType.treatment).toBe('preserve');
+    expect(withModalAddinType.restoreBackdropDisplay).toBe(false);
+  });
+
   it('adds inferred style immutably and preserves pass-through identity', () => {
     const readyArgs: AddinClientReadyArgs = { showUI: true };
 

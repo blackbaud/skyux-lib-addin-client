@@ -27,16 +27,61 @@ export interface HostedSurfaceResolverInput {
 export interface HostedSurfaceResolution {
   readonly backdrop: HostedSurfaceBackdrop;
   readonly inferredModalStyle?: AddinModalStyle;
+  /**
+   * Whether the controller may override a historical consumer's `display:none` backdrop
+   * styling. This is a distinct policy axis from `backdrop` (which governs color/opacity):
+   * automatic modal treatment is currently the only path that owns display, but display
+   * ownership and backdrop color ownership are independent and may diverge for future
+   * treatments.
+   */
   readonly restoreBackdropDisplay: boolean;
   readonly treatment: HostedSurfaceTreatment;
 }
+
+/**
+ * Modal depth at which a legacy/older host's backdrop is treated as opaque ("normal")
+ * rather than transparent, since a nested modal stacked atop another modal already has
+ * an intervening backdrop providing contrast.
+ */
+const NESTED_MODAL_BACKDROP_DEPTH = 2;
+
+function resolveModalBackdrop(
+  modalDepth: number,
+  forceNormal: boolean,
+): HostedSurfaceBackdrop {
+  return forceNormal || modalDepth >= NESTED_MODAL_BACKDROP_DEPTH
+    ? 'normal'
+    : 'transparent';
+}
+
+/**
+ * Canonical treatment for every `AddinType` a compatible host may report, excluding
+ * `'modal'` (which requires additional context such as `fullPage` and modal depth and is
+ * handled separately). Declaring this as `Readonly<Record<AddinType, ...>>` forces any
+ * future `AddinType` addition to be given an explicit mapping at compile time.
+ */
+const CANONICAL_ADDIN_TYPE_TREATMENT: Readonly<
+  Record<AddinType, HostedSurfaceTreatment>
+> = {
+  'action-button': 'preserve',
+  box: 'container',
+  button: 'preserve',
+  dataset: 'preserve',
+  flyout: 'container',
+  generic: 'preserve',
+  modal: 'modal',
+  page: 'preserve',
+  tab: 'preserve',
+  tile: 'container',
+  'vertical-tab': 'preserve',
+};
 
 function modalResolution(
   compatibleHost: boolean,
   modalDepth: number,
 ): HostedSurfaceResolution {
   return {
-    backdrop: compatibleHost || modalDepth >= 2 ? 'normal' : 'transparent',
+    backdrop: resolveModalBackdrop(modalDepth, compatibleHost),
     inferredModalStyle: compatibleHost
       ? {
           hostOverlay: false,
@@ -62,9 +107,7 @@ export function resolveHostedSurface(
 
     return {
       backdrop: explicitOlderHostFallback
-        ? modalState.modalDepth >= 2
-          ? 'normal'
-          : 'transparent'
+        ? resolveModalBackdrop(modalState.modalDepth, false)
         : 'preserve',
       restoreBackdropDisplay: false,
       treatment: 'preserve',
@@ -85,12 +128,7 @@ export function resolveHostedSurface(
     return {
       backdrop: 'preserve',
       restoreBackdropDisplay: false,
-      treatment:
-        addinType === 'box' ||
-        addinType === 'tile' ||
-        addinType === 'flyout'
-          ? 'container'
-          : 'preserve',
+      treatment: CANONICAL_ADDIN_TYPE_TREATMENT[addinType],
     };
   }
 
