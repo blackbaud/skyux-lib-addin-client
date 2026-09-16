@@ -5,10 +5,7 @@ import {
 } from '@blackbaud/sky-addin-client';
 
 export type HostedSurfaceTreatment =
-  | 'container'
-  | 'full-page'
-  | 'modal'
-  | 'preserve';
+  'container' | 'full-page' | 'modal' | 'preserve';
 
 export type HostedSurfaceBackdrop = 'normal' | 'preserve' | 'transparent';
 
@@ -142,10 +139,7 @@ export function resolveHostedSurface(
       : modalResolution(false, modalState.modalDepth);
   }
 
-  if (
-    readyArgs.boxConfig !== undefined ||
-    readyArgs.tileConfig !== undefined
-  ) {
+  if (readyArgs.boxConfig !== undefined || readyArgs.tileConfig !== undefined) {
     return {
       backdrop: 'preserve',
       restoreBackdropDisplay: false,

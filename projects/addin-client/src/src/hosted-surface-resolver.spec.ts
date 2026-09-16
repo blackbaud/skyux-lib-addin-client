@@ -1,7 +1,4 @@
-import {
-  AddinClientReadyArgs,
-  AddinType,
-} from '@blackbaud/sky-addin-client';
+import { AddinClientReadyArgs, AddinType } from '@blackbaud/sky-addin-client';
 
 import {
   HostedSurfaceModalState,
@@ -136,18 +133,26 @@ describe('hosted surface resolver', () => {
 
   it('uses live full-page and normal modal markers for an unidentified host', () => {
     expect(
-      resolve(undefined, {}, {
-        fullPageModalOpen: true,
-        modalDepth: 1,
-        modalOpen: true,
-      }).treatment,
+      resolve(
+        undefined,
+        {},
+        {
+          fullPageModalOpen: true,
+          modalDepth: 1,
+          modalOpen: true,
+        },
+      ).treatment,
     ).toBe('full-page');
     expect(
-      resolve(undefined, {}, {
-        fullPageModalOpen: false,
-        modalDepth: 1,
-        modalOpen: true,
-      }).treatment,
+      resolve(
+        undefined,
+        {},
+        {
+          fullPageModalOpen: false,
+          modalDepth: 1,
+          modalOpen: true,
+        },
+      ).treatment,
     ).toBe('modal');
   });
 
@@ -157,18 +162,26 @@ describe('hosted surface resolver', () => {
 
   it('restores old-host backdrop color at nested modal depth', () => {
     expect(
-      resolve(undefined, { modalConfig: {} }, {
-        fullPageModalOpen: false,
-        modalDepth: 1,
-        modalOpen: true,
-      }).backdrop,
+      resolve(
+        undefined,
+        { modalConfig: {} },
+        {
+          fullPageModalOpen: false,
+          modalDepth: 1,
+          modalOpen: true,
+        },
+      ).backdrop,
     ).toBe('transparent');
     expect(
-      resolve(undefined, { modalConfig: {} }, {
-        fullPageModalOpen: false,
-        modalDepth: 2,
-        modalOpen: true,
-      }).backdrop,
+      resolve(
+        undefined,
+        { modalConfig: {} },
+        {
+          fullPageModalOpen: false,
+          modalDepth: 2,
+          modalOpen: true,
+        },
+      ).backdrop,
     ).toBe('normal');
   });
 
@@ -183,9 +196,9 @@ describe('hosted surface resolver', () => {
         },
       },
     };
-    expect(resolve(undefined, explicitOlderHostFallback).restoreBackdropDisplay).toBe(
-      false,
-    );
+    expect(
+      resolve(undefined, explicitOlderHostFallback).restoreBackdropDisplay,
+    ).toBe(false);
 
     expect(resolve('box').restoreBackdropDisplay).toBe(false);
   });
