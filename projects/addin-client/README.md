@@ -19,14 +19,19 @@ npm install --save @blackbaud/skyux-lib-addin-client
 To use the service, import it into your SPA's `app-extras.module.ts` file and add it to the `providers` array:
 
 ```js
-import { NgModule } from "@angular/core";
+import {
+  NgModule
+} from '@angular/core';
 
-import { AddinClientService } from "@blackbaud/skyux-lib-addin-client";
+import {
+  AddinClientService
+} from '@blackbaud/skyux-lib-addin-client';
 
 @NgModule({
-  providers: [AddinClientService],
+  providers: [AddinClientService]
 })
-export class AppExtrasModule {}
+
+export class AppExtrasModule { }
 ```
 
 Then, inject it into your component as part of the constructor:
@@ -93,19 +98,19 @@ export class MyTileComponent implements OnInit {
 }
 ```
 
-The `AddinClientService` provides wrapper methods over the lower-level implementation. So you can obtain a user identity token using the `getUserIdentityToken()` function (previously named `getAuthToken()`):
+The `AddinClientService` provides wrapper methods over the lower-level implementation.  So you can obtain a user identity token using the `getUserIdentityToken()` function (previously named `getAuthToken()`):
 
 ```js
 this.addinClientService.getUserIdentityToken().subscribe((token: string) => {
   this.userIdentityToken = token;
 });
-```
+  ```
 
 You can navigate the host page using the `navigate` method:
 
 ```js
 this.addinClientService.navigate({
-  url: someUrl,
+  url: someUrl
 });
 ```
 
@@ -113,7 +118,7 @@ The help window can be popped using the `openHelp` method:
 
 ```js
 this.addinClientService.openHelp({
-  helpKey: someHelpKey,
+  helpKey: someHelpKey
 });
 ```
 
@@ -158,56 +163,52 @@ You can show a toast using the `showToast` method:
 ```js
 this.addinClientService.showToast({
   message: someMessage,
-  style: AddinToastStyle.Info,
+  style: AddinToastStyle.Info
 });
 ```
 
 You can show a flyout using the `showFlyout` method:
 
 ```js
-this.addinClientService
-  .showFlyout({
-    url: someUrl,
-    context: someContextObject,
-  })
-  .subscribe(() => {
-    // Define what happens when a flyout has closed
-  });
+this.addinClientService.showFlyout({
+  url: someUrl,
+  context: someContextObject
+}).subscribe(() => {
+  // Define what happens when a flyout has closed
+});
 ```
 
 You can show a confirm dialog using the `showConfirm` method:
 
 ```js
-this.addinClientService
-  .showConfirm({
-    message: "confirm title",
-    body: "confirm message body",
-    buttons: [
-      {
-        action: "ok",
-        text: "OK",
-        autofocus: true,
-        style: AddinConfirmButtonStyle.Primary,
-      },
-      {
-        action: "cancel",
-        text: "Cancel",
-        style: AddinConfirmButtonStyle.Link,
-      },
-    ],
-  })
-  .subscribe((action) => {
-    // Handle the action returned when the dialog closes
-  });
+this.addinClientService.showConfirm({
+  message: 'confirm title',
+  body: 'confirm message body',
+  buttons: [
+    {
+      action: 'ok',
+      text: 'OK',
+      autofocus: true,
+      style: AddinConfirmButtonStyle.Primary
+    },
+    {
+      action: 'cancel',
+      text: 'Cancel',
+      style: AddinConfirmButtonStyle.Link
+    }
+  ]
+}).subscribe((action) => {
+  // Handle the action returned when the dialog closes
+});
 ```
 
 You can show an error dialog using the `showError` method:
 
 ```js
 this.addinClientService.showError({
-  closeText: "OK",
-  description: "An unexpected error occurred",
-  title: "Error",
+  closeText: 'OK',
+  description: 'An unexpected error occurred',
+  title: 'Error'
 });
 ```
 
@@ -320,16 +321,17 @@ export class MyModule { }
 
 For more information on creating SKY Add-ins, view the documentation on the [SKY Developer Portal](https://developer.blackbaud.com/skyapi/docs/addins)
 
+
 ## Modal style
 
 A modal add-in can independently configure its document body and a host's overlay through `modalConfig.style`:
 
-| Option                                    | Behavior                                    |
-| ----------------------------------------- | ------------------------------------------- |
-| `transparentBackground: true`             | Makes the add-in document body transparent. |
-| `transparentBackground: false` or omitted | Retains add-in's body styling.              |
-| `hostOverlay: false`                      | Hides the host's modal overlay.             |
-| `hostOverlay: true` or omitted            | Host retains its modal visible overlay.     |
+| Option | Behavior |
+|---|---|
+| `transparentBackground: true` | Makes the add-in document body transparent. |
+| `transparentBackground: false` or omitted | Retains add-in's body styling. |
+| `hostOverlay: false` | Asks a compatible host to make its modal overlay transparent. |
+| `hostOverlay: true` or omitted | The host retains its visible modal overlay. |
 
 These options are independent and this library does not default them.
 
@@ -339,9 +341,9 @@ args.ready({
   modalConfig: {
     style: {
       transparentBackground: true,
-      hostOverlay: false,
-    },
-  },
+      hostOverlay: false
+    }
+  }
 });
 ```
 
@@ -352,10 +354,6 @@ the visible scrim without workarounds.
 ❌ When adopting this contract, remove these historical workaround rules from your add-in styles:
 
 ```scss
-::ng-deep body {
-  background: transparent;
-}
-::ng-deep .sky-modal-host-backdrop {
-  display: none;
-}
+::ng-deep body { background: transparent; }
+::ng-deep .sky-modal-host-backdrop { display: none; }
 ```
