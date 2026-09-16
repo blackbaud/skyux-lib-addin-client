@@ -324,7 +324,39 @@ For more information on creating SKY Add-ins, view the documentation on the [SKY
 
 ## Modal style
 
-A modal add-in can independently configure its document body and a host's overlay through `modalConfig.style`:
+### Hosted add-in backgrounds
+
+The SKY UX add-in client automatically adapts the add-in document to its hosted surface.
+This default begins in version 15.0.0. Version 14.x continues to pass through explicit
+modal style without automatic hosted-surface inference.
+
+- Normal modal add-ins use a transparent document background and retain a rendered SKY UX
+  backdrop.
+- Full-page modal and Page add-ins retain their application background.
+- Box, Tile, and Flyout add-ins use the SKY UX container background.
+- A compatible host supplies exact add-in type context. On older hosts, the client uses
+  the add-in's `ready()` configuration and live SKY UX modal state, then falls back to the
+  container background when the context remains ambiguous.
+
+Any defined `modalConfig.style` object, including `{}`, suppresses automatic modal
+treatment for that `ready()` call. A normal modal add-in that renders content directly
+instead of opening a SKY UX modal should send:
+
+```ts
+modalConfig: {
+  style: {}
+}
+```
+
+Remove historical style overrides that make the document body transparent or hide the
+SKY UX modal backdrop. The client temporarily overrides the hidden-backdrop rule on
+automatic modal paths for mixed-version rollout safety, but applications should no longer
+own that behavior.
+
+### Explicit modal style
+
+A modal add-in can override the automatic behavior and independently configure its
+document body and a host's overlay through `modalConfig.style`:
 
 | Option | Behavior |
 |---|---|
@@ -333,7 +365,8 @@ A modal add-in can independently configure its document body and a host's overla
 | `hostOverlay: false` | Asks a compatible host to make its modal overlay transparent. |
 | `hostOverlay: true` or omitted | The host retains its visible modal overlay. |
 
-These options are independent and this library does not default them.
+These options are independent. Defining `modalConfig.style`, including an empty object,
+suppresses automatic hosted-surface treatment for that `ready()` call.
 
 ```ts
 args.ready({
@@ -350,10 +383,3 @@ args.ready({
 The example `style` above makes the iframe body transparent and asks a compatible host to
 make its overlay transparent. This allows the normal SKY UX modal backdrop to remain as
 the visible scrim without workarounds.
-
-❌ When adopting this contract, remove these historical workaround rules from your add-in styles:
-
-```scss
-::ng-deep body { background: transparent; }
-::ng-deep .sky-modal-host-backdrop { display: none; }
-```
