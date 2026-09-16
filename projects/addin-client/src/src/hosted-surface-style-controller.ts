@@ -15,6 +15,17 @@ export const HOSTED_SURFACE_CLASSES = {
 export const HOSTED_SURFACE_STYLE_ID =
   'bb-skyux-addin-client-hosted-surface-style';
 
+/**
+ * Body classes that feed `resolveHostedSurface`'s live modal state. A mutation observer
+ * refresh is only warranted when one of these markers' presence actually changes; every
+ * other body class (including the controller's own {@link HOSTED_SURFACE_CLASSES}) is
+ * irrelevant to resolution and must not trigger a refresh.
+ */
+const MODAL_MARKER_CLASSES = [
+  'sky-modal-body-open',
+  'sky-modal-body-full-page',
+] as const;
+
 const STYLE_TEXT = `
 body.${HOSTED_SURFACE_CLASSES.container} {
   background-color: var(--sky-color-background-container-base) !important;
@@ -156,13 +167,82 @@ export class HostedSurfaceStyleController {
       return;
     }
 
-    this.#observer = new MutationObserver(() => this.refresh());
+    this.#observer = new MutationObserver((records) =>
+      this.#handleMutations(records),
+    );
     this.#observer.observe(this.#document.body, {
       attributeFilter: ['class'],
+      attributeOldValue: true,
       attributes: true,
       childList: true,
       subtree: true,
     });
+  }
+
+  #handleMutations(records: MutationRecord[]): void {
+    for (const record of records) {
+      if (this.#isRelevantMutation(record)) {
+        this.refresh();
+        return;
+      }
+    }
+  }
+
+  /**
+   * Only two mutation shapes can change what `resolveHostedSurface` computes:
+   * - the body's own `class` attribute gaining or losing a {@link MODAL_MARKER_CLASSES}
+   *   marker (checked against `oldValue`, so the controller's own class writes and
+   *   unrelated consumer classes are both ignored); and
+   * - a `childList` change whose added/removed node is a `sky-modal` element or contains
+   *   one anywhere in its subtree (nested modals affect `modalDepth`).
+   * Attribute mutations on descendants (subtree class changes) and childList changes
+   * that touch unrelated DOM are deliberately excluded.
+   */
+  #isRelevantMutation(record: MutationRecord): boolean {
+    if (record.type === 'attributes') {
+      return (
+        record.target === this.#document.body &&
+        this.#modalMarkerPresenceChanged(record.oldValue)
+      );
+    }
+
+    if (record.type === 'childList') {
+      return (
+        this.#containsModalNode(record.addedNodes) ||
+        this.#containsModalNode(record.removedNodes)
+      );
+    }
+
+    return false;
+  }
+
+  #modalMarkerPresenceChanged(oldValue: string | null): boolean {
+    const previousClasses = new Set(
+      (oldValue ?? '').split(/\s+/).filter((value) => value.length > 0),
+    );
+    const currentClasses = this.#document.body.classList;
+
+    return MODAL_MARKER_CLASSES.some(
+      (marker) => previousClasses.has(marker) !== currentClasses.contains(marker),
+    );
+  }
+
+  #containsModalNode(nodes: NodeList): boolean {
+    for (let index = 0; index < nodes.length; index++) {
+      const node = nodes[index];
+
+      if (node.nodeType !== Node.ELEMENT_NODE) {
+        continue;
+      }
+
+      const element = node as Element;
+
+      if (element.localName === 'sky-modal' || element.querySelector('sky-modal')) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   #setClass(className: string, enabled: boolean): void {

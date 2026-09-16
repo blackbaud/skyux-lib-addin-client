@@ -159,16 +159,58 @@ describe('HostedSurfaceStyleController', () => {
     backdropStyle.remove();
   });
 
-  it('reacts when a modal opens after ready without another update call', async () => {
+  it('reacts when a nested modal opens after ready without another update call', async () => {
     update();
     expect(document.body).toHaveCssClass(HOSTED_SURFACE_CLASSES.container);
 
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+
     document.body.classList.add('sky-modal-body-open');
-    document.body.appendChild(document.createElement('sky-modal'));
+    container.appendChild(document.createElement('sky-modal'));
     await new Promise<void>((resolve) => setTimeout(resolve));
 
     expect(document.body).not.toHaveCssClass(HOSTED_SURFACE_CLASSES.container);
     expect(document.body).toHaveCssClass(HOSTED_SURFACE_CLASSES.transparent);
+
+    container.remove();
+  });
+
+  it('refreshes when a container holding a nested modal is removed', async () => {
+    const container = document.createElement('div');
+    container.appendChild(document.createElement('sky-modal'));
+    document.body.appendChild(container);
+    update({ modalConfig: {} });
+    await new Promise<void>((resolve) => setTimeout(resolve));
+
+    const refreshSpy = spyOn(controller, 'refresh').and.callThrough();
+
+    container.remove();
+    await new Promise<void>((resolve) => setTimeout(resolve));
+
+    expect(refreshSpy).toHaveBeenCalled();
+  });
+
+  it('does not refresh for unrelated body class changes or unrelated descendant DOM churn', async () => {
+    update();
+    // Allow any mutation records produced by the initial update()'s own class writes
+    // to flush before spying, so only mutations from *this* test are observed.
+    await new Promise<void>((resolve) => setTimeout(resolve));
+
+    const refreshSpy = spyOn(controller, 'refresh').and.callThrough();
+
+    document.body.classList.add('some-consumer-owned-class');
+    document.body.classList.remove('some-consumer-owned-class');
+
+    const unrelatedContainer = document.createElement('div');
+    const unrelatedChild = document.createElement('span');
+    unrelatedContainer.appendChild(unrelatedChild);
+    document.body.appendChild(unrelatedContainer);
+    unrelatedContainer.remove();
+
+    await new Promise<void>((resolve) => setTimeout(resolve));
+
+    expect(refreshSpy).not.toHaveBeenCalled();
   });
 
   it('selects live full-page state before normal modal state', () => {
