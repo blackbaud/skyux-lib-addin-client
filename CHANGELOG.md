@@ -1,3 +1,14 @@
+# 15.0.0
+
+- **Breaking:** Add automatic SKY UX background treatment for modal, full-page, box, tile,
+  flyout, page, and older ambiguous add-in hosts when `modalConfig.style` is undefined.
+- Preserved explicit modal style choices and nested modal backdrop behavior.
+- Updated the library to the SKY UX 15 and Angular 22 compatibility baseline.
+
+# 14.1.0 (2026-08-06)
+
+- Added modal style options on `modalConfig.style` to allow add-ins to remove the host's overlay and supports usage of the standard SKY UX modal backdrop.
+
 # 14.0.1 (2026-08-28)
 - Update packages.
 

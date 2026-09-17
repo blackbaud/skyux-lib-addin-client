@@ -1,3 +1,4 @@
+import { DOCUMENT } from '@angular/common';
 import {
   EventEmitter,
   Injectable,
@@ -11,6 +12,7 @@ import {
   AddinClientInitArgs,
   AddinClientNavigateArgs,
   AddinClientOpenHelpArgs,
+  AddinClientReadyArgs,
   AddinClientShowConfirmArgs,
   AddinClientShowErrorArgs,
   AddinClientShowFlyoutArgs,
@@ -40,6 +42,8 @@ import {
   AddinEvent,
   AddinEventHandlerInstance
 } from './events';
+import { HostedSurfaceStyleController } from './hosted-surface-style-controller';
+import { withInferredModalStyle } from './hosted-surface-resolver';
 
 @Injectable({
   providedIn: 'root'
@@ -94,17 +98,23 @@ export class AddinClientService {
   public settingsClick: EventEmitter<any> = new EventEmitter(true);
 
   #config = inject(SkyAppConfig, { optional: true });
+  #document = inject(DOCUMENT);
   #rendererFactory = inject(RendererFactory2);
   #themeService = inject(SkyThemeService);
   #addinClientConfigService = inject(AddinClientConfigService, { optional: true });
+
+  private destroyed = false;
+  private readonly hostedSurfaceController =
+    new HostedSurfaceStyleController(this.#document);
 
   constructor() {
     this.addinClient = new AddinClient({
       callbacks: {
         init: (args: AddinClientInitArgs) => {
-          this.initializeTheme(args?.themeSettings);
+          const preparedArgs = this.prepareInitArgs(args);
 
-          this._args.next(args);
+          this.initializeTheme(preparedArgs.themeSettings);
+          this._args.next(preparedArgs);
           this._args.complete();
         },
         actionClick: (action: string) => {
@@ -163,7 +173,39 @@ export class AddinClientService {
    * Cleans up the AddinClient, releasing all resources.
    */
   public destroy(): void {
+    if (this.destroyed) {
+      return;
+    }
+
+    this.destroyed = true;
+    this.hostedSurfaceController.destroy();
     this.addinClient.destroy();
+  }
+
+  private prepareInitArgs(args: AddinClientInitArgs): AddinClientInitArgs {
+    const ready = args.ready;
+
+    args.ready = (readyArgs: AddinClientReadyArgs) => {
+      if (this.destroyed) {
+        ready(readyArgs);
+        return;
+      }
+
+      // Keep application-owned args as the source for later DOM-driven inference.
+      const resolution = this.hostedSurfaceController.update(
+        args.addinType,
+        readyArgs
+      );
+
+      ready(
+        withInferredModalStyle(
+          readyArgs,
+          resolution.inferredModalStyle
+        )
+      );
+    };
+
+    return args;
   }
 
   /**

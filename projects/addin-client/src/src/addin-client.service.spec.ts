@@ -7,6 +7,7 @@ import {
   AddinClientInitArgs,
   AddinClientNavigateArgs,
   AddinClientOpenHelpArgs,
+  AddinClientReadyArgs,
   AddinClientShowConfirmArgs,
   AddinClientShowErrorArgs,
   AddinClientShowFlyoutArgs,
@@ -36,6 +37,26 @@ describe('Addin Client Service', () => {
 
   describe('Without app config', () => {
     let addinClientService: AddinClientService;
+
+    function initializeClient(
+      initArgs: AddinClientInitArgs
+    ): AddinClientInitArgs {
+      let publishedArgs!: AddinClientInitArgs;
+
+      addinClientService.args.subscribe((args) => {
+        publishedArgs = args;
+      });
+
+      const clientArgs = (addinClientService.addinClient as any).args;
+      clientArgs.callbacks.init(initArgs);
+
+      return publishedArgs;
+    }
+
+    async function flushMutations(): Promise<void> {
+      await new Promise<void>((resolve) => setTimeout(resolve));
+    }
+
     beforeEach(() => {
       TestBed.configureTestingModule(
         {
@@ -47,6 +68,17 @@ describe('Addin Client Service', () => {
       );
 
       addinClientService = TestBed.inject(AddinClientService);
+    });
+
+    afterEach(() => {
+      addinClientService.destroy();
+      document.body.classList.remove(
+        'sky-modal-body-open',
+        'sky-modal-body-full-page'
+      );
+      document.body
+        .querySelectorAll('sky-modal, .sky-modal-host-backdrop')
+        .forEach((element) => element.remove());
     });
 
     it('should instantiate an AddinClient', (done) => {
@@ -655,6 +687,165 @@ describe('Addin Client Service', () => {
       expect(addinClientService.addinClient.destroy).toHaveBeenCalled();
 
       done();
+    });
+
+    it('sends compatible modal defaults without mutating application args', () => {
+      const ready = jasmine.createSpy('ready');
+      const applicationReadyArgs: AddinClientReadyArgs = {
+        modalConfig: { fullPage: false },
+        showUI: true
+      };
+      const args = initializeClient({ addinType: 'modal', ready });
+
+      args.ready(applicationReadyArgs);
+
+      expect(ready).toHaveBeenCalledOnceWith({
+        modalConfig: {
+          fullPage: false,
+          style: {
+            hostOverlay: false,
+            transparentBackground: true
+          }
+        },
+        showUI: true
+      });
+      expect(applicationReadyArgs.modalConfig?.style).toBeUndefined();
+    });
+
+    it('sends only body transparency for an older host with a modal clue', () => {
+      const ready = jasmine.createSpy('ready');
+      const args = initializeClient({ ready });
+
+      args.ready({ modalConfig: {} });
+
+      expect(ready).toHaveBeenCalledOnceWith({
+        modalConfig: {
+          style: { transparentBackground: true }
+        }
+      });
+    });
+
+    it('passes explicit style through by identity', () => {
+      const ready = jasmine.createSpy('ready');
+      const readyArgs: AddinClientReadyArgs = {
+        modalConfig: { style: {} }
+      };
+      const args = initializeClient({ addinType: 'modal', ready });
+
+      args.ready(readyArgs);
+
+      expect(ready).toHaveBeenCalledOnceWith(readyArgs);
+    });
+
+    it('preserves compatible-host full-page readiness', () => {
+      const ready = jasmine.createSpy('ready');
+      const readyArgs: AddinClientReadyArgs = {
+        modalConfig: { fullPage: true }
+      };
+      const args = initializeClient({ addinType: 'modal', ready });
+
+      args.ready(readyArgs);
+
+      expect(ready).toHaveBeenCalledOnceWith(readyArgs);
+    });
+
+    it('preserves older-host full-page readiness', () => {
+      const ready = jasmine.createSpy('ready');
+      const readyArgs: AddinClientReadyArgs = {
+        modalConfig: { fullPage: true }
+      };
+      const args = initializeClient({ ready });
+
+      args.ready(readyArgs);
+
+      expect(ready).toHaveBeenCalledOnceWith(readyArgs);
+    });
+
+    it('transitions repeated readiness without retaining prior treatment', () => {
+      const ready = jasmine.createSpy('ready');
+      const args = initializeClient({ ready });
+
+      args.ready({ modalConfig: {} });
+      expect(document.body).toHaveCssClass(
+        'bb-skyux-addin-client-modal-background-transparent'
+      );
+
+      args.ready({ modalConfig: { style: {} } });
+      expect(document.body).not.toHaveCssClass(
+        'bb-skyux-addin-client-modal-background-transparent'
+      );
+      expect(document.body).not.toHaveCssClass(
+        'bb-skyux-addin-client-container-background'
+      );
+    });
+
+    it('keeps the raw application args as the reactive inference boundary', async () => {
+      const ready = jasmine.createSpy('ready');
+      const args = initializeClient({ ready });
+
+      args.ready({});
+      expect(document.body).toHaveCssClass(
+        'bb-skyux-addin-client-container-background'
+      );
+
+      document.body.classList.add('sky-modal-body-open');
+      document.body.appendChild(document.createElement('sky-modal'));
+      await flushMutations();
+
+      expect(document.body).toHaveCssClass(
+        'bb-skyux-addin-client-modal-background-transparent'
+      );
+    });
+
+    it('removes hosted-surface state when destroyed', () => {
+      const args = initializeClient({
+        ready: () => {}
+      });
+
+      args.ready({ modalConfig: {} });
+      addinClientService.destroy();
+
+      expect(document.body).not.toHaveCssClass(
+        'bb-skyux-addin-client-modal-background-transparent'
+      );
+      expect(
+        document.getElementById(
+          'bb-skyux-addin-client-hosted-surface-style'
+        )
+      ).toBeNull();
+    });
+
+    it('does not restore hosted-surface state when ready is called after destroy', () => {
+      const ready = jasmine.createSpy('ready');
+      const readyArgs: AddinClientReadyArgs = { modalConfig: {} };
+      const args = initializeClient({ ready });
+
+      addinClientService.destroy();
+      args.ready(readyArgs);
+
+      expect(ready).toHaveBeenCalledOnceWith(readyArgs);
+      expect(document.body).not.toHaveCssClass(
+        'bb-skyux-addin-client-modal-background-transparent'
+      );
+      expect(document.body).not.toHaveCssClass(
+        'bb-skyux-addin-client-container-background'
+      );
+      expect(
+        document.getElementById(
+          'bb-skyux-addin-client-hosted-surface-style'
+        )
+      ).toBeNull();
+    });
+
+    it('destroys the underlying add-in client only once', () => {
+      spyOn(addinClientService.addinClient, 'destroy').and.stub();
+
+      addinClientService.destroy();
+      addinClientService.destroy();
+
+      expect(
+        addinClientService.addinClient.destroy
+      ).toHaveBeenCalledTimes(1);
     });
   });
 

@@ -1,6 +1,6 @@
 {
   "name": "@blackbaud/skyux-lib-addin-client",
-  "version": "14.0.1",
+  "version": "15.0.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/blackbaud/skyux-lib-addin-client.git"
@@ -12,7 +12,7 @@
     "@skyux/theme": "^14.0.1"
   },
   "dependencies": {
-    "@blackbaud/sky-addin-client": "^1.7.4",
+    "@blackbaud/sky-addin-client": "^1.8.0",
     "tslib": "^2.8.1"
   }
 }
