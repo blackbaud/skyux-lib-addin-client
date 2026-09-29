@@ -22,7 +22,7 @@
     "@angular/platform-browser": "21.2.8",
     "@angular/platform-browser-dynamic": "21.2.8",
     "@angular/router": "21.2.8",
-    "@blackbaud/sky-addin-client": "1.7.4",
+    "@blackbaud/sky-addin-client": "1.8.0",
     "@skyux/assets": "14.0.1",
     "@skyux/config": "14.0.1",
     "@skyux/core": "14.0.1",
