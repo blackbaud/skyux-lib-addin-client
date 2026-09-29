@@ -103,6 +103,7 @@ export class AddinClientService {
       callbacks: {
         init: (args: AddinClientInitArgs) => {
           this.initializeTheme(args?.themeSettings);
+
           this._args.next(args);
           this._args.complete();
         },

@@ -676,6 +676,7 @@ describe('Addin Client Service', () => {
       };
 
       addinClientService.args.subscribe((args) => {
+        expect(args.addinType).toBe('modal');
         expect(args.ready).toBe(ready);
         args.ready(readyArgs);
         expect(ready).toHaveBeenCalledOnceWith(readyArgs);

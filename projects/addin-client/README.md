@@ -321,19 +321,18 @@ export class MyModule { }
 
 For more information on creating SKY Add-ins, view the documentation on the [SKY Developer Portal](https://developer.blackbaud.com/skyapi/docs/addins)
 
-
 ## Modal style
 
-A modal add-in can independently configure its document body and a host's overlay through `modalConfig.style`:
+Requires version 14.1.0 of this library, which depends on `@blackbaud/sky-addin-client` 1.8.0 or later.
+
+A modal add-in can independently configure its document background and the host's overlay through `modalConfig.style`. This library passes these options to `@blackbaud/sky-addin-client` unchanged and doesn't supply defaults.
 
 | Option | Behavior |
 |---|---|
-| `transparentBackground: true` | Makes the add-in document body transparent. |
-| `transparentBackground: false` or omitted | Retains add-in's body styling. |
-| `hostOverlay: false` | Hides the host's modal overlay. |
-| `hostOverlay: true` or omitted | Host retains its modal visible overlay. |
-
-These options are independent and this library does not default them.
+| `transparentBackground: true` | Makes the add-in document's `html` and `body` backgrounds transparent. |
+| `transparentBackground: false` or omitted | Preserves the add-in's document background. |
+| `hostOverlay: false` | Asks the host to make its overlay transparent. Hosts that do not support this option ignore it. |
+| `hostOverlay: true` or omitted | Preserves the host's visible overlay. |
 
 ```ts
 args.ready({
@@ -347,11 +346,16 @@ args.ready({
 });
 ```
 
-The example `style` above makes the iframe body transparent and tells the host to hide its overlay. This allows normal SKY UX modal backdrop to be displayed without workarounds. 
+With both options set on a compatible host, the add-in document is transparent and the host's overlay is transparent, so the SKY UX modal backdrop is the only visible scrim.
 
-❌ When adopting this contract, remove these historical workaround rules from your add-in styles:
+The add-in client applies `transparentBackground` itself, so it works on any host. When you set it, you can remove this historical rule:
 
 ```scss
 ::ng-deep body { background: transparent; }
+```
+
+`hostOverlay: false` requires a compatible host. Make these two changes together: remove the rule below and set `hostOverlay: false`. On a host that ignores `hostOverlay`, removing the rule shows the SKY UX backdrop on top of the host's overlay (a double scrim). On a compatible host, keeping the rule while setting `hostOverlay: false` leaves no scrim. If your add-in runs on hosts that don't support `hostOverlay`, keep this rule and omit `hostOverlay`:
+
+```scss
 ::ng-deep .sky-modal-host-backdrop { display: none; }
 ```
