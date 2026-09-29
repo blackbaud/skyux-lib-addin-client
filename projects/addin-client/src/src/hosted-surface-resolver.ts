@@ -75,10 +75,10 @@ const CANONICAL_ADDIN_TYPE_TREATMENT: Readonly<
   button: 'preserve',
   dataset: 'preserve',
   flyout: 'container',
-  generic: 'preserve',
+  generic: 'container',
   modal: 'modal',
   page: 'preserve',
-  tab: 'preserve',
+  tab: 'container',
   tile: 'container',
   'vertical-tab': 'preserve',
 };
@@ -149,7 +149,11 @@ export function resolveHostedSurface(
       : modalResolution(false, modalState.modalDepth);
   }
 
-  if (readyArgs.boxConfig !== undefined || readyArgs.tileConfig !== undefined) {
+  if (
+    readyArgs.boxConfig !== undefined ||
+    readyArgs.tabConfig !== undefined ||
+    readyArgs.tileConfig !== undefined
+  ) {
     return {
       backdrop: 'preserve',
       restoreBackdropDisplay: false,
@@ -158,7 +162,6 @@ export function resolveHostedSurface(
   }
 
   if (
-    readyArgs.tabConfig !== undefined ||
     readyArgs.buttonConfig !== undefined ||
     readyArgs.actionButtonConfig !== undefined
   ) {

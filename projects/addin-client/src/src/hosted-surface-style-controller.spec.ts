@@ -52,11 +52,14 @@ describe('HostedSurfaceStyleController', () => {
     );
   });
 
-  it('uses the container token for box, tile, flyout, and ambiguity', () => {
-    for (const addinType of ['box', 'tile', 'flyout'] as const) {
+  it('uses the container token for box, tile, flyout, tab, generic, and ambiguity', () => {
+    for (const addinType of ['box', 'tile', 'flyout', 'tab', 'generic'] as const) {
       update({}, addinType);
       expect(document.body).toHaveCssClass(HOSTED_SURFACE_CLASSES.container);
     }
+
+    update({ tabConfig: {} });
+    expect(document.body).toHaveCssClass(HOSTED_SURFACE_CLASSES.container);
 
     update();
     expect(document.body).toHaveCssClass(HOSTED_SURFACE_CLASSES.container);

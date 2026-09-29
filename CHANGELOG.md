@@ -1,7 +1,8 @@
 # 15.0.0
 
 - **Breaking:** Add automatic SKY UX background treatment for modal, full-page, box, tile,
-  flyout, page, and older ambiguous add-in hosts when `modalConfig.style` is undefined.
+  flyout, tab, generic, page, and older ambiguous add-in hosts when `modalConfig.style` is
+  undefined.
 - Preserved explicit modal style choices and nested modal backdrop behavior.
 - Applied Angular's `CSP_NONCE` to the client's hosted-surface style element.
 - Updated the library to the SKY UX 15 and Angular 22 compatibility baseline.
