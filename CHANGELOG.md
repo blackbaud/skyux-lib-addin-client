@@ -4,6 +4,8 @@
   flyout, tab, generic, page, and older ambiguous add-in hosts when `modalConfig.style` is
   undefined.
 - Preserved explicit modal style choices and nested modal backdrop behavior.
+- Added `AddinClientConfigService.getHostedSurfaceMode()`. Return `'preserve'` to keep an
+  add-in's own background instead of the automatic treatment.
 - Applied Angular's `CSP_NONCE` to the client's hosted-surface style element.
 - Updated the library to the SKY UX 15 and Angular 22 compatibility baseline.
 

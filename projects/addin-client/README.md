@@ -359,6 +359,23 @@ Content Security Policy that restricts `style-src`, provide the nonce to Angular
 `CSP_NONCE` or the `ngCspNonce` attribute, as Angular requires for component styles. The
 client applies the same nonce.
 
+### Keep the add-in's own background
+
+To keep the add-in's own background instead of the automatic treatment, extend
+`AddinClientConfigService` (see [Additional configuration](#additional-configuration))
+and override `getHostedSurfaceMode()`:
+
+```ts
+class AddinConfigService extends AddinClientConfigService {
+  public override getHostedSurfaceMode(): AddinClientHostedSurfaceMode {
+    return 'preserve';
+  }
+}
+```
+
+With `'preserve'`, the client doesn't change the add-in document for any add-in type. A
+modal add-in can still set `modalConfig.style` explicitly.
+
 ### Explicit modal style
 
 A modal add-in can override the automatic behavior and independently configure its

@@ -38,7 +38,10 @@ import {
   Observable,
   from
 } from 'rxjs';
-import { AddinClientConfigService } from './addin-client-config.service';
+import {
+  AddinClientConfigService,
+  AddinClientHostedSurfaceMode
+} from './addin-client-config.service';
 import {
   AddinEvent,
   AddinEventHandlerInstance
@@ -103,6 +106,9 @@ export class AddinClientService {
   #rendererFactory = inject(RendererFactory2);
   #themeService = inject(SkyThemeService);
   #addinClientConfigService = inject(AddinClientConfigService, { optional: true });
+  // A config provided as a plain object may predate getHostedSurfaceMode().
+  #hostedSurfaceMode: AddinClientHostedSurfaceMode =
+    this.#addinClientConfigService?.getHostedSurfaceMode?.() ?? 'automatic';
 
   private destroyed = false;
   private readonly hostedSurfaceController =
@@ -190,8 +196,13 @@ export class AddinClientService {
     const ready = args.ready;
 
     args.ready = (readyArgs: AddinClientReadyArgs) => {
-      // Hosted-surface treatment needs the body; without it, still post addin-ready.
-      if (this.destroyed || !this.#document.body) {
+      // Pass ready() through untouched when the app keeps its own background, and when
+      // the body doesn't exist yet so addin-ready is still posted.
+      if (
+        this.destroyed ||
+        this.#hostedSurfaceMode === 'preserve' ||
+        !this.#document.body
+      ) {
         ready(readyArgs);
         return;
       }

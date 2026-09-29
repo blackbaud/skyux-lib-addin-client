@@ -26,7 +26,10 @@ import {
 } from '@skyux-sdk/testing';
 import { SkyAppConfig } from '@skyux/config';
 import { SkyTheme, SkyThemeMode, SkyThemeService, SkyThemeSettings } from '@skyux/theme';
-import { AddinClientConfigService } from './addin-client-config.service';
+import {
+  AddinClientConfigService,
+  AddinClientHostedSurfaceMode
+} from './addin-client-config.service';
 import {
   AddinClientService
 } from './addin-client.service';
@@ -1246,8 +1249,26 @@ describe('Addin Client Service', () => {
       addinClientService = TestBed.inject(AddinClientService);
     });
 
+    afterEach(() => {
+      addinClientService.destroy();
+    });
+
     it('should override getAddinClientConfig function', () => {
       expect(addinConfigService.getAddinClientConfig).toHaveBeenCalledTimes(1);
+    });
+
+    it('keeps automatic hosted-surface treatment by default', () => {
+      const args = initializeWithReady(addinClientService, {
+        addinType: 'tile',
+        ready: () => {}
+      });
+
+      args.ready({});
+
+      expect(addinConfigService.getHostedSurfaceMode()).toBe('automatic');
+      expect(document.body).toHaveCssClass(
+        'bb-skyux-addin-client-container-background'
+      );
     });
 
     it('destroys the addin client', (done) => {
@@ -1260,4 +1281,152 @@ describe('Addin Client Service', () => {
       done();
     });
   });
+
+  describe('With the hosted surface mode set to preserve', () => {
+    class PreserveConfigService extends AddinClientConfigService {
+      public override getHostedSurfaceMode(): AddinClientHostedSurfaceMode {
+        return 'preserve';
+      }
+    }
+
+    let addinClientService: AddinClientService;
+
+    beforeEach(() => {
+      TestBed.configureTestingModule(
+        {
+          providers: [
+            AddinClientService,
+            SkyThemeService,
+            {
+              provide: AddinClientConfigService, useClass: PreserveConfigService
+            }
+          ]
+        }
+      );
+
+      addinClientService = TestBed.inject(AddinClientService);
+    });
+
+    afterEach(() => {
+      addinClientService.destroy();
+      document.body.classList.remove('sky-modal-body-open');
+      document.body
+        .querySelectorAll('sky-modal')
+        .forEach((element) => element.remove());
+    });
+
+    it('leaves a container add-in document unchanged', () => {
+      const ready = jasmine.createSpy('ready');
+      const readyArgs: AddinClientReadyArgs = { showUI: true };
+      const args = initializeWithReady(addinClientService, {
+        addinType: 'tile',
+        ready
+      });
+
+      args.ready(readyArgs);
+
+      expect(ready).toHaveBeenCalledOnceWith(readyArgs);
+      expect(document.body).not.toHaveCssClass(
+        'bb-skyux-addin-client-container-background'
+      );
+      expect(
+        document.querySelector(
+          'style[data-bb-skyux-addin-client-hosted-surface]'
+        )
+      ).toBeNull();
+    });
+
+    it('sends no inferred modal style and passes explicit style through', () => {
+      const ready = jasmine.createSpy('ready');
+      const inferredArgs: AddinClientReadyArgs = { showUI: true };
+      const explicitArgs: AddinClientReadyArgs = {
+        modalConfig: {
+          style: { hostOverlay: false, transparentBackground: true }
+        }
+      };
+      const args = initializeWithReady(addinClientService, {
+        addinType: 'modal',
+        ready
+      });
+
+      args.ready(inferredArgs);
+      args.ready(explicitArgs);
+
+      expect(ready.calls.argsFor(0)[0]).toBe(inferredArgs);
+      expect(ready.calls.argsFor(1)[0]).toBe(explicitArgs);
+      expect(document.body).not.toHaveCssClass(
+        'bb-skyux-addin-client-modal-background-transparent'
+      );
+    });
+
+    it('does not react when a SKY UX modal opens later', async () => {
+      const args = initializeWithReady(addinClientService, {
+        ready: () => {}
+      });
+
+      args.ready({});
+      document.body.classList.add('sky-modal-body-open');
+      document.body.appendChild(document.createElement('sky-modal'));
+      await new Promise<void>((resolve) => setTimeout(resolve));
+
+      expect(document.body).not.toHaveCssClass(
+        'bb-skyux-addin-client-modal-background-transparent'
+      );
+    });
+  });
+
+  describe('With a config object that predates getHostedSurfaceMode', () => {
+    let addinClientService: AddinClientService;
+
+    beforeEach(() => {
+      TestBed.configureTestingModule(
+        {
+          providers: [
+            AddinClientService,
+            SkyThemeService,
+            {
+              provide: AddinClientConfigService,
+              useValue: { getAddinClientConfig: () => ({}) }
+            }
+          ]
+        }
+      );
+
+      addinClientService = TestBed.inject(AddinClientService);
+    });
+
+    afterEach(() => {
+      addinClientService.destroy();
+    });
+
+    it('uses automatic hosted-surface treatment', () => {
+      const args = initializeWithReady(addinClientService, {
+        addinType: 'tile',
+        ready: () => {}
+      });
+
+      args.ready({});
+
+      expect(document.body).toHaveCssClass(
+        'bb-skyux-addin-client-container-background'
+      );
+    });
+  });
+
+  /**
+   * Runs the vanilla client's init callback and returns the args the service publishes.
+   */
+  function initializeWithReady(
+    service: AddinClientService,
+    initArgs: AddinClientInitArgs
+  ): AddinClientInitArgs {
+    let publishedArgs!: AddinClientInitArgs;
+
+    service.args.subscribe((args) => {
+      publishedArgs = args;
+    });
+    (service.addinClient as any).args.callbacks.init(initArgs);
+
+    return publishedArgs;
+  }
 });
