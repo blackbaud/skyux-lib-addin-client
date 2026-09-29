@@ -80,7 +80,7 @@ const CANONICAL_ADDIN_TYPE_TREATMENT: Readonly<
   page: 'preserve',
   tab: 'container',
   tile: 'container',
-  'vertical-tab': 'preserve',
+  'vertical-tab-form': 'container',
 };
 
 function modalResolution(

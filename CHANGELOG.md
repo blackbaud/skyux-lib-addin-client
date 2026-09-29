@@ -1,8 +1,8 @@
 # 15.0.0
 
 - **Breaking:** Add automatic SKY UX background treatment for modal, full-page, box, tile,
-  flyout, tab, generic, page, and older ambiguous add-in hosts when `modalConfig.style` is
-  undefined.
+  flyout, tab, generic, vertical tab form, page, and older ambiguous add-in hosts when
+  `modalConfig.style` is undefined.
 - Preserved explicit modal style choices and nested modal backdrop behavior.
 - Added `AddinClientConfigService.getHostedSurfaceMode()`. Return `'preserve'` to keep an
   add-in's own background instead of the automatic treatment.

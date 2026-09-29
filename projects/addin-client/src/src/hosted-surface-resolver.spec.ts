@@ -83,16 +83,18 @@ describe('hosted surface resolver', () => {
       ).treatment,
     ).toBe('preserve');
 
-    for (const type of ['box', 'tile', 'flyout', 'tab', 'generic'] as const) {
+    for (const type of [
+      'box',
+      'tile',
+      'flyout',
+      'tab',
+      'generic',
+      'vertical-tab-form',
+    ] as const) {
       expect(resolve(type).treatment).toBe('container');
     }
 
-    for (const type of [
-      'action-button',
-      'button',
-      'dataset',
-      'vertical-tab',
-    ] as const) {
+    for (const type of ['action-button', 'button', 'dataset'] as const) {
       expect(resolve(type).treatment).toBe('preserve');
     }
   });

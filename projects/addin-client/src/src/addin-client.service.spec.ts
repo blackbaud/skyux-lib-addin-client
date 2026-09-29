@@ -797,6 +797,18 @@ describe('Addin Client Service', () => {
       );
     });
 
+    it('applies the container background for a host-reported vertical-tab-form type', () => {
+      const args = initializeFromHost({ addinType: 'vertical-tab-form' });
+
+      expect(args.addinType).toBe('vertical-tab-form');
+
+      args.ready({});
+
+      expect(document.body).toHaveCssClass(
+        'bb-skyux-addin-client-container-background'
+      );
+    });
+
     it('treats an add-in type the client does not recognize as an older host', () => {
       const args = initializeFromHost({ addinType: 'unrecognized-type' });
 
