@@ -12,8 +12,12 @@ export const HOSTED_SURFACE_CLASSES = {
   transparentBackdrop: 'bb-skyux-addin-client-modal-backdrop-transparent',
 } as const;
 
-export const HOSTED_SURFACE_STYLE_ID =
-  'bb-skyux-addin-client-hosted-surface-style';
+/**
+ * Marks the style element owned by a controller. An attribute rather than an ID, so it
+ * doesn't need to be unique in the document.
+ */
+export const HOSTED_SURFACE_STYLE_ATTRIBUTE =
+  'data-bb-skyux-addin-client-hosted-surface';
 
 /**
  * Body classes that feed `resolveHostedSurface`'s live modal state. A mutation observer
@@ -26,9 +30,15 @@ const MODAL_MARKER_CLASSES = [
   'sky-modal-body-full-page',
 ] as const;
 
+// SKY UX styles the body as a page; container add-ins use SKY UX's container color for
+// the theme and mode on the body instead. SKY UX defines the documented theme token once
+// a theme is set up, and the root-level variable covers a body without a theme.
 const STYLE_TEXT = `
 body.${HOSTED_SURFACE_CLASSES.container} {
-  background-color: var(--sky-color-background-container-base) !important;
+  background-color: var(
+    --sky-theme-color-background-container-default,
+    var(--sky-background-color-container-default)
+  ) !important;
 }
 
 body.${HOSTED_SURFACE_CLASSES.transparent} {
@@ -53,14 +63,21 @@ interface ControllerInput {
 
 export class HostedSurfaceStyleController {
   readonly #document: Document;
+  readonly #nonce: string | null;
   readonly #ownedClasses = new Set<string>();
 
   #input: ControllerInput | undefined;
   #observer: MutationObserver | undefined;
   #styleElement: HTMLStyleElement | undefined;
 
-  constructor(documentRef: Document) {
+  /**
+   * @param documentRef The add-in document.
+   * @param nonce The Content Security Policy nonce for the injected style element, as
+   * provided to Angular through `CSP_NONCE` or the `ngCspNonce` attribute.
+   */
+  constructor(documentRef: Document, nonce: string | null = null) {
     this.#document = documentRef;
+    this.#nonce = nonce;
   }
 
   public update(
@@ -152,9 +169,10 @@ export class HostedSurfaceStyleController {
     }
 
     const style = this.#document.createElement('style');
+    style.setAttribute(HOSTED_SURFACE_STYLE_ATTRIBUTE, '');
 
-    if (!this.#document.getElementById(HOSTED_SURFACE_STYLE_ID)) {
-      style.id = HOSTED_SURFACE_STYLE_ID;
+    if (this.#nonce) {
+      style.setAttribute('nonce', this.#nonce);
     }
 
     style.textContent = STYLE_TEXT;

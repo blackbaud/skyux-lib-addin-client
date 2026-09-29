@@ -16,6 +16,11 @@ export interface HostedSurfaceModalState {
 }
 
 export interface HostedSurfaceResolverInput {
+  /**
+   * The add-in type reported by the host. The vanilla client passes `undefined` both for
+   * an older host that omits the type and for a type it doesn't recognize, so either host
+   * is resolved as an older host.
+   */
   readonly addinType: AddinType | undefined;
   readonly modalState: HostedSurfaceModalState;
   readonly readyArgs: AddinClientReadyArgs;
@@ -23,6 +28,11 @@ export interface HostedSurfaceResolverInput {
 
 export interface HostedSurfaceResolution {
   readonly backdrop: HostedSurfaceBackdrop;
+  /**
+   * Modal style to send to the vanilla client's `ready()`. Set only when the treatment
+   * can't change after `ready()`: the vanilla client applies it as inline `!important`
+   * declarations that the controller can't undo when live modal state changes.
+   */
   readonly inferredModalStyle?: AddinModalStyle;
   /**
    * Whether the controller may override a historical consumer's `display:none` backdrop
@@ -168,7 +178,13 @@ export function resolveHostedSurface(
   }
 
   if (modalState.modalOpen) {
-    return modalResolution(false, modalState.modalDepth);
+    // Live modal markers can change after ready(), so the controller alone owns this
+    // treatment and the vanilla client receives no style.
+    return {
+      backdrop: resolveModalBackdrop(modalState.modalDepth, false),
+      restoreBackdropDisplay: true,
+      treatment: 'modal',
+    };
   }
 
   return {

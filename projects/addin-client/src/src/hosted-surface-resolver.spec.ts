@@ -156,6 +156,22 @@ describe('hosted surface resolver', () => {
     ).toBe('modal');
   });
 
+  it('keeps live modal inference reversible by sending no modal style', () => {
+    const liveModal = resolve(
+      undefined,
+      {},
+      {
+        fullPageModalOpen: false,
+        modalDepth: 1,
+        modalOpen: true,
+      },
+    );
+
+    expect(liveModal.inferredModalStyle).toBeUndefined();
+    expect(liveModal.backdrop).toBe('transparent');
+    expect(liveModal.restoreBackdropDisplay).toBe(true);
+  });
+
   it('uses container treatment for remaining older-host ambiguity', () => {
     expect(resolve(undefined).treatment).toBe('container');
   });

@@ -334,8 +334,9 @@ modal style without automatic hosted-surface inference.
   backdrop.
 - Full-page modal and Page add-ins retain their application background.
 - Box, Tile, and Flyout add-ins use the SKY UX container background.
-- A compatible host supplies exact add-in type context. On older hosts, the client uses
-  the add-in's `ready()` configuration and live SKY UX modal state, then falls back to the
+- A compatible host supplies exact add-in type context. On older hosts, and when a host
+  reports an add-in type this client version doesn't recognize, the client uses the
+  add-in's `ready()` configuration and live SKY UX modal state, then falls back to the
   container background when the context remains ambiguous.
 
 Any defined `modalConfig.style` object, including `{}`, suppresses automatic modal
@@ -353,6 +354,11 @@ SKY UX modal backdrop. The client temporarily overrides the hidden-backdrop rule
 automatic modal paths for mixed-version rollout safety, but applications should no longer
 own that behavior.
 
+The client adds one `<style>` element for these backgrounds. If the add-in uses a
+Content Security Policy that restricts `style-src`, provide the nonce to Angular through
+`CSP_NONCE` or the `ngCspNonce` attribute, as Angular requires for component styles. The
+client applies the same nonce.
+
 ### Explicit modal style
 
 A modal add-in can override the automatic behavior and independently configure its
@@ -360,7 +366,7 @@ document body and a host's overlay through `modalConfig.style`:
 
 | Option | Behavior |
 |---|---|
-| `transparentBackground: true` | Makes the add-in document body transparent. |
+| `transparentBackground: true` | Makes the add-in document transparent with inline `!important` `background-color: transparent` and `background-image: none` declarations on `<html>` and `<body>`. |
 | `transparentBackground: false` or omitted | Retains add-in's body styling. |
 | `hostOverlay: false` | Asks a compatible host to make its modal overlay transparent. |
 | `hostOverlay: true` or omitted | The host retains its visible modal overlay. |
@@ -380,6 +386,6 @@ args.ready({
 });
 ```
 
-The example `style` above makes the iframe body transparent and asks a compatible host to
+The example `style` above makes the add-in document transparent and asks a compatible host to
 make its overlay transparent. This allows the normal SKY UX modal backdrop to remain as
 the visible scrim without workarounds.

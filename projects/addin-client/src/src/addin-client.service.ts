@@ -1,5 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import {
+  CSP_NONCE,
   EventEmitter,
   Injectable,
   RendererFactory2,
@@ -105,7 +106,10 @@ export class AddinClientService {
 
   private destroyed = false;
   private readonly hostedSurfaceController =
-    new HostedSurfaceStyleController(this.#document);
+    new HostedSurfaceStyleController(
+      this.#document,
+      inject(CSP_NONCE, { optional: true })
+    );
 
   constructor() {
     this.addinClient = new AddinClient({
@@ -186,7 +190,8 @@ export class AddinClientService {
     const ready = args.ready;
 
     args.ready = (readyArgs: AddinClientReadyArgs) => {
-      if (this.destroyed) {
+      // Hosted-surface treatment needs the body; without it, still post addin-ready.
+      if (this.destroyed || !this.#document.body) {
         ready(readyArgs);
         return;
       }

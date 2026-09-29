@@ -3,7 +3,7 @@ import { expect } from '@skyux-sdk/testing';
 
 import {
   HOSTED_SURFACE_CLASSES,
-  HOSTED_SURFACE_STYLE_ID,
+  HOSTED_SURFACE_STYLE_ATTRIBUTE,
   HostedSurfaceStyleController,
 } from './hosted-surface-style-controller';
 
@@ -11,7 +11,12 @@ describe('HostedSurfaceStyleController', () => {
   const backdropFixtureStyleId = 'bb-skyux-addin-client-backdrop-fixture-style';
   const historicalBackdropStyleId =
     'bb-skyux-addin-client-historical-backdrop-style';
+  const hostedStyleSelector = `style[${HOSTED_SURFACE_STYLE_ATTRIBUTE}]`;
   let controller: HostedSurfaceStyleController;
+
+  function hostedStyle(): HTMLStyleElement | null {
+    return document.head.querySelector<HTMLStyleElement>(hostedStyleSelector);
+  }
 
   function update(
     readyArgs: AddinClientReadyArgs = {},
@@ -33,7 +38,9 @@ describe('HostedSurfaceStyleController', () => {
       document.body.classList.remove(className);
     }
 
-    document.getElementById(HOSTED_SURFACE_STYLE_ID)?.remove();
+    document
+      .querySelectorAll(hostedStyleSelector)
+      .forEach((element) => element.remove());
     document.getElementById(backdropFixtureStyleId)?.remove();
     document.getElementById(historicalBackdropStyleId)?.remove();
     document.body
@@ -53,9 +60,74 @@ describe('HostedSurfaceStyleController', () => {
 
     update();
     expect(document.body).toHaveCssClass(HOSTED_SURFACE_CLASSES.container);
-    expect(
-      document.getElementById(HOSTED_SURFACE_STYLE_ID)?.textContent,
-    ).toContain('--sky-color-background-container-base');
+    expect(hostedStyle()?.textContent).toContain(
+      '--sky-theme-color-background-container-default',
+    );
+  });
+
+  it('matches a SKY UX box in the body theme and mode', () => {
+    const themes: Record<string, string[]> = {
+      'no theme': [],
+      default: ['sky-theme-default'],
+      'modern light': [
+        'sky-theme-modern',
+        'sky-theme-brand-base',
+        'sky-theme-mode-light',
+      ],
+      'modern dark': [
+        'sky-theme-modern',
+        'sky-theme-brand-base',
+        'sky-theme-mode-dark',
+      ],
+    };
+    const bodyColors: Record<string, string> = {};
+    const boxColors: Record<string, string> = {};
+
+    // Other specs may leave SKY UX theme classes on the shared body.
+    const savedThemeClasses = Array.from(document.body.classList).filter(
+      (className) => className.startsWith('sky-theme-'),
+    );
+    document.body.classList.remove(...savedThemeClasses);
+    const box = document.createElement('div');
+    box.classList.add('sky-box');
+    document.body.appendChild(box);
+
+    try {
+      update({}, 'tile');
+
+      for (const [label, themeClasses] of Object.entries(themes)) {
+        document.body.classList.add(...themeClasses);
+        document.body.getAnimations({ subtree: true }).forEach((animation) =>
+          animation.finish(),
+        );
+
+        bodyColors[label] = getComputedStyle(document.body).backgroundColor;
+        boxColors[label] = getComputedStyle(box).backgroundColor;
+
+        document.body.classList.remove(...themeClasses);
+      }
+    } finally {
+      box.remove();
+      document.body.classList.add(...savedThemeClasses);
+    }
+
+    expect(bodyColors).toEqual(boxColors);
+    expect(boxColors['modern dark']).not.toBe(boxColors['modern light']);
+  });
+
+  it('applies the CSP nonce to its style element', () => {
+    controller.destroy();
+    controller = new HostedSurfaceStyleController(document, 'test-nonce');
+
+    update();
+
+    expect(hostedStyle()?.nonce).toBe('test-nonce');
+  });
+
+  it('omits the nonce when none is provided', () => {
+    update();
+
+    expect(hostedStyle()?.hasAttribute('nonce')).toBeFalse();
   });
 
   it('preserves page, full-page, and explicit style backgrounds', () => {
@@ -78,9 +150,9 @@ describe('HostedSurfaceStyleController', () => {
     expect(document.body).toHaveCssClass(
       HOSTED_SURFACE_CLASSES.restoreBackdrop,
     );
-    expect(
-      document.getElementById(HOSTED_SURFACE_STYLE_ID)?.textContent,
-    ).toContain('.sky-modal-host-backdrop:not([hidden])');
+    expect(hostedStyle()?.textContent).toContain(
+      '.sky-modal-host-backdrop:not([hidden])',
+    );
   });
 
   it('keeps the compatible-host backdrop colored', () => {
@@ -250,7 +322,7 @@ describe('HostedSurfaceStyleController', () => {
   it('removes only classes and styles it owns', () => {
     document.body.classList.add(HOSTED_SURFACE_CLASSES.container);
     const unrelatedStyle = document.createElement('style');
-    unrelatedStyle.id = HOSTED_SURFACE_STYLE_ID;
+    unrelatedStyle.setAttribute(HOSTED_SURFACE_STYLE_ATTRIBUTE, '');
     unrelatedStyle.textContent = '.unrelated { color: red; }';
     document.head.appendChild(unrelatedStyle);
 

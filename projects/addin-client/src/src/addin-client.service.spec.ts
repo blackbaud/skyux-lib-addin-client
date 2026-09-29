@@ -1,3 +1,4 @@
+import { CSP_NONCE } from '@angular/core';
 import {
   TestBed
 } from '@angular/core/testing';
@@ -49,6 +50,30 @@ describe('Addin Client Service', () => {
 
       const clientArgs = (addinClientService.addinClient as any).args;
       clientArgs.callbacks.init(initArgs);
+
+      return publishedArgs;
+    }
+
+    /**
+     * Sends host-ready through the vanilla client so the app receives its real ready().
+     */
+    function initializeFromHost(
+      message: Record<string, unknown>
+    ): AddinClientInitArgs {
+      let publishedArgs!: AddinClientInitArgs;
+
+      addinClientService.args.subscribe((args) => {
+        publishedArgs = args;
+      });
+
+      (addinClientService.addinClient as any).handleMessage({
+        data: {
+          message,
+          messageType: 'host-ready',
+          source: 'bb-addin-host'
+        },
+        origin: 'https://host.nxt.blackbaud.com'
+      });
 
       return publishedArgs;
     }
@@ -712,7 +737,7 @@ describe('Addin Client Service', () => {
       expect(applicationReadyArgs.modalConfig?.style).toBeUndefined();
     });
 
-    it('sends only body transparency for an older host with a modal clue', () => {
+    it('sends document transparency without hostOverlay for an older host with modal config', () => {
       const ready = jasmine.createSpy('ready');
       const args = initializeClient({ ready });
 
@@ -723,6 +748,82 @@ describe('Addin Client Service', () => {
           style: { transparentBackground: true }
         }
       });
+    });
+
+    it('does not send modal style inferred from a live modal', () => {
+      const ready = jasmine.createSpy('ready');
+      const readyArgs: AddinClientReadyArgs = { showUI: true };
+      const args = initializeClient({ ready });
+
+      document.body.classList.add('sky-modal-body-open');
+      document.body.appendChild(document.createElement('sky-modal'));
+      args.ready(readyArgs);
+
+      expect(ready).toHaveBeenCalledOnceWith(readyArgs);
+      expect(document.body).toHaveCssClass(
+        'bb-skyux-addin-client-modal-background-transparent'
+      );
+    });
+
+    it('restores the container background when a live modal closes', async () => {
+      document.body.classList.add('sky-modal-body-open');
+      document.body.appendChild(document.createElement('sky-modal'));
+
+      // An older host sends no add-in type; this uses the vanilla client's real ready().
+      const args = initializeFromHost({});
+      args.ready({ showUI: true });
+
+      expect(document.body).toHaveCssClass(
+        'bb-skyux-addin-client-modal-background-transparent'
+      );
+      expect(document.body.style.getPropertyValue('background-color')).toBe('');
+      expect(
+        document.documentElement.style.getPropertyValue('background-color')
+      ).toBe('');
+
+      document.body.classList.remove('sky-modal-body-open');
+      document.body.querySelector('sky-modal')?.remove();
+      await flushMutations();
+      document.body.getAnimations().forEach((animation) => animation.finish());
+
+      expect(document.body).toHaveCssClass(
+        'bb-skyux-addin-client-container-background'
+      );
+      expect(getComputedStyle(document.body).backgroundColor).not.toBe(
+        'rgba(0, 0, 0, 0)'
+      );
+    });
+
+    it('treats an add-in type the client does not recognize as an older host', () => {
+      const args = initializeFromHost({ addinType: 'unrecognized-type' });
+
+      expect(args.addinType).toBeUndefined();
+
+      args.ready({});
+
+      expect(document.body).toHaveCssClass(
+        'bb-skyux-addin-client-container-background'
+      );
+    });
+
+    it('calls ready without hosted-surface treatment when the body does not exist', () => {
+      const ready = jasmine.createSpy('ready');
+      const readyArgs: AddinClientReadyArgs = { modalConfig: {} };
+      const args = initializeClient({ ready });
+      const bodySpy = spyOnProperty(document, 'body', 'get').and.returnValue(
+        null as unknown as HTMLElement
+      );
+
+      try {
+        expect(() => args.ready(readyArgs)).not.toThrow();
+      } finally {
+        bodySpy.and.callThrough();
+      }
+
+      expect(ready).toHaveBeenCalledOnceWith(readyArgs);
+      expect(document.body).not.toHaveCssClass(
+        'bb-skyux-addin-client-modal-background-transparent'
+      );
     });
 
     it('passes explicit style through by identity', () => {
@@ -809,8 +910,8 @@ describe('Addin Client Service', () => {
         'bb-skyux-addin-client-modal-background-transparent'
       );
       expect(
-        document.getElementById(
-          'bb-skyux-addin-client-hosted-surface-style'
+        document.querySelector(
+          'style[data-bb-skyux-addin-client-hosted-surface]'
         )
       ).toBeNull();
     });
@@ -831,8 +932,8 @@ describe('Addin Client Service', () => {
         'bb-skyux-addin-client-container-background'
       );
       expect(
-        document.getElementById(
-          'bb-skyux-addin-client-hosted-surface-style'
+        document.querySelector(
+          'style[data-bb-skyux-addin-client-hosted-surface]'
         )
       ).toBeNull();
     });
@@ -846,6 +947,46 @@ describe('Addin Client Service', () => {
       expect(
         addinClientService.addinClient.destroy
       ).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('With a CSP nonce', () => {
+    let addinClientService: AddinClientService;
+
+    beforeEach(() => {
+      TestBed.configureTestingModule(
+        {
+          providers: [
+            AddinClientService,
+            SkyThemeService,
+            { provide: CSP_NONCE, useValue: 'test-nonce' }
+          ]
+        }
+      );
+
+      addinClientService = TestBed.inject(AddinClientService);
+    });
+
+    afterEach(() => {
+      addinClientService.destroy();
+    });
+
+    it('applies the nonce to the hosted-surface style element', () => {
+      let args!: AddinClientInitArgs;
+      addinClientService.args.subscribe((initArgs) => {
+        args = initArgs;
+      });
+      (addinClientService.addinClient as any).args.callbacks.init({
+        ready: () => {}
+      });
+
+      args.ready({});
+
+      expect(
+        document.querySelector<HTMLStyleElement>(
+          'style[data-bb-skyux-addin-client-hosted-surface]'
+        )?.nonce
+      ).toBe('test-nonce');
     });
   });
 
