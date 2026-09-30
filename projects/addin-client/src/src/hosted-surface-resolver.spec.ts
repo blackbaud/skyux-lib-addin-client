@@ -124,6 +124,27 @@ describe('hosted surface resolver', () => {
     }
   });
 
+  it('resolves each ready() configuration like the add-in type it identifies', () => {
+    const configuredTypes = [
+      [{ modalConfig: {} }, 'modal'],
+      [{ boxConfig: {} }, 'box'],
+      [{ tabConfig: {} }, 'tab'],
+      [{ tileConfig: {} }, 'tile'],
+      [{ buttonConfig: {} }, 'button'],
+      [{ actionButtonConfig: {} }, 'action-button'],
+    ] as ReadonlyArray<readonly [AddinClientReadyArgs, AddinType]>;
+
+    for (const [readyArgs, addinType] of configuredTypes) {
+      expect(resolve(undefined, readyArgs).treatment)
+        .withContext(addinType)
+        .toBe(resolve(addinType).treatment);
+    }
+  });
+
+  it('treats an add-in nothing identifies like a generic add-in', () => {
+    expect(resolve(undefined).treatment).toBe(resolve('generic').treatment);
+  });
+
   it('treats older-host modal config as normal or full page', () => {
     expect(resolve(undefined, { modalConfig: {} }).inferredModalStyle).toEqual({
       transparentBackground: true,

@@ -62,10 +62,11 @@ function resolveModalBackdrop(
 }
 
 /**
- * Canonical treatment for every `AddinType` a compatible host may report, excluding
- * `'modal'` (which requires additional context such as `fullPage` and modal depth and is
- * handled separately). Declaring this as `Readonly<Record<AddinType, ...>>` forces any
- * future `AddinType` addition to be given an explicit mapping at compile time.
+ * Canonical treatment for every `AddinType`, whether a compatible host reports it or it is
+ * inferred from `ready()`. `'modal'` is resolved separately because it also depends on
+ * `fullPage`, modal depth, and whether the host reports types. Declaring this as
+ * `Readonly<Record<AddinType, ...>>` forces any future `AddinType` addition to be given an
+ * explicit mapping at compile time.
  */
 const CANONICAL_ADDIN_TYPE_TREATMENT: Readonly<
   Record<AddinType, HostedSurfaceTreatment>
@@ -82,6 +83,66 @@ const CANONICAL_ADDIN_TYPE_TREATMENT: Readonly<
   tile: 'container',
   'vertical-tab-form': 'container',
 };
+
+/**
+ * The `ready()` configuration fields that identify an add-in type when the host does not
+ * report one, in precedence order. An inferred type is resolved exactly like a reported
+ * one, so the two paths cannot drift apart.
+ */
+const READY_ARGS_ADDIN_TYPES: ReadonlyArray<
+  readonly [keyof AddinClientReadyArgs, AddinType]
+> = [
+  ['modalConfig', 'modal'],
+  ['boxConfig', 'box'],
+  ['tabConfig', 'tab'],
+  ['tileConfig', 'tile'],
+  ['buttonConfig', 'button'],
+  ['actionButtonConfig', 'action-button'],
+];
+
+/**
+ * The type an add-in is treated as when neither the host nor `ready()` identifies it. It is
+ * the type a host reports when a host component does not specify one.
+ */
+const UNIDENTIFIED_ADDIN_TYPE: AddinType = 'generic';
+
+const FULL_PAGE_RESOLUTION: HostedSurfaceResolution = {
+  backdrop: 'preserve',
+  restoreBackdropDisplay: false,
+  treatment: 'full-page',
+};
+
+function inferAddinType(
+  readyArgs: AddinClientReadyArgs,
+): AddinType | undefined {
+  return READY_ARGS_ADDIN_TYPES.find(
+    ([field]) => readyArgs[field] !== undefined,
+  )?.[1];
+}
+
+/**
+ * Resolves the treatment for an add-in type, whether the host reported it or it was
+ * inferred from `ready()`. Only modal treatment depends on whether the host reports types,
+ * because only such a host honors `hostOverlay`.
+ */
+function resolveAddinType(
+  addinType: AddinType,
+  readyArgs: AddinClientReadyArgs,
+  modalDepth: number,
+  hostReportsType: boolean,
+): HostedSurfaceResolution {
+  if (addinType === 'modal') {
+    return readyArgs.modalConfig?.fullPage === true
+      ? FULL_PAGE_RESOLUTION
+      : modalResolution(hostReportsType, modalDepth);
+  }
+
+  return {
+    backdrop: 'preserve',
+    restoreBackdropDisplay: false,
+    treatment: CANONICAL_ADDIN_TYPE_TREATMENT[addinType],
+  };
+}
 
 function modalResolution(
   compatibleHost: boolean,
@@ -122,62 +183,22 @@ export function resolveHostedSurface(
   }
 
   if (addinType !== undefined) {
-    if (addinType === 'modal') {
-      return readyArgs.modalConfig?.fullPage === true
-        ? {
-            backdrop: 'preserve',
-            restoreBackdropDisplay: false,
-            treatment: 'full-page',
-          }
-        : modalResolution(true, modalState.modalDepth);
-    }
-
-    return {
-      backdrop: 'preserve',
-      restoreBackdropDisplay: false,
-      treatment: CANONICAL_ADDIN_TYPE_TREATMENT[addinType],
-    };
+    return resolveAddinType(addinType, readyArgs, modalState.modalDepth, true);
   }
 
-  if (readyArgs.modalConfig !== undefined) {
-    return readyArgs.modalConfig.fullPage === true
-      ? {
-          backdrop: 'preserve',
-          restoreBackdropDisplay: false,
-          treatment: 'full-page',
-        }
-      : modalResolution(false, modalState.modalDepth);
-  }
+  const inferredAddinType = inferAddinType(readyArgs);
 
-  if (
-    readyArgs.boxConfig !== undefined ||
-    readyArgs.tabConfig !== undefined ||
-    readyArgs.tileConfig !== undefined
-  ) {
-    return {
-      backdrop: 'preserve',
-      restoreBackdropDisplay: false,
-      treatment: 'container',
-    };
-  }
-
-  if (
-    readyArgs.buttonConfig !== undefined ||
-    readyArgs.actionButtonConfig !== undefined
-  ) {
-    return {
-      backdrop: 'preserve',
-      restoreBackdropDisplay: false,
-      treatment: 'preserve',
-    };
+  if (inferredAddinType !== undefined) {
+    return resolveAddinType(
+      inferredAddinType,
+      readyArgs,
+      modalState.modalDepth,
+      false,
+    );
   }
 
   if (modalState.fullPageModalOpen) {
-    return {
-      backdrop: 'preserve',
-      restoreBackdropDisplay: false,
-      treatment: 'full-page',
-    };
+    return FULL_PAGE_RESOLUTION;
   }
 
   if (modalState.modalOpen) {
@@ -190,11 +211,12 @@ export function resolveHostedSurface(
     };
   }
 
-  return {
-    backdrop: 'preserve',
-    restoreBackdropDisplay: false,
-    treatment: 'container',
-  };
+  return resolveAddinType(
+    UNIDENTIFIED_ADDIN_TYPE,
+    readyArgs,
+    modalState.modalDepth,
+    false,
+  );
 }
 
 export function withInferredModalStyle(
