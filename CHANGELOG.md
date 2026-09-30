@@ -1,3 +1,6 @@
+# 14.1.0 (2026-09-29)
+- Added support for `modalConfig.style`, which lets modal add-ins make their document background transparent and ask compatible hosts to make their overlay transparent, so the standard SKY UX modal backdrop can be used. Requires `@blackbaud/sky-addin-client` 1.8.0.
+
 # 14.0.1 (2026-08-28)
 - Update packages.
 
