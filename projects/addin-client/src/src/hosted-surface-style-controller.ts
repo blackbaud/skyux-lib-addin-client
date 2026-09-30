@@ -84,15 +84,17 @@ export class HostedSurfaceStyleController {
     addinType: AddinType | undefined,
     readyArgs: AddinClientReadyArgs,
   ): HostedSurfaceResolution {
-    this.#input = { addinType, readyArgs };
+    const input: ControllerInput = { addinType, readyArgs };
+
+    this.#input = input;
     this.#observe();
 
-    return this.#applyCurrentResolution();
+    return this.#applyResolution(input);
   }
 
   public refresh(): void {
     if (this.#input !== undefined) {
-      this.#applyCurrentResolution();
+      this.#applyResolution(this.#input);
     }
   }
 
@@ -110,13 +112,7 @@ export class HostedSurfaceStyleController {
     this.#styleElement = undefined;
   }
 
-  #applyCurrentResolution(): HostedSurfaceResolution {
-    const input = this.#input;
-
-    if (input === undefined) {
-      throw new Error('Hosted surface input must be set before resolution.');
-    }
-
+  #applyResolution(input: ControllerInput): HostedSurfaceResolution {
     const resolution = resolveHostedSurface({
       ...input,
       modalState: {
@@ -224,14 +220,11 @@ export class HostedSurfaceStyleController {
       );
     }
 
-    if (record.type === 'childList') {
-      return (
-        this.#containsModalNode(record.addedNodes) ||
-        this.#containsModalNode(record.removedNodes)
-      );
-    }
-
-    return false;
+    // The observer only watches attributes and child lists, so this is a childList record.
+    return (
+      this.#containsModalNode(record.addedNodes) ||
+      this.#containsModalNode(record.removedNodes)
+    );
   }
 
   #modalMarkerPresenceChanged(oldValue: string | null): boolean {

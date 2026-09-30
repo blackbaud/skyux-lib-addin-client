@@ -273,6 +273,45 @@ describe('HostedSurfaceStyleController', () => {
     expect(refreshSpy).toHaveBeenCalled();
   });
 
+  it('refreshes when a body without a class attribute gains a modal marker', async () => {
+    const savedClass = document.body.getAttribute('class');
+    document.body.removeAttribute('class');
+
+    try {
+      // A Page add-in is preserved, so the controller adds no body classes and the
+      // class attribute stays absent until the modal marker is added.
+      update({}, 'page');
+      await new Promise<void>((resolve) => setTimeout(resolve));
+
+      const refreshSpy = spyOn(controller, 'refresh').and.callThrough();
+
+      document.body.classList.add('sky-modal-body-open');
+      await new Promise<void>((resolve) => setTimeout(resolve));
+
+      expect(refreshSpy).toHaveBeenCalled();
+    } finally {
+      if (savedClass === null) {
+        document.body.removeAttribute('class');
+      } else {
+        document.body.setAttribute('class', savedClass);
+      }
+    }
+  });
+
+  it('ignores text nodes added to or removed from the body', async () => {
+    update();
+    await new Promise<void>((resolve) => setTimeout(resolve));
+
+    const refreshSpy = spyOn(controller, 'refresh').and.callThrough();
+    const text = document.createTextNode('text');
+
+    document.body.appendChild(text);
+    text.remove();
+    await new Promise<void>((resolve) => setTimeout(resolve));
+
+    expect(refreshSpy).not.toHaveBeenCalled();
+  });
+
   it('does not refresh for unrelated body class changes or unrelated descendant DOM churn', async () => {
     update();
     // Allow any mutation records produced by the initial update()'s own class writes
