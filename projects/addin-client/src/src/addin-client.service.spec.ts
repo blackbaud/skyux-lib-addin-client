@@ -1206,6 +1206,61 @@ describe('Addin Client Service', () => {
       addinClientArgs.callbacks.init(initArgs);
     });
 
+    describe('host theme changes', () => {
+      /**
+       * Sends a host change to the modern dark theme under the given app config and
+       * returns the spy on the theme service's `setTheme`.
+       */
+      function changeToModernDark(skyux: any): jasmine.Spy {
+        spyOnProperty(TestBed.inject(SkyAppConfig), 'skyux').and.returnValue(skyux);
+        const setThemeSpy = spyOn(TestBed.inject(SkyThemeService), 'setTheme');
+
+        const settings: AddinClientThemeSettings = {
+          mode: SkyThemeMode.presets.dark.name,
+          theme: SkyTheme.presets.modern.name,
+          skyThemeSettings: undefined
+        };
+
+        (addinClientService.addinClient as any).args.callbacks.themeChange(settings);
+
+        return setThemeSpy;
+      }
+
+      it('applies a host theme change the app supports', () => {
+        const setThemeSpy = changeToModernDark({
+          app: {
+            theming: {
+              supportedThemes: ['default', 'modern'],
+              theme: 'default'
+            }
+          }
+        });
+
+        expect(setThemeSpy).toHaveBeenCalledOnceWith(
+          new SkyThemeSettings(SkyTheme.presets.modern, SkyThemeMode.presets.dark)
+        );
+      });
+
+      it('ignores a host theme change the app does not support', () => {
+        const setThemeSpy = changeToModernDark({
+          app: {
+            theming: {
+              supportedThemes: ['default'],
+              theme: 'default'
+            }
+          }
+        });
+
+        expect(setThemeSpy).not.toHaveBeenCalled();
+      });
+
+      it('ignores a host theme change when the app has no theming config', () => {
+        const setThemeSpy = changeToModernDark({ app: {} });
+
+        expect(setThemeSpy).not.toHaveBeenCalled();
+      });
+    });
+
     it('destroys the addin client', (done) => {
       spyOn(addinClientService.addinClient, 'destroy').and.stub();
 

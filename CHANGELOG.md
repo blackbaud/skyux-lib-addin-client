@@ -7,6 +7,8 @@
 - Added `AddinClientConfigService.getHostedSurfaceMode()`. Return `'preserve'` to keep an
   add-in's own background instead of the automatic treatment.
 - Applied Angular's `CSP_NONCE` to the client's hosted-surface style element.
+- Host theme changes now follow the same rule as the initial theme: when the add-in has
+  SKY UX app config, only themes listed in `app.theming.supportedThemes` are applied.
 - Updated the library to the SKY UX 15 and Angular 22 compatibility baseline.
 
 # 14.1.0 (2026-08-06)

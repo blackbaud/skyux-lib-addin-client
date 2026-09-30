@@ -345,30 +345,12 @@ export class AddinClientService {
   }
 
   private initializeTheme(themeSettings: AddinClientThemeSettings): void {
-    if (!themeSettings) {
+    if (!themeSettings || !this.supportsHostTheme(themeSettings)) {
+      // app does not support host theme, do nothing to initialize the app's default theme
       return;
     }
 
-    const hostThemeSettings = AddinClientService.toSkyThemeSettings(themeSettings);
-
-    if (!this.#config) {
-      // no app config, initialize host theme
-      this.initializeTheme_(hostThemeSettings);
-      return;
-    }
-
-    const themingConfig = this.#config.skyux.app?.theming;
-
-    if (
-      themingConfig?.supportedThemes &&
-      themingConfig.supportedThemes.indexOf(themeSettings.theme as SkyuxConfigAppSupportedTheme) !== -1
-    ) {
-      // app supports host theme, initialize host theme
-      this.initializeTheme_(hostThemeSettings);
-      return;
-    }
-
-    // app does not support host theme, do nothing to initialize the app's default theme
+    this.initializeTheme_(AddinClientService.toSkyThemeSettings(themeSettings));
   }
 
   private initializeTheme_(themeSettings: SkyThemeSettings): void {
@@ -380,13 +362,28 @@ export class AddinClientService {
   }
 
   private setTheme(settings: AddinClientThemeSettings): void {
-    if (!settings) {
+    // A host theme change follows the same rule as initialization, so the app is
+    // never switched to a theme it does not support.
+    if (!settings || !this.supportsHostTheme(settings)) {
       return;
     }
 
-    const hostThemeSettings = AddinClientService.toSkyThemeSettings(settings);
+    this.#themeService.setTheme(AddinClientService.toSkyThemeSettings(settings));
+  }
 
-    this.#themeService.setTheme(hostThemeSettings);
+  /**
+   * Whether the app supports the host's theme. An app without SKY UX app config supports
+   * any host theme; otherwise the theme must be listed in `app.theming.supportedThemes`.
+   */
+  private supportsHostTheme(settings: AddinClientThemeSettings): boolean {
+    if (!this.#config) {
+      return true;
+    }
+
+    const supportedThemes = this.#config.skyux.app?.theming?.supportedThemes;
+
+    return !!supportedThemes &&
+      supportedThemes.indexOf(settings.theme as SkyuxConfigAppSupportedTheme) !== -1;
   }
 
   private static toSkyThemeSettings(settings: AddinClientThemeSettings): SkyThemeSettings {
