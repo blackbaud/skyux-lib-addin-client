@@ -39,9 +39,7 @@
               "node_modules/@skyux/theme/css/sky.css",
               "node_modules/@skyux/theme/css/themes/modern/styles.css"
             ],
-            "polyfills": [
-              "@skyux/packages/polyfills"
-            ]
+            "polyfills": []
           }
         },
         "lint": {
@@ -95,8 +93,7 @@
             "index": "projects/addin-client-showcase/src/index.html",
             "main": "projects/addin-client-showcase/src/main.ts",
             "polyfills": [
-              "projects/addin-client-showcase/src/polyfills.ts",
-              "@skyux/packages/polyfills"
+              "projects/addin-client-showcase/src/polyfills.ts"
             ],
             "tsConfig": "projects/addin-client-showcase/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
@@ -107,7 +104,8 @@
             "styles": [
               "node_modules/@skyux/theme/css/sky.css",
               "node_modules/@skyux/theme/css/themes/modern/styles.css",
-              "projects/addin-client-showcase/src/styles.scss"
+              "projects/addin-client-showcase/src/styles.scss",
+              "projects/addin-client-showcase/src/app/skyux15-compat.css"
             ],
             "scripts": []
           },
@@ -167,8 +165,7 @@
           "options": {
             "main": "projects/addin-client-showcase/src/test.ts",
             "polyfills": [
-              "projects/addin-client-showcase/src/polyfills.ts",
-              "@skyux/packages/polyfills"
+              "projects/addin-client-showcase/src/polyfills.ts"
             ],
             "tsConfig": "projects/addin-client-showcase/tsconfig.spec.json",
             "karmaConfig": "projects/addin-client-showcase/karma.conf.js",
@@ -180,7 +177,8 @@
             "styles": [
               "node_modules/@skyux/theme/css/sky.css",
               "node_modules/@skyux/theme/css/themes/modern/styles.css",
-              "projects/addin-client-showcase/src/styles.scss"
+              "projects/addin-client-showcase/src/styles.scss",
+              "projects/addin-client-showcase/src/app/skyux15-compat.css"
             ],
             "scripts": []
           }
