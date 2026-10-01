@@ -1,7 +1,14 @@
 import { AddinClientConfig } from "@blackbaud/sky-addin-client";
 
 /**
- * Implement this class with your own data to initialize the add-in client service. 
+ * How the add-in client styles the add-in document for its hosted surface.
+ * - `'automatic'`: adapts the document background to the hosted surface.
+ * - `'preserve'`: leaves the add-in's own background styling unchanged.
+ */
+export type AddinClientHostedSurfaceMode = 'automatic' | 'preserve';
+
+/**
+ * Implement this class with your own data to initialize the add-in client service.
  */ 
 export abstract class AddinClientConfigService {
   /**
@@ -10,5 +17,13 @@ export abstract class AddinClientConfigService {
    */
   public getAddinClientConfig(): AddinClientConfig {
     return {};
+  }
+
+  /**
+   * Gets how the add-in client styles the add-in document for its hosted surface.
+   * Return `'preserve'` to keep the add-in's own background styling.
+   */
+  public getHostedSurfaceMode(): AddinClientHostedSurfaceMode {
+    return 'automatic';
   }
 }

@@ -1,4 +1,6 @@
+import { DOCUMENT } from '@angular/common';
 import {
+  CSP_NONCE,
   EventEmitter,
   Injectable,
   RendererFactory2,
@@ -11,6 +13,7 @@ import {
   AddinClientInitArgs,
   AddinClientNavigateArgs,
   AddinClientOpenHelpArgs,
+  AddinClientReadyArgs,
   AddinClientShowConfirmArgs,
   AddinClientShowErrorArgs,
   AddinClientShowFlyoutArgs,
@@ -35,11 +38,16 @@ import {
   Observable,
   from
 } from 'rxjs';
-import { AddinClientConfigService } from './addin-client-config.service';
+import {
+  AddinClientConfigService,
+  AddinClientHostedSurfaceMode
+} from './addin-client-config.service';
 import {
   AddinEvent,
   AddinEventHandlerInstance
 } from './events';
+import { HostedSurfaceStyleController } from './hosted-surface-style-controller';
+import { withInferredModalStyle } from './hosted-surface-resolver';
 
 @Injectable({
   providedIn: 'root'
@@ -94,17 +102,29 @@ export class AddinClientService {
   public settingsClick: EventEmitter<any> = new EventEmitter(true);
 
   #config = inject(SkyAppConfig, { optional: true });
+  #document = inject(DOCUMENT);
   #rendererFactory = inject(RendererFactory2);
   #themeService = inject(SkyThemeService);
   #addinClientConfigService = inject(AddinClientConfigService, { optional: true });
+  // A config provided as a plain object may predate getHostedSurfaceMode().
+  #hostedSurfaceMode: AddinClientHostedSurfaceMode =
+    this.#addinClientConfigService?.getHostedSurfaceMode?.() ?? 'automatic';
+
+  private destroyed = false;
+  private readonly hostedSurfaceController =
+    new HostedSurfaceStyleController(
+      this.#document,
+      inject(CSP_NONCE, { optional: true })
+    );
 
   constructor() {
     this.addinClient = new AddinClient({
       callbacks: {
         init: (args: AddinClientInitArgs) => {
-          this.initializeTheme(args?.themeSettings);
+          const preparedArgs = this.prepareInitArgs(args);
 
-          this._args.next(args);
+          this.initializeTheme(preparedArgs.themeSettings);
+          this._args.next(preparedArgs);
           this._args.complete();
         },
         actionClick: (action: string) => {
@@ -163,7 +183,45 @@ export class AddinClientService {
    * Cleans up the AddinClient, releasing all resources.
    */
   public destroy(): void {
+    if (this.destroyed) {
+      return;
+    }
+
+    this.destroyed = true;
+    this.hostedSurfaceController.destroy();
     this.addinClient.destroy();
+  }
+
+  private prepareInitArgs(args: AddinClientInitArgs): AddinClientInitArgs {
+    const ready = args.ready;
+
+    args.ready = (readyArgs: AddinClientReadyArgs) => {
+      // Pass ready() through untouched when the app keeps its own background, and when
+      // the body doesn't exist yet so addin-ready is still posted.
+      if (
+        this.destroyed ||
+        this.#hostedSurfaceMode === 'preserve' ||
+        !this.#document.body
+      ) {
+        ready(readyArgs);
+        return;
+      }
+
+      // Keep application-owned args as the source for later DOM-driven inference.
+      const resolution = this.hostedSurfaceController.update(
+        args.addinType,
+        readyArgs
+      );
+
+      ready(
+        withInferredModalStyle(
+          readyArgs,
+          resolution.inferredModalStyle
+        )
+      );
+    };
+
+    return args;
   }
 
   /**
@@ -287,30 +345,12 @@ export class AddinClientService {
   }
 
   private initializeTheme(themeSettings: AddinClientThemeSettings): void {
-    if (!themeSettings) {
+    if (!themeSettings || !this.supportsHostTheme(themeSettings)) {
+      // app does not support host theme, do nothing to initialize the app's default theme
       return;
     }
 
-    const hostThemeSettings = AddinClientService.toSkyThemeSettings(themeSettings);
-
-    if (!this.#config) {
-      // no app config, initialize host theme
-      this.initializeTheme_(hostThemeSettings);
-      return;
-    }
-
-    const themingConfig = this.#config.skyux.app?.theming;
-
-    if (
-      themingConfig?.supportedThemes &&
-      themingConfig.supportedThemes.indexOf(themeSettings.theme as SkyuxConfigAppSupportedTheme) !== -1
-    ) {
-      // app supports host theme, initialize host theme
-      this.initializeTheme_(hostThemeSettings);
-      return;
-    }
-
-    // app does not support host theme, do nothing to initialize the app's default theme
+    this.initializeTheme_(AddinClientService.toSkyThemeSettings(themeSettings));
   }
 
   private initializeTheme_(themeSettings: SkyThemeSettings): void {
@@ -322,13 +362,28 @@ export class AddinClientService {
   }
 
   private setTheme(settings: AddinClientThemeSettings): void {
-    if (!settings) {
+    // A host theme change follows the same rule as initialization, so the app is
+    // never switched to a theme it does not support.
+    if (!settings || !this.supportsHostTheme(settings)) {
       return;
     }
 
-    const hostThemeSettings = AddinClientService.toSkyThemeSettings(settings);
+    this.#themeService.setTheme(AddinClientService.toSkyThemeSettings(settings));
+  }
 
-    this.#themeService.setTheme(hostThemeSettings);
+  /**
+   * Whether the app supports the host's theme. An app without SKY UX app config supports
+   * any host theme; otherwise the theme must be listed in `app.theming.supportedThemes`.
+   */
+  private supportsHostTheme(settings: AddinClientThemeSettings): boolean {
+    if (!this.#config) {
+      return true;
+    }
+
+    const supportedThemes = this.#config.skyux.app?.theming?.supportedThemes;
+
+    return !!supportedThemes &&
+      supportedThemes.indexOf(settings.theme as SkyuxConfigAppSupportedTheme) !== -1;
   }
 
   private static toSkyThemeSettings(settings: AddinClientThemeSettings): SkyThemeSettings {
