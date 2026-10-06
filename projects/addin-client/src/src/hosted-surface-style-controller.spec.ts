@@ -58,7 +58,6 @@ describe('HostedSurfaceStyleController', () => {
       'box',
       'tile',
       'flyout',
-      'generic',
       'vertical-tab-form',
     ] as const) {
       update({}, addinType);
@@ -140,11 +139,14 @@ describe('HostedSurfaceStyleController', () => {
     expect(hostedStyle()?.hasAttribute('nonce')).toBeFalse();
   });
 
-  it('preserves page, tab, full-page, and explicit style backgrounds', () => {
+  it('preserves page, tab, generic, full-page, and explicit style backgrounds', () => {
     update({}, 'page');
     expect(document.body).not.toHaveCssClass(HOSTED_SURFACE_CLASSES.container);
 
     update({}, 'tab');
+    expect(document.body).not.toHaveCssClass(HOSTED_SURFACE_CLASSES.container);
+
+    update({}, 'generic');
     expect(document.body).not.toHaveCssClass(HOSTED_SURFACE_CLASSES.container);
 
     update({ tabConfig: {} });

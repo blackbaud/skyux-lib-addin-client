@@ -6,10 +6,10 @@
   - Modal add-ins get a transparent background, so the host page shows through behind the
     modal's backdrop. The historical `::ng-deep` rules for a transparent body or a hidden
     backdrop still work for now but are no longer needed.
-  - Box, tile, flyout, vertical tab form, and generic add-ins use the SKY UX container
-    background for the current theme.
-  - Page, tab, full-page modal, button, action button, and dataset add-ins keep their own
-    background.
+  - Box, tile, flyout, and vertical tab form add-ins use the SKY UX container background
+    for the current theme, as do add-ins on older hosts that the client can't identify.
+  - Page, tab, generic, full-page modal, button, action button, and dataset add-ins keep
+    their own background.
   - For modal add-ins, an explicit `modalConfig.style` always takes precedence.
 
   - You need to make a change only if:

@@ -90,13 +90,18 @@ describe('hosted surface resolver', () => {
       'box',
       'tile',
       'flyout',
-      'generic',
       'vertical-tab-form',
     ] as const) {
       expect(resolve(type).treatment).toBe('container');
     }
 
-    for (const type of ['action-button', 'button', 'dataset', 'tab'] as const) {
+    for (const type of [
+      'action-button',
+      'button',
+      'dataset',
+      'generic',
+      'tab',
+    ] as const) {
       expect(resolve(type).treatment).toBe('preserve');
     }
   });
@@ -141,8 +146,9 @@ describe('hosted surface resolver', () => {
     }
   });
 
-  it('treats an add-in nothing identifies like a generic add-in', () => {
-    expect(resolve(undefined).treatment).toBe(resolve('generic').treatment);
+  it('treats an add-in nothing identifies differently from a reported generic add-in', () => {
+    expect(resolve(undefined).treatment).toBe('container');
+    expect(resolve('generic').treatment).toBe('preserve');
   });
 
   it('applies a requested treatment instead of resolving one', () => {

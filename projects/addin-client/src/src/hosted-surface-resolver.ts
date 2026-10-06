@@ -77,7 +77,9 @@ function resolveModalBackdrop(
  *
  * SKY UX boxes, tiles, and flyouts give their content the container background, so add-ins
  * in them get it too. SKY UX tabs don't, so tab content shows whatever is behind the tabset,
- * usually the page, and a tab add-in keeps its own page background.
+ * usually the page, and a tab add-in keeps its own page background. A host reports `generic`
+ * for an add-in it embeds without a more specific type, typically as part of a page, so a
+ * generic add-in keeps its own background too.
  */
 const CANONICAL_ADDIN_TYPE_TREATMENT: Readonly<
   Record<AddinType, HostedSurfaceTreatment>
@@ -87,7 +89,7 @@ const CANONICAL_ADDIN_TYPE_TREATMENT: Readonly<
   button: 'preserve',
   dataset: 'preserve',
   flyout: 'container',
-  generic: 'container',
+  generic: 'preserve',
   modal: 'modal',
   page: 'preserve',
   tab: 'preserve',
@@ -112,10 +114,15 @@ const READY_ARGS_ADDIN_TYPES: ReadonlyArray<
 ];
 
 /**
- * The type an add-in is treated as when neither the host nor `ready()` identifies it. It is
- * the type a host reports when a host component does not specify one.
+ * The resolution for an add-in that neither the host nor `ready()` identifies. Only an
+ * older host leaves an add-in unidentified, and the tiles and flyouts such a host can't
+ * identify need the container background.
  */
-const UNIDENTIFIED_ADDIN_TYPE: AddinType = 'generic';
+const UNIDENTIFIED_RESOLUTION: HostedSurfaceResolution = {
+  backdrop: 'preserve',
+  restoreBackdropDisplay: false,
+  treatment: 'container',
+};
 
 const FULL_PAGE_RESOLUTION: HostedSurfaceResolution = {
   backdrop: 'preserve',
@@ -233,12 +240,7 @@ export function resolveHostedSurface(
     };
   }
 
-  return resolveAddinType(
-    UNIDENTIFIED_ADDIN_TYPE,
-    readyArgs,
-    modalState.modalDepth,
-    false,
-  );
+  return UNIDENTIFIED_RESOLUTION;
 }
 
 export function withInferredModalStyle(
