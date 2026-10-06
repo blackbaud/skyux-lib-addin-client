@@ -321,63 +321,73 @@ export class MyModule { }
 
 For more information on creating SKY Add-ins, view the documentation on the [SKY Developer Portal](https://developer.blackbaud.com/skyapi/docs/addins)
 
+## Hosted add-in backgrounds
 
-## Modal style
+Starting in version 15.0.0, the add-in client gives the add-in document the SKY UX
+background that matches where the add-in is hosted, in the current theme and mode:
 
-### Hosted add-in backgrounds
-
-The SKY UX add-in client automatically adapts the add-in document to its hosted surface.
-This default begins in version 15.0.0. Version 14.x continues to pass through explicit
-modal style without automatic hosted-surface inference.
-
-- Normal modal add-ins use a transparent document background and retain a rendered SKY UX
-  backdrop.
-- Full-page modal, Page, Tab, and Generic add-ins retain their application background.
-  SKY UX tabs don't give their content a background, so a Tab add-in matches whatever is
-  behind its tabset, usually the page. A host reports Generic for an add-in it embeds with
-  `sky-addin` and no more specific type, typically as part of a page.
+- Modal add-ins get a transparent background, so the SKY UX modal backdrop shows behind
+  the modal.
 - Box, Tile, Flyout, and Vertical Tab Form add-ins use the SKY UX container background, as
   SKY UX boxes, tiles, and flyouts do for their own content.
-- A compatible host supplies exact add-in type context. On older hosts, and when a host
-  reports an add-in type this client version doesn't recognize, the client uses the
-  add-in's `ready()` configuration and live SKY UX modal state, then falls back to the
-  container background when the context remains ambiguous.
+- Page, Tab, Generic, full-page modal, Button, Action Button, and Dataset add-ins keep their
+  own background. SKY UX tabs don't give their content a background, so a Tab add-in
+  matches whatever is behind its tabset, usually the page. A Generic add-in is embedded with
+  `sky-addin` and no more specific type, typically as part of a page.
+- When the client can't determine where the add-in is hosted, it uses the SKY UX container
+  background.
 
-Any defined `modalConfig.style` object, including `{}`, suppresses automatic modal
-treatment for that `ready()` call. A normal modal add-in that renders content directly
-instead of opening a SKY UX modal should send:
+The client adds one `<style>` element for these backgrounds. If the add-in's Content
+Security Policy restricts `style-src`, provide the nonce to Angular through `CSP_NONCE` or
+the `ngCspNonce` attribute, as Angular requires for component styles. The client applies
+the same nonce.
 
-```ts
-modalConfig: {
-  style: {}
-}
+### Remove historical style overrides
+
+Modal add-ins previously needed global style overrides to make their document transparent
+and hide the SKY UX modal backdrop. Remove them:
+
+```scss
+::ng-deep body { background: transparent; }
+::ng-deep .sky-modal-host-backdrop { display: none; }
 ```
 
-Remove historical style overrides that make the document body transparent or hide the
-SKY UX modal backdrop. The client temporarily overrides the hidden-backdrop rule on
-automatic modal paths for mixed-version rollout safety, but applications should no longer
-own that behavior.
+The client now makes the document transparent itself and keeps the SKY UX modal backdrop
+visible. Until you remove these rules, the client overrides the rule that hides the
+backdrop, so existing add-ins keep working.
 
-The client adds one `<style>` element for these backgrounds. If the add-in uses a
-Content Security Policy that restricts `style-src`, provide the nonce to Angular through
-`CSP_NONCE` or the `ngCspNonce` attribute, as Angular requires for component styles. The
-client applies the same nonce.
+### Modal add-ins that don't open a SKY UX modal
+
+A modal add-in that renders its content directly, instead of opening a SKY UX modal,
+should keep its own background. Send an empty style in `ready()`:
+
+```ts
+args.ready({
+  showUI: true,
+  modalConfig: {
+    style: {}
+  }
+});
+```
+
+Any `modalConfig.style`, including an empty object, turns off the automatic background for
+that `ready()` call. See [Modal style](#modal-style).
 
 ### Choose the add-in's background
 
-To choose the background instead of the automatic treatment, extend
-`AddinClientConfigService` (see [Additional configuration](#additional-configuration))
-and override `getHostedSurfaceMode()`. It can return:
+To choose the background instead of the automatic one, extend `AddinClientConfigService`
+(see [Additional configuration](#additional-configuration)) and override
+`getHostedSurfaceMode()`. It can return:
 
 | Mode | Behavior |
 |---|---|
-| `'automatic'` (default) | Uses the background for the hosted surface, as described above. |
+| `'automatic'` (default) | Uses the background for where the add-in is hosted, as described above. |
 | `'preserve'` | Keeps the add-in's own background. The client doesn't change the add-in document. |
-| `'container'` | Uses the SKY UX container background, whatever the hosted surface. |
+| `'container'` | Uses the SKY UX container background, wherever the add-in is hosted. |
 
-The client asks on every `ready()` call and passes the add-in type the host reported
-(`undefined` for an older host) and the arguments the add-in passed to `ready()`. That lets
-an add-in that serves several surfaces choose for each one, for example by route:
+The client asks on every `ready()` call and passes the add-in type the host reported, if
+any, and the arguments the add-in passed to `ready()`. That lets an add-in that's hosted in
+several places choose for each one, for example by route:
 
 ```ts
 class AddinConfigService extends AddinClientConfigService {
@@ -394,20 +404,17 @@ class AddinConfigService extends AddinClientConfigService {
 
 A modal add-in can still set `modalConfig.style` explicitly, whatever the mode.
 
-### Explicit modal style
+## Modal style
 
-A modal add-in can override the automatic behavior and independently configure its
-document body and a host's overlay through `modalConfig.style`:
+A modal add-in can set its document background and the host's overlay explicitly through
+`modalConfig.style`. The two options are independent:
 
 | Option | Behavior |
 |---|---|
 | `transparentBackground: true` | Makes the add-in document transparent with inline `!important` `background-color: transparent` and `background-image: none` declarations on `<html>` and `<body>`. |
-| `transparentBackground: false` or omitted | Retains add-in's body styling. |
-| `hostOverlay: false` | Asks a compatible host to make its modal overlay transparent. |
-| `hostOverlay: true` or omitted | The host retains its visible modal overlay. |
-
-These options are independent. Defining `modalConfig.style`, including an empty object,
-suppresses automatic hosted-surface treatment for that `ready()` call.
+| `transparentBackground: false` or omitted | Keeps the add-in's own background. |
+| `hostOverlay: false` | Asks the host to make its modal overlay transparent. |
+| `hostOverlay: true` or omitted | The host keeps its visible modal overlay. |
 
 ```ts
 args.ready({
@@ -421,20 +428,6 @@ args.ready({
 });
 ```
 
-The example `style` above makes the add-in document transparent and asks a compatible host to
-make its overlay transparent. This allows the normal SKY UX modal backdrop to remain as
-the visible scrim without workarounds.
-
-With both options set on a compatible host, the add-in document is transparent and the host's overlay is transparent, so the SKY UX modal backdrop is the only visible scrim.
-
-The add-in client applies `transparentBackground` itself, so it works on any host. When you set it, you can remove this historical rule:
-
-```scss
-::ng-deep body { background: transparent; }
-```
-
-`hostOverlay: false` requires a compatible host. Make these two changes together: remove the rule below and set `hostOverlay: false`. On a host that ignores `hostOverlay`, removing the rule shows the SKY UX backdrop on top of the host's overlay (a double scrim). On a compatible host, keeping the rule while setting `hostOverlay: false` leaves no scrim. If your add-in runs on hosts that don't support `hostOverlay`, keep this rule and omit `hostOverlay`:
-
-```scss
-::ng-deep .sky-modal-host-backdrop { display: none; }
-```
+With both options set, the add-in document and the host's overlay are transparent, so the
+SKY UX modal backdrop is the only visible scrim. Defining `modalConfig.style`, including an
+empty object, turns off the automatic background for that `ready()` call.
