@@ -57,7 +57,6 @@ describe('HostedSurfaceStyleController', () => {
       'box',
       'tile',
       'flyout',
-      'tab',
       'generic',
       'vertical-tab-form',
     ] as const) {
@@ -65,7 +64,7 @@ describe('HostedSurfaceStyleController', () => {
       expect(document.body).toHaveCssClass(HOSTED_SURFACE_CLASSES.container);
     }
 
-    update({ tabConfig: {} });
+    update({ boxConfig: {} });
     expect(document.body).toHaveCssClass(HOSTED_SURFACE_CLASSES.container);
 
     update();
@@ -140,8 +139,14 @@ describe('HostedSurfaceStyleController', () => {
     expect(hostedStyle()?.hasAttribute('nonce')).toBeFalse();
   });
 
-  it('preserves page, full-page, and explicit style backgrounds', () => {
+  it('preserves page, tab, full-page, and explicit style backgrounds', () => {
     update({}, 'page');
+    expect(document.body).not.toHaveCssClass(HOSTED_SURFACE_CLASSES.container);
+
+    update({}, 'tab');
+    expect(document.body).not.toHaveCssClass(HOSTED_SURFACE_CLASSES.container);
+
+    update({ tabConfig: {} });
     expect(document.body).not.toHaveCssClass(HOSTED_SURFACE_CLASSES.container);
 
     update({ modalConfig: { fullPage: true } }, 'modal');

@@ -87,14 +87,13 @@ describe('hosted surface resolver', () => {
       'box',
       'tile',
       'flyout',
-      'tab',
       'generic',
       'vertical-tab-form',
     ] as const) {
       expect(resolve(type).treatment).toBe('container');
     }
 
-    for (const type of ['action-button', 'button', 'dataset'] as const) {
+    for (const type of ['action-button', 'button', 'dataset', 'tab'] as const) {
       expect(resolve(type).treatment).toBe('preserve');
     }
   });
@@ -112,11 +111,9 @@ describe('hosted surface resolver', () => {
     expect(resolve(undefined, { tileConfig: {} }, open).treatment).toBe(
       'container',
     );
-    expect(resolve(undefined, { tabConfig: {} }, open).treatment).toBe(
-      'container',
-    );
 
     for (const readyArgs of [
+      { tabConfig: {} },
       { buttonConfig: {} },
       { actionButtonConfig: {} },
     ] as AddinClientReadyArgs[]) {

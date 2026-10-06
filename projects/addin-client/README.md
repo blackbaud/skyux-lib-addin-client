@@ -332,9 +332,11 @@ modal style without automatic hosted-surface inference.
 
 - Normal modal add-ins use a transparent document background and retain a rendered SKY UX
   backdrop.
-- Full-page modal and Page add-ins retain their application background.
-- Box, Tile, Flyout, Tab, Generic, and Vertical Tab Form add-ins use the SKY UX container
-  background.
+- Full-page modal, Page, and Tab add-ins retain their application background. SKY UX tabs
+  don't give their content a background, so a Tab add-in matches whatever is behind its
+  tabset, usually the page.
+- Box, Tile, Flyout, Generic, and Vertical Tab Form add-ins use the SKY UX container
+  background, as SKY UX boxes, tiles, and flyouts do for their own content.
 - A compatible host supplies exact add-in type context. On older hosts, and when a host
   reports an add-in type this client version doesn't recognize, the client uses the
   add-in's `ready()` configuration and live SKY UX modal state, then falls back to the

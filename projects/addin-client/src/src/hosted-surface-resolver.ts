@@ -67,6 +67,10 @@ function resolveModalBackdrop(
  * `fullPage`, modal depth, and whether the host reports types. Declaring this as
  * `Readonly<Record<AddinType, ...>>` forces any future `AddinType` addition to be given an
  * explicit mapping at compile time.
+ *
+ * SKY UX boxes, tiles, and flyouts give their content the container background, so add-ins
+ * in them get it too. SKY UX tabs don't, so tab content shows whatever is behind the tabset,
+ * usually the page, and a tab add-in keeps its own page background.
  */
 const CANONICAL_ADDIN_TYPE_TREATMENT: Readonly<
   Record<AddinType, HostedSurfaceTreatment>
@@ -79,7 +83,7 @@ const CANONICAL_ADDIN_TYPE_TREATMENT: Readonly<
   generic: 'container',
   modal: 'modal',
   page: 'preserve',
-  tab: 'container',
+  tab: 'preserve',
   tile: 'container',
   'vertical-tab-form': 'container',
 };
