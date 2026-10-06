@@ -362,22 +362,36 @@ Content Security Policy that restricts `style-src`, provide the nonce to Angular
 `CSP_NONCE` or the `ngCspNonce` attribute, as Angular requires for component styles. The
 client applies the same nonce.
 
-### Keep the add-in's own background
+### Choose the add-in's background
 
-To keep the add-in's own background instead of the automatic treatment, extend
+To choose the background instead of the automatic treatment, extend
 `AddinClientConfigService` (see [Additional configuration](#additional-configuration))
-and override `getHostedSurfaceMode()`:
+and override `getHostedSurfaceMode()`. It can return:
+
+| Mode | Behavior |
+|---|---|
+| `'automatic'` (default) | Uses the background for the hosted surface, as described above. |
+| `'preserve'` | Keeps the add-in's own background. The client doesn't change the add-in document. |
+| `'container'` | Uses the SKY UX container background, whatever the hosted surface. |
+
+The client asks on every `ready()` call and passes the add-in type the host reported
+(`undefined` for an older host) and the arguments the add-in passed to `ready()`. That lets
+an add-in that serves several surfaces choose for each one, for example by route:
 
 ```ts
 class AddinConfigService extends AddinClientConfigService {
-  public override getHostedSurfaceMode(): AddinClientHostedSurfaceMode {
-    return 'preserve';
+  readonly #router = inject(Router);
+
+  public override getHostedSurfaceMode(
+    context: AddinClientHostedSurfaceContext
+  ): AddinClientHostedSurfaceMode {
+    // The list page renders as part of the host's page, so it keeps the page background.
+    return this.#router.url.startsWith('/single-list') ? 'preserve' : 'automatic';
   }
 }
 ```
 
-With `'preserve'`, the client doesn't change the add-in document for any add-in type. A
-modal add-in can still set `modalConfig.style` explicitly.
+A modal add-in can still set `modalConfig.style` explicitly, whatever the mode.
 
 ### Explicit modal style
 

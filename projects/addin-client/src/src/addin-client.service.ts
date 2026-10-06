@@ -40,6 +40,7 @@ import {
 } from 'rxjs';
 import {
   AddinClientConfigService,
+  AddinClientHostedSurfaceContext,
   AddinClientHostedSurfaceMode
 } from './addin-client-config.service';
 import {
@@ -105,9 +106,6 @@ export class AddinClientService {
   #rendererFactory = inject(RendererFactory2);
   #themeService = inject(SkyThemeService);
   #addinClientConfigService = inject(AddinClientConfigService, { optional: true });
-  // A config provided as a plain object may predate getHostedSurfaceMode().
-  #hostedSurfaceMode: AddinClientHostedSurfaceMode =
-    this.#addinClientConfigService?.getHostedSurfaceMode?.() ?? 'automatic';
 
   private destroyed = false;
   private readonly hostedSurfaceController =
@@ -195,13 +193,9 @@ export class AddinClientService {
     const ready = args.ready;
 
     args.ready = (readyArgs: AddinClientReadyArgs) => {
-      // Pass ready() through untouched when the app keeps its own background, and when
-      // the body doesn't exist yet so addin-ready is still posted.
-      if (
-        this.destroyed ||
-        this.#hostedSurfaceMode === 'preserve' ||
-        !this.#document.body
-      ) {
+      // Pass ready() through untouched when the body doesn't exist yet, so addin-ready
+      // is still posted.
+      if (this.destroyed || !this.#document.body) {
         ready(readyArgs);
         return;
       }
@@ -209,7 +203,8 @@ export class AddinClientService {
       // Keep application-owned args as the source for later DOM-driven inference.
       const resolution = this.hostedSurfaceController.update(
         args.addinType,
-        readyArgs
+        readyArgs,
+        this.getHostedSurfaceMode({ addinType: args.addinType, readyArgs })
       );
 
       ready(
@@ -221,6 +216,16 @@ export class AddinClientService {
     };
 
     return args;
+  }
+
+  private getHostedSurfaceMode(
+    context: AddinClientHostedSurfaceContext
+  ): AddinClientHostedSurfaceMode {
+    // A config provided as a plain object may predate getHostedSurfaceMode().
+    return (
+      this.#addinClientConfigService?.getHostedSurfaceMode?.(context) ??
+      'automatic'
+    );
   }
 
   /**

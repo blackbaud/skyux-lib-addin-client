@@ -13,8 +13,9 @@
   - For modal add-ins, an explicit `modalConfig.style` always takes precedence.
 
   - You need to make a change only if:
-    - Your add-in sets its own page background. To keep it, return `'preserve'` from the new
-    `AddinClientConfigService.getHostedSurfaceMode()`. Check out the README to learn more.
+    - Your add-in needs a different background than the one it gets. Return `'preserve'` or
+    `'container'` from the new `AddinClientConfigService.getHostedSurfaceMode()`, which can
+    decide per add-in type or route. Check out the README to learn more.
     - Your modal add-in renders its content directly instead of opening a SKY UX modal. Send
     `modalConfig.style: {}`.
 

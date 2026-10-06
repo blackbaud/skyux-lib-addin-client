@@ -1,7 +1,9 @@
 import { AddinClientReadyArgs, AddinType } from '@blackbaud/sky-addin-client';
 
+import { AddinClientHostedSurfaceMode } from './addin-client-config.service';
 import {
   HostedSurfaceModalState,
+  HostedSurfaceResolution,
   resolveHostedSurface,
   withInferredModalStyle,
 } from './hosted-surface-resolver';
@@ -17,8 +19,9 @@ describe('hosted surface resolver', () => {
     addinType: AddinType | undefined,
     readyArgs: AddinClientReadyArgs = {},
     modalState: HostedSurfaceModalState = closed,
+    mode?: AddinClientHostedSurfaceMode,
   ) {
-    return resolveHostedSurface({ addinType, modalState, readyArgs });
+    return resolveHostedSurface({ addinType, modalState, mode, readyArgs });
   }
 
   it('preserves every defined modal style object', () => {
@@ -140,6 +143,53 @@ describe('hosted surface resolver', () => {
 
   it('treats an add-in nothing identifies like a generic add-in', () => {
     expect(resolve(undefined).treatment).toBe(resolve('generic').treatment);
+  });
+
+  it('applies a requested treatment instead of resolving one', () => {
+    const liveModal: HostedSurfaceModalState = {
+      fullPageModalOpen: false,
+      modalDepth: 1,
+      modalOpen: true,
+    };
+    const requested = (
+      treatment: 'container' | 'preserve',
+    ): HostedSurfaceResolution => ({
+      backdrop: 'preserve',
+      restoreBackdropDisplay: false,
+      treatment,
+    });
+
+    expect(resolve('page', {}, closed, 'container')).toEqual(
+      requested('container'),
+    );
+    expect(resolve('generic', {}, closed, 'container')).toEqual(
+      requested('container'),
+    );
+    expect(resolve('tile', {}, closed, 'preserve')).toEqual(
+      requested('preserve'),
+    );
+    expect(resolve(undefined, {}, liveModal, 'preserve')).toEqual(
+      requested('preserve'),
+    );
+    expect(
+      resolve(
+        undefined,
+        {
+          modalConfig: {
+            style: { hostOverlay: false, transparentBackground: true },
+          },
+        },
+        liveModal,
+        'preserve',
+      ),
+    ).toEqual(requested('preserve'));
+  });
+
+  it('resolves automatically when the requested mode is automatic', () => {
+    expect(resolve('tile', {}, closed, 'automatic')).toEqual(resolve('tile'));
+    expect(resolve('modal', {}, closed, 'automatic')).toEqual(
+      resolve('modal'),
+    );
   });
 
   it('treats older-host modal config as normal or full page', () => {

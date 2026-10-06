@@ -4,6 +4,8 @@ import {
   AddinType,
 } from '@blackbaud/sky-addin-client';
 
+import { AddinClientHostedSurfaceMode } from './addin-client-config.service';
+
 export type HostedSurfaceTreatment =
   'container' | 'full-page' | 'modal' | 'preserve';
 
@@ -23,6 +25,11 @@ export interface HostedSurfaceResolverInput {
    */
   readonly addinType: AddinType | undefined;
   readonly modalState: HostedSurfaceModalState;
+  /**
+   * The mode the add-in requested. `'preserve'` and `'container'` replace the resolved
+   * treatment; `'automatic'` or `undefined` resolves one.
+   */
+  readonly mode?: AddinClientHostedSurfaceMode;
   readonly readyArgs: AddinClientReadyArgs;
 }
 
@@ -168,7 +175,18 @@ function modalResolution(
 export function resolveHostedSurface(
   input: HostedSurfaceResolverInput,
 ): HostedSurfaceResolution {
-  const { addinType, modalState, readyArgs } = input;
+  const { addinType, modalState, mode, readyArgs } = input;
+
+  // A requested treatment replaces every resolved one, including the older-host fallback
+  // for an explicit modal style.
+  if (mode === 'preserve' || mode === 'container') {
+    return {
+      backdrop: 'preserve',
+      restoreBackdropDisplay: false,
+      treatment: mode,
+    };
+  }
+
   const style = readyArgs.modalConfig?.style;
 
   if (style !== undefined) {

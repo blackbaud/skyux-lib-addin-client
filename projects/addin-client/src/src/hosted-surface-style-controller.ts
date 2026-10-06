@@ -1,5 +1,5 @@
 import { AddinClientReadyArgs, AddinType } from '@blackbaud/sky-addin-client';
-
+import { AddinClientHostedSurfaceMode } from './addin-client-config.service';
 import {
   HostedSurfaceResolution,
   resolveHostedSurface,
@@ -58,6 +58,7 @@ body.${HOSTED_SURFACE_CLASSES.transparentBackdrop}
 
 interface ControllerInput {
   readonly addinType: AddinType | undefined;
+  readonly mode: AddinClientHostedSurfaceMode;
   readonly readyArgs: AddinClientReadyArgs;
 }
 
@@ -83,8 +84,9 @@ export class HostedSurfaceStyleController {
   public update(
     addinType: AddinType | undefined,
     readyArgs: AddinClientReadyArgs,
+    mode: AddinClientHostedSurfaceMode = 'automatic',
   ): HostedSurfaceResolution {
-    const input: ControllerInput = { addinType, readyArgs };
+    const input: ControllerInput = { addinType, mode, readyArgs };
 
     this.#input = input;
     this.#observe();

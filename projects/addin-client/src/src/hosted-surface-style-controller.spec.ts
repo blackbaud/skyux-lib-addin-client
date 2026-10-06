@@ -23,8 +23,9 @@ describe('HostedSurfaceStyleController', () => {
     addinType: Parameters<
       HostedSurfaceStyleController['update']
     >[0] = undefined,
+    mode?: Parameters<HostedSurfaceStyleController['update']>[2],
   ) {
-    return controller.update(addinType, readyArgs);
+    return controller.update(addinType, readyArgs, mode);
   }
 
   beforeEach(() => {
@@ -156,6 +157,36 @@ describe('HostedSurfaceStyleController', () => {
 
     update({ modalConfig: { style: {} } });
     expect(document.body).not.toHaveCssClass(HOSTED_SURFACE_CLASSES.container);
+  });
+
+  it('applies a requested container treatment to any add-in type', () => {
+    update({}, 'page', 'container');
+
+    expect(document.body).toHaveCssClass(HOSTED_SURFACE_CLASSES.container);
+    expect(hostedStyle()).not.toBeNull();
+  });
+
+  it('removes an earlier treatment when a later ready() requests preserve', () => {
+    update({}, 'tile');
+    expect(document.body).toHaveCssClass(HOSTED_SURFACE_CLASSES.container);
+
+    update({}, 'tile', 'preserve');
+
+    expect(document.body).not.toHaveCssClass(HOSTED_SURFACE_CLASSES.container);
+    expect(hostedStyle()).toBeNull();
+  });
+
+  it('keeps a requested treatment when a SKY UX modal opens later', async () => {
+    update({}, undefined, 'container');
+
+    document.body.classList.add('sky-modal-body-open');
+    document.body.appendChild(document.createElement('sky-modal'));
+    await new Promise<void>((resolve) => setTimeout(resolve));
+
+    expect(document.body).toHaveCssClass(HOSTED_SURFACE_CLASSES.container);
+    expect(document.body).not.toHaveCssClass(
+      HOSTED_SURFACE_CLASSES.transparent,
+    );
   });
 
   it('makes automatic modal bodies transparent and restores a rendered backdrop', () => {

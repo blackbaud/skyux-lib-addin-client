@@ -28,6 +28,7 @@ import { SkyAppConfig } from '@skyux/config';
 import { SkyTheme, SkyThemeMode, SkyThemeService, SkyThemeSettings } from '@skyux/theme';
 import {
   AddinClientConfigService,
+  AddinClientHostedSurfaceContext,
   AddinClientHostedSurfaceMode
 } from './addin-client-config.service';
 import {
@@ -1332,7 +1333,12 @@ describe('Addin Client Service', () => {
 
       args.ready({});
 
-      expect(addinConfigService.getHostedSurfaceMode()).toBe('automatic');
+      expect(
+        addinConfigService.getHostedSurfaceMode({
+          addinType: 'tile',
+          readyArgs: {}
+        })
+      ).toBe('automatic');
       expect(document.body).toHaveCssClass(
         'bb-skyux-addin-client-container-background'
       );
@@ -1439,6 +1445,100 @@ describe('Addin Client Service', () => {
       expect(document.body).not.toHaveCssClass(
         'bb-skyux-addin-client-modal-background-transparent'
       );
+    });
+  });
+
+  describe('With a hosted surface mode chosen for each ready() call', () => {
+    class ContextualConfigService extends AddinClientConfigService {
+      public mode: AddinClientHostedSurfaceMode = 'automatic';
+      public readonly contexts: AddinClientHostedSurfaceContext[] = [];
+
+      public override getHostedSurfaceMode(
+        context: AddinClientHostedSurfaceContext
+      ): AddinClientHostedSurfaceMode {
+        this.contexts.push(context);
+
+        return this.mode;
+      }
+    }
+
+    let addinClientService: AddinClientService;
+    let configService: ContextualConfigService;
+
+    beforeEach(() => {
+      TestBed.configureTestingModule(
+        {
+          providers: [
+            AddinClientService,
+            SkyThemeService,
+            {
+              provide: AddinClientConfigService, useClass: ContextualConfigService
+            }
+          ]
+        }
+      );
+
+      configService = TestBed.inject(
+        AddinClientConfigService
+      ) as ContextualConfigService;
+      addinClientService = TestBed.inject(AddinClientService);
+    });
+
+    afterEach(() => {
+      addinClientService.destroy();
+    });
+
+    it('asks for the mode with the add-in type and ready() arguments at each ready() call', () => {
+      const firstArgs: AddinClientReadyArgs = { showUI: true };
+      const secondArgs: AddinClientReadyArgs = { showUI: false };
+      const args = initializeWithReady(addinClientService, {
+        addinType: 'generic',
+        ready: () => {}
+      });
+
+      args.ready(firstArgs);
+      args.ready(secondArgs);
+
+      expect(configService.contexts).toEqual([
+        { addinType: 'generic', readyArgs: firstArgs },
+        { addinType: 'generic', readyArgs: secondArgs }
+      ]);
+    });
+
+    it('applies a requested container background to a generic add-in', () => {
+      configService.mode = 'container';
+      const args = initializeWithReady(addinClientService, {
+        addinType: 'generic',
+        ready: () => {}
+      });
+
+      args.ready({});
+
+      expect(document.body).toHaveCssClass(
+        'bb-skyux-addin-client-container-background'
+      );
+    });
+
+    it('removes the treatment when a later ready() call requests preserve', () => {
+      const ready = jasmine.createSpy('ready');
+      const readyArgs: AddinClientReadyArgs = { showUI: true };
+      const args = initializeWithReady(addinClientService, {
+        addinType: 'tile',
+        ready
+      });
+
+      args.ready({});
+      expect(document.body).toHaveCssClass(
+        'bb-skyux-addin-client-container-background'
+      );
+
+      configService.mode = 'preserve';
+      args.ready(readyArgs);
+
+      expect(document.body).not.toHaveCssClass(
+        'bb-skyux-addin-client-container-background'
+      );
+      expect(ready.calls.mostRecent().args[0]).toBe(readyArgs);
     });
   });
 
