@@ -43,7 +43,6 @@ import {
   AddinClientHostedSurfaceMode
 } from './addin-client-config.service';
 import {
-  AddinEvent,
   AddinEventHandlerInstance
 } from './events';
 import { HostedSurfaceStyleController } from './hosted-surface-style-controller';
@@ -318,7 +317,6 @@ export class AddinClientService {
    */
   public addEventHandler(eventType: string): AddinEventHandlerInstance {
     let eventHandlerInstance = new AddinEventHandlerInstance();
-    eventHandlerInstance.addinEvent = new EventEmitter<AddinEvent>();
 
     const eventCallback: AddinEventCallback = (context, done) => {
       eventHandlerInstance.addinEvent.emit({
@@ -344,7 +342,9 @@ export class AddinClientService {
     return from(this.addinClient.sendEvent(args));
   }
 
-  private initializeTheme(themeSettings: AddinClientThemeSettings): void {
+  private initializeTheme(
+    themeSettings: AddinClientThemeSettings | undefined
+  ): void {
     if (!themeSettings || !this.supportsHostTheme(themeSettings)) {
       // app does not support host theme, do nothing to initialize the app's default theme
       return;
@@ -356,7 +356,7 @@ export class AddinClientService {
   private initializeTheme_(themeSettings: SkyThemeSettings): void {
     this.#themeService.init(
       document.body,
-      this.#rendererFactory.createRenderer(undefined, undefined),
+      this.#rendererFactory.createRenderer(null, null),
       themeSettings
     );
   }

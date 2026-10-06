@@ -197,7 +197,7 @@ describe('Addin Client Service', () => {
 
       spyOn(addinClientService.updateContext, 'emit').and.callThrough();
 
-      let newContext: {
+      const newContext = {
         id: '123'
       };
 
@@ -301,11 +301,11 @@ describe('Addin Client Service', () => {
         SkyThemeMode.presets.light,
       );
 
-      let settings: AddinClientThemeSettings = {
+      // Hosts that predate serialized theme settings don't send skyThemeSettings.
+      let settings = {
         mode: skyThemeSettings2.mode.name,
-        theme: skyThemeSettings2.theme.name,
-        skyThemeSettings: undefined
-      };
+        theme: skyThemeSettings2.theme.name
+      } as AddinClientThemeSettings;
 
       const setThemeSpy = spyOn(themeService, 'setTheme').and.callThrough();
       addinClientArgs.callbacks.themeChange(settings);
@@ -350,11 +350,11 @@ describe('Addin Client Service', () => {
         SkyThemeMode.presets.dark,
       );
 
-      let settings: AddinClientThemeSettings = {
+      // Hosts that predate serialized theme settings don't send skyThemeSettings.
+      let settings = {
         mode: skyThemeSettings2.mode.name,
-        theme: skyThemeSettings2.theme.name,
-        skyThemeSettings: undefined
-      };
+        theme: skyThemeSettings2.theme.name
+      } as AddinClientThemeSettings;
 
       const setThemeSpy = spyOn(themeService, 'setTheme').and.callThrough();
       addinClientArgs.callbacks.themeChange(settings);
@@ -649,7 +649,7 @@ describe('Addin Client Service', () => {
         constituent_id: '280',
         gift_type: 'donation'
       };
-      let doneCallback: () => void;
+      const doneCallback = (): void => undefined;
       addinEventCallback(context, doneCallback);
 
       expect(eventHandlerInstance.addinEvent.emit).toHaveBeenCalledWith({
@@ -677,7 +677,7 @@ describe('Addin Client Service', () => {
         constituent_id: '280',
         gift_type: 'donation'
       };
-      let doneCallback: (data?: any) => void;
+      const doneCallback = (_data?: any): void => undefined;
       addinEventCallback(context, doneCallback);
 
       expect(eventHandlerInstance.addinEvent.emit).toHaveBeenCalledWith({
@@ -1215,11 +1215,11 @@ describe('Addin Client Service', () => {
         spyOnProperty(TestBed.inject(SkyAppConfig), 'skyux').and.returnValue(skyux);
         const setThemeSpy = spyOn(TestBed.inject(SkyThemeService), 'setTheme');
 
-        const settings: AddinClientThemeSettings = {
+        // Hosts that predate serialized theme settings don't send skyThemeSettings.
+        const settings = {
           mode: SkyThemeMode.presets.dark.name,
-          theme: SkyTheme.presets.modern.name,
-          skyThemeSettings: undefined
-        };
+          theme: SkyTheme.presets.modern.name
+        } as AddinClientThemeSettings;
 
         (addinClientService.addinClient as any).args.callbacks.themeChange(settings);
 
