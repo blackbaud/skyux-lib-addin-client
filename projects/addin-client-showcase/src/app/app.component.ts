@@ -1,41 +1,21 @@
-/* eslint-disable @angular-eslint/prefer-inject */
-import {
-  Component,
-  Renderer2
-} from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
-import {
-  SkyAppStyleLoader,
-  SkyTheme,
-  SkyThemeMode,
-  SkyThemeService,
-  SkyThemeSettings
-} from '@skyux/theme';
+import { SkyAppStyleLoader } from '@skyux/theme';
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './app.component.html',
-    
+  selector: 'app-root',
+  imports: [RouterOutlet],
+  templateUrl: './app.component.html',
 })
 export class AppComponent {
-  public isLoaded = false;
+  protected readonly isLoaded = signal(false);
 
-  constructor(
-    renderer: Renderer2,
-    themeService: SkyThemeService,
-    styleLoader: SkyAppStyleLoader
-  ) {
-    themeService.init(
-      document.body,
-      renderer,
-      new SkyThemeSettings(
-        SkyTheme.presets['default'],
-        SkyThemeMode.presets.light
-      )
-    );
-
-    styleLoader.loadStyles().then(() => {
-      this.isLoaded = true;
-    });
+  constructor() {
+    void inject(SkyAppStyleLoader)
+      .loadStyles()
+      .then(() => {
+        this.isLoaded.set(true);
+      });
   }
 }

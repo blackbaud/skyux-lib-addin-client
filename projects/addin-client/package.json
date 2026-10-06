@@ -1,15 +1,15 @@
 {
   "name": "@blackbaud/skyux-lib-addin-client",
-  "version": "14.1.0",
+  "version": "15.0.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/blackbaud/skyux-lib-addin-client.git"
   },
   "peerDependencies": {
-    "@angular/common": "^21.2.8",
-    "@angular/core": "^21.2.8",
-    "@skyux/config": "^14.0.1",
-    "@skyux/theme": "^14.0.1"
+    "@angular/common": "^22.1.2",
+    "@angular/core": "^22.1.2",
+    "@skyux/config": "^15.0.0",
+    "@skyux/theme": "^15.0.0"
   },
   "dependencies": {
     "@blackbaud/sky-addin-client": "^1.8.0",
