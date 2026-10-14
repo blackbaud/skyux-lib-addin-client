@@ -14,5 +14,5 @@ export class AddinEventHandlerInstance {
   /**
    * An event that emits when a new add-in event has occurred.
    */
-  public addinEvent: EventEmitter<AddinEvent>;
+  public addinEvent = new EventEmitter<AddinEvent>();
 }

@@ -1,3 +1,24 @@
+# 15.0.0
+
+- Added support for SKY UX 15 and Angular 22.
+- **Behavior change:** Add-ins now get the SKY UX background that matches where they're
+  hosted, including in dark mode. Most add-ins need no changes.
+  - Modal add-ins get a transparent background, so the host page shows through behind the
+    modal's backdrop. The historical `::ng-deep` rules for a transparent body or a hidden
+    backdrop still work for now but are no longer needed.
+  - Box, tile, flyout, and vertical tab form add-ins use the SKY UX container background
+    for the current theme.
+  - Page, tab, generic, full-page modal, button, action button, and dataset add-ins keep
+    their own background.
+  - For modal add-ins, an explicit `modalConfig.style` always takes precedence.
+
+  - You need to make a change only if:
+    - Your add-in needs a different background than the one it gets. Return `'preserve'` or
+    `'container'` from the new `AddinClientConfigService.getHostedSurfaceMode()`, which can
+    decide per add-in type or route. Check out the README to learn more.
+    - Your modal add-in renders its content directly instead of opening a SKY UX modal. Send
+    `modalConfig.style: {}`.
+
 # 14.1.0 (2026-09-29)
 - Added support for `modalConfig.style`, which lets modal add-ins make their document background transparent and ask compatible hosts to make their overlay transparent, so the standard SKY UX modal backdrop can be used. Requires `@blackbaud/sky-addin-client` 1.8.0.
 
