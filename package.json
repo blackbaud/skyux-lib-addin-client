@@ -21,7 +21,7 @@
     "@angular/forms": "22.1.2",
     "@angular/platform-browser": "22.1.2",
     "@angular/platform-browser-dynamic": "22.1.2",
-    "@angular/router": "22.1.2",
+    "@angular/router": "22.2.2",
     "@blackbaud/sky-addin-client": "1.8.0",
     "@skyux/assets": "15.2.0",
     "@skyux/config": "15.2.0",
